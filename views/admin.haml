@@ -33,3 +33,27 @@
       %input{type: 'text', name: :city}
     %p
       %input{type: 'submit', value: :Spara}
+
+%form{method: :post, action: url("/event") }
+  %fieldset
+    %legend Nytt event
+    %p
+      %label Namn
+      %input{type: 'text', name: :name}
+    %p
+      %label Tema
+      %input{type: 'text', name: :theme}
+    %p
+      %label Plats
+      %input{type: 'text', name: :location}
+    %p
+      %label Datum
+      %input{type: 'date', name: :date}
+    %p
+      %label Pris
+      %input{type: 'number', name: :price}
+    %p
+      %label Kommentar
+      %textarea{name: :comment}
+    %p
+      %input{type: :submit, value: :Spara}

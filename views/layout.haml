@@ -12,9 +12,11 @@
           %li.uk-active
             %a{href: '/'} Home
           %li
-            %a{href: '/profil'} Profil
-          %li
             %a{href: '/fest'} Fester
+          -if @member
+            %li
+              %a
+                != @member.nick
     .uk-container.uk-container-center
       - flash.each do |k,v|
         %div{class: k}

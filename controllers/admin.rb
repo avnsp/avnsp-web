@@ -18,4 +18,13 @@ class AdminController < BaseController
                           )
     publish "member.created", member.to_hash
   end
+  post '/event' do
+    event = Event.create(name: params[:name],
+                         theme: params[:theme],
+                         location: params[:location],
+                         date: params[:date],
+                         price: params[:price],
+                         comment: params[:comment])
+    publish "event.created", event.to_hash
+  end
 end

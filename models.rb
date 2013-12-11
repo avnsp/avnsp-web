@@ -18,3 +18,5 @@ class Member < Sequel::Model
     p
   end
 end
+class Event < Sequel::Model
+end

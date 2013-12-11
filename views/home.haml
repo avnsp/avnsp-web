@@ -1,1 +1,17 @@
-hello asdf
+-next_events.each do |e|
+  %h4= e.name
+  %dl
+    %dt Plats
+    %dd= e.location
+    %dt Tema
+    %dd= e.theme
+    %dt Pris
+    %dd= e.price
+    %dt Kommentar
+    %dd= e.comment
+
+:javascript
+  var es = new EventSource("/stream")
+  es.onmessage = function(msg) {
+    console.log(msg)
+  };
