@@ -1,4 +1,8 @@
+require './init'
+require './models'
 require './controllers/home'
+require './controllers/auth'
+require './controllers/admin'
 
 use Rack::Static, {
   :root => "public",
@@ -12,6 +16,15 @@ use Rack::Session::Cookie, {
   :secure => (ENV['RACK_ENV'] == 'production'),
   #:expire_after => 24 * 3600,
 }
+
+map '/admin' do
+  use Rack::Auth::Basic do |u, p|
+    [u, p] == ['avnsp', 'One does not simply walk into mordor!']
+  end
+  run AdminController
+end
+
+use AuthController
 
 map '/' do
   run HomeController

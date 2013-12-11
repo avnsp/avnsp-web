@@ -1,0 +1,35 @@
+%form{method: :post, action: url("/member") }
+  %fieldset
+    %legend Ny aspirant
+    %p
+      %label Förnamn
+      %input{type: 'text', name: :first_name}
+    %p
+      %label Efternamn
+      %input{type: 'text', name: :last_name}
+    %p
+      %label Smeknamn
+      %input{type: 'text', name: :nick}
+    %p
+      %label Sektion
+      %input{type: 'text', name: :studied}
+    %p
+      %label Startår
+      %input{type: 'text', name: :started}
+    %p
+      %label Email
+      %input{type: 'text', name: :email}
+    %p
+      %label Telefon
+      %input{type: 'text', name: :phone}
+    %p
+      %label Postadress
+      %input{type: 'text', name: :address}
+    %p
+      %label Postnummer
+      %input{type: 'text', name: :zip}
+    %p
+      %label Ort
+      %input{type: 'text', name: :city}
+    %p
+      %input{type: 'submit', value: :Spara}
