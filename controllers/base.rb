@@ -21,7 +21,7 @@ class BaseController < Sinatra::Base
   end
   helpers do
     def subscribe qname, *topics, &blk
-      @@ch.subscribe(qname, topics, blk)
+      @@ch.subscribe(qname, *topics, &blk)
     end
     def publish routing_key, data
       @@ch.publish routing_key, data

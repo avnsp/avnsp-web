@@ -9,9 +9,8 @@
     %dd= e.price
     %dt Kommentar
     %dd= e.comment
-
 :javascript
   var es = new EventSource("/stream")
   es.onmessage = function(msg) {
-    console.log(msg)
+    console.log(msg.data)
   };
