@@ -1,24 +1,47 @@
 !!!
 %html
   %head
+    %meta(charset="utf-8")
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
     %title Academian
-    %link{href: "/css/uikit.almost-flat.css", rel: :stylesheet, type: "text/html"}
+    %link{href: "/css/uikit.gradient.css", rel: :stylesheet, type: "text/html"}
+    %script{type: 'text/javascript', src: "/js/jquery-2.0.3.js"}
+    %script{type: 'text/javascript', src: "/js/uikit.js"}
   %body
     %nav.tm-navbar.uk-navbar.uk-navbar-attached
       .uk-container.uk-container-center
         %a.uk-navbar-brand.uk-hidden-small{href: '/'}
           Academian
+        %a(href="#tm-offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas="")
         %ul.uk-navbar-nav.uk-hidden-small
-          %li.uk-active
-            %a{href: '/'} Home
-          %li
-            %a{href: '/fest'} Fester
           -if @member
             %li
               %a
                 != @member.nick
-    .uk-container.uk-container-center
-      - flash.each do |k,v|
-        %div{class: k}
-          != v
-      != yield
+    .tm-middle
+      .uk-container.uk-container-center
+        .uk-grid.uk-grid-divider{:'data-uk-grid-margin' => true}
+          .tm-sidebar.uk-width-medium-1-5.uk-hidden-small
+            %ul.tm-nav.uk-nav{:'data-uk-nav' => true}
+              %li.uk-active
+                %a{href: '/'} Home
+              %li
+                %a{href: '/fest'} Fester
+          .tm-main.uk-width-medium-3-5
+            - flash.each do |k,v|
+              %div{class: k}
+                != v
+            != yield
+          .tm-sidebar.uk-width-medium-1-5.uk-hidden-small
+            %ul.tm-nav.uk-nav{:'data-uk-nav' => true}
+              %li.uk-nav-header
+                Kommande fester
+              -next_events.each do |e|
+                %li= e.name
+    #tm-offcanvas.uk-offcanvas
+      .uk-offcanvas-bar
+        %ul.uk-nav.uk-nav-offcanvas{:'data-uk-nav' => true}
+          %li.uk-active
+            %a{href: '/'} Home
+          %li
+            %a{href: '/fest'} Fester
