@@ -7,13 +7,21 @@ PATH
 GEM
   specs:
     amq-protocol (1.9.0)
+    aws-sdk (1.30.0)
+      json (~> 1.4)
+      nokogiri (>= 1.4.4)
+      uuidtools (~> 2.1)
     backports (3.3.5)
     bcrypt-ruby (3.1.2)
     bunny (1.0.5)
       amq-protocol (>= 1.9.0)
     haml (4.0.4)
       tilt
+    json (1.8.1)
+    mini_portile (0.5.2)
     multi_json (1.7.9)
+    nokogiri (1.6.1)
+      mini_portile (~> 0.5.0)
     pg (0.17.0)
     puma (2.6.0)
       rack (>= 1.1, < 2.0)
@@ -37,11 +45,13 @@ GEM
     sinatra-flash (0.3.0)
       sinatra (>= 1.0.0)
     tilt (1.4.1)
+    uuidtools (2.1.4)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  aws-sdk
   bcrypt-ruby
   haml
   pg

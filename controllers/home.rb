@@ -23,12 +23,4 @@ class HomeController < BaseController
       end
     end
   end
-  helpers do
-    def next_events
-      today = Date.today
-      events = Event.
-        where(date: (today..today.next_year)).
-        order(:date)
-    end
-  end
 end

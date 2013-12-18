@@ -1,5 +1,6 @@
 -next_events.each do |e|
-  %h4= e.name
+  %h4
+    %a{href: "/event/#{e.id}"}= e.name
   %dl
     %dt Plats
     %dd= e.location

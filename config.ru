@@ -1,12 +1,10 @@
 require './init'
 require './models'
-require './controllers/home'
-require './controllers/auth'
-require './controllers/admin'
+require './controllers'
 
 use Rack::Static, {
   :root => "public",
-  :urls => ["/css", "/js", "/img", "/favicon.ico", "/robots.txt"],
+  :urls => ["/fonts", "/css", "/js", "/img", "/favicon.ico", "/robots.txt"],
   :cache_control => 'public'
 }
 
@@ -24,8 +22,16 @@ map '/admin' do
   run AdminController
 end
 
-use AuthController
+#use AuthController
 
 map '/' do
   run HomeController
+end
+
+map '/event' do
+  run EventController
+end
+
+map '/photo' do
+  run PhotoController
 end

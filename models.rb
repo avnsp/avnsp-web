@@ -19,4 +19,25 @@ class Member < Sequel::Model
   end
 end
 class Event < Sequel::Model
+  one_to_many :photos
+end
+class Photo < Sequel::Model
+  many_to_one :photo
+  many_to_one :member
+  def s3_path= path
+    self.path = path + "/#{SecureRandom.uuid}.jpg"
+    self.thumb_path = self.path.sub('.jpg', '.thumb.jpg')
+  end
+  def s3
+    s3 = AWS::S3.new
+    @objects ||= s3.buckets['avnsp'].objects
+  end
+  def thumb_temp
+    "https://d18qrfc4r3cv12.cloudfront.net/#{self.thumb_path}"
+    #s3[self.thumb_path].url_for(:get, :secure => true).to_s
+  end
+  def file_temp
+    "https://d18qrfc4r3cv12.cloudfront.net/#{self.path}"
+    #s3[self.path].url_for(:get, :secure => true).to_s
+  end
 end

@@ -26,7 +26,7 @@
               %li.uk-active
                 %a{href: '/'} Home
               %li
-                %a{href: '/fest'} Fester
+                %a{href: '/photo'} Ladda upp bilder
           .tm-main.uk-width-medium-3-5
             - flash.each do |k,v|
               %div{class: k}
@@ -37,11 +37,13 @@
               %li.uk-nav-header
                 Kommande fester
               -next_events.each do |e|
-                %li= e.name
+                %li
+                  %a{href: "/event/#{e.id}"}
+                    = "#{e.name} - #{e.date}"
     #tm-offcanvas.uk-offcanvas
       .uk-offcanvas-bar
         %ul.uk-nav.uk-nav-offcanvas{:'data-uk-nav' => true}
           %li.uk-active
             %a{href: '/'} Home
           %li
-            %a{href: '/fest'} Fester
+            %a{href: '/photo'} Ladda upp bilder

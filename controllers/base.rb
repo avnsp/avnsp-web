@@ -26,5 +26,11 @@ class BaseController < Sinatra::Base
     def publish routing_key, data
       @@ch.publish routing_key, data
     end
+    def next_events
+      today = Date.today
+      events = Event.
+        where(date: (today..today.next_year)).
+        order(:date)
+    end
   end
 end

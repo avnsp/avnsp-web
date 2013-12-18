@@ -9,3 +9,4 @@ gem 'sinatra-flash'
 gem 'sinatra-contrib'
 gem 'thumper', path: "../thumper"
 gem 'bcrypt-ruby'
+gem 'aws-sdk'
