@@ -21,7 +21,7 @@ class PhotoController < BaseController
                                                   size: size,
                                                   content_type: f[:type])
     end
-    flash[:success] = "Bilderna kommer snart synas."
+    flash[:info] = "Bilderna kommer snart synas."
     redirect back
   end
 end

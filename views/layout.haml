@@ -29,7 +29,7 @@
                 %a{href: '/photo'} Ladda upp bilder
           .tm-main.uk-width-medium-3-5
             - flash.each do |k,v|
-              %div{class: k}
+              .uk-alert{class: "uk-alert-#{k}"}
                 != v
             != yield
           .tm-sidebar.uk-width-medium-1-5.uk-hidden-small
