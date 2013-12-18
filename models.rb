@@ -27,6 +27,7 @@ class Photo < Sequel::Model
   def s3_path= path
     self.path = path + "/#{SecureRandom.uuid}.jpg"
     self.thumb_path = self.path.sub('.jpg', '.thumb.jpg')
+    self.original_path = self.path.sub('.jpg', '.orig.jpg')
   end
   def s3
     s3 = AWS::S3.new
@@ -34,10 +35,11 @@ class Photo < Sequel::Model
   end
   def thumb_temp
     "https://d18qrfc4r3cv12.cloudfront.net/#{self.thumb_path}"
-    #s3[self.thumb_path].url_for(:get, :secure => true).to_s
   end
   def file_temp
     "https://d18qrfc4r3cv12.cloudfront.net/#{self.path}"
-    #s3[self.path].url_for(:get, :secure => true).to_s
+  end
+  def file_temp
+    "https://d18qrfc4r3cv12.cloudfront.net/#{self.original_path}"
   end
 end
