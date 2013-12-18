@@ -1,59 +1,58 @@
-%form{method: :post, action: url("/member") }
+%form.uk-form.uk-form-horizontal{method: :post, action: url("/member") }
   %fieldset
     %legend Ny aspirant
-    %p
-      %label Förnamn
+    .uk-form-row
+      %label.uk-form-label Förnamn
       %input{type: 'text', name: :first_name}
-    %p
-      %label Efternamn
+    .uk-form-row
+      %label.uk-form-label Efternamn
       %input{type: 'text', name: :last_name}
-    %p
-      %label Smeknamn
+    .uk-form-row
+      %label.uk-form-label Smeknamn
       %input{type: 'text', name: :nick}
-    %p
-      %label Sektion
+    .uk-form-row
+      %label.uk-form-label Sektion
       %input{type: 'text', name: :studied}
-    %p
-      %label Startår
+    .uk-form-row
+      %label.uk-form-label Startår
       %input{type: 'text', name: :started}
-    %p
-      %label Email
+    .uk-form-row
+      %label.uk-form-label Email
       %input{type: 'text', name: :email}
-    %p
-      %label Telefon
+    .uk-form-row
+      %label.uk-form-label Telefon
       %input{type: 'text', name: :phone}
-    %p
-      %label Postadress
+    .uk-form-row
+      %label.uk-form-label Postadress
       %input{type: 'text', name: :address}
-    %p
-      %label Postnummer
+    .uk-form-row
+      %label.uk-form-label Postnummer
       %input{type: 'text', name: :zip}
-    %p
-      %label Ort
+    .uk-form-row
+      %label.uk-form-label Ort
       %input{type: 'text', name: :city}
-    %p
-      %input{type: 'submit', value: :Spara}
-
-%form{method: :post, action: url("/event") }
+    .uk-form-row
+      %input.uk-button.uk-button-success{type: 'submit', value: :Spara}
+%form.uk-form.uk-form-horizontal{method: :post, action: url("/event") }
   %fieldset
-    %legend Nytt event
-    %p
-      %label Namn
+    %legend Ny fest
+    .uk-form-row
+      %label.uk-form-label Namn
       %input{type: 'text', name: :name}
-    %p
-      %label Tema
+    .uk-form-row
+      %label.uk-form-label Tema
       %input{type: 'text', name: :theme}
-    %p
-      %label Plats
+    .uk-form-row
+      %label.uk-form-label Plats
       %input{type: 'text', name: :location}
-    %p
-      %label Datum
+    .uk-form-row
+      %label.uk-form-label Datum
       %input{type: 'date', name: :date}
-    %p
-      %label Pris
+    .uk-form-row
+      %label.uk-form-label Pris
       %input{type: 'number', name: :price}
-    %p
-      %label Kommentar
+    .uk-form-row
+      %label.uk-form-label Kommentar
       %textarea{name: :comment}
-    %p
-      %input{type: :submit, value: :Spara}
+    .uk-form-row
+      %input.uk-button.uk-button-success{type: :submit, value: :Spara}
