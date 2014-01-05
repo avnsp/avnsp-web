@@ -28,11 +28,12 @@ class AuthController < BaseController
   end
   post '/login' do
     @member = Member[nick: params[:nick]]
-    if @member.password == params[:password]
+    if @member and @member.password == params[:password]
       session[:id] = @member.id
       redirect params[:return_url]
     else
-      redirect 
+      flash[:error] = 'Användarnamn/lösenord är fel'
+      redirect back
     end
   end
 end

@@ -1,18 +1,12 @@
--next_events.each do |e|
-  %h4
-    %a{href: "/event/#{e.id}"}= e.name
-  %dl
-    %dt Plats
-    %dd= e.location
-    %dt Tema
-    %dd= e.theme
-    %dt Pris
-    %dd= e.price
-    %dt Kommentar
-    %dd= e.comment
 :javascript
-  var es = new EventSource("/stream")
-  es.addEventListener("event.created", function(msg) {
-    data = JSON.parse(msg.data);
-    console.log(data)
+  function render(item) {
+    console.log(item)
+  };
+  $(function() {
+    var es = new EventSource("/stream");
+
+    es.addEventListener("event.created", function(msg) {
+      data = JSON.parse(msg.data);
+      console.log(data)
+    });
   });

@@ -8,6 +8,8 @@ Sequel.migration do
       String :comment
       String :theme
       Int :price
+
+      DateTime :timestamp, default: Sequel.lit('NOW()')
     end
   end
 end

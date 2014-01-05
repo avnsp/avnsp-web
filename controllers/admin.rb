@@ -17,6 +17,8 @@ class AdminController < BaseController
                            city: params[:city],
                           )
     publish "member.created", member.to_hash
+    flash[:success] = "En ny aspirant är upplagd, mail kommer att skickas till den berörda personen."
+    redirect back
   end
   post '/event' do
     event = Event.create(name: params[:name],
@@ -26,5 +28,7 @@ class AdminController < BaseController
                          price: params[:price],
                          comment: params[:comment])
     publish "event.created", event.to_hash
+    flash[:success] = "Nu blir det fest!"
+    redirect back
   end
 end

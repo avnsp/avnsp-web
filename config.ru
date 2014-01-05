@@ -18,11 +18,11 @@ use Rack::Session::Cookie, {
 map '/admin' do
   use Rack::Auth::Basic do |u, p|
     [u, p] == ['avnsp', 'One does not simply walk into mordor!']
-  end
+  end if ENV['RACK_ENV'] == 'production'
   run AdminController
 end
 
-#use AuthController
+use AuthController
 
 map '/' do
   run HomeController

@@ -1,5 +1,7 @@
 require 'bcrypt'
 require 'securerandom'
+require 'sequel'
+DB = Sequel.connect 'postgres://localhost/avnsp'
 
 class Member < Sequel::Model
   include BCrypt
@@ -18,9 +20,11 @@ class Member < Sequel::Model
     p
   end
 end
+
 class Event < Sequel::Model
   one_to_many :photos
 end
+
 class Photo < Sequel::Model
   many_to_one :photo
   many_to_one :member
@@ -39,7 +43,7 @@ class Photo < Sequel::Model
   def file_temp
     "https://d18qrfc4r3cv12.cloudfront.net/#{self.path}"
   end
-  def file_temp
+  def original_temp
     "https://d18qrfc4r3cv12.cloudfront.net/#{self.original_path}"
   end
 end

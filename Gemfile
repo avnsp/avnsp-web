@@ -1,4 +1,5 @@
-ruby '2.0.0'
+source 'https://rubygems.org'
+ruby '2.1.0'
 
 gem 'sequel'
 gem 'pg'

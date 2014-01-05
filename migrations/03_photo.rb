@@ -9,7 +9,10 @@ Sequel.migration do
       String :thumb_path
       String :original_path
 
-      foreign_key :member_id, :members
+      DateTime :taken_at
+      DateTime :timestamp, default: Sequel.lit('NOW()')
+
+      foreign_key :member_id, :members, null: false
       foreign_key :event_id, :events
     end
   end

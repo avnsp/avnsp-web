@@ -5,6 +5,7 @@ PATH
       bunny
 
 GEM
+  remote: https://rubygems.org/
   specs:
     amq-protocol (1.9.0)
     aws-sdk (1.30.0)

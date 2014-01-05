@@ -13,6 +13,8 @@ Sequel.migration do
       Int :zip
       String :city
       String :password_hash
+
+      DateTime :timestamp, default: Sequel.lit('NOW()')
     end
   end
 end

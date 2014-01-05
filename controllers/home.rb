@@ -1,10 +1,12 @@
 require './controllers/base'
+
 class HomeController < BaseController
   get '/' do
     id = session[:id]
     @member = Member[id]
     haml :home
   end
+
   get '/stream' do
     content_type "text/event-stream"
     topics = ["member.created", "event.created"]
@@ -15,7 +17,7 @@ class HomeController < BaseController
       loop do
         begin
           out << ":\n"
-          sleep 1
+          sleep 15
         rescue Exception
           sub.cancel
           break
