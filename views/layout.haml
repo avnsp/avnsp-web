@@ -36,10 +36,10 @@
             %ul.tm-nav.uk-nav{:'data-uk-nav' => true}
               %li.uk-nav-header
                 Kommande fester
-              -next_events.each do |e|
+              -next_parties.each do |p|
                 %li
-                  %a{href: "/event/#{e.id}"}
-                    = "#{e.name} - #{e.date}"
+                  %a{href: "/event/#{p.id}"}
+                    = "#{p.name} - #{p.date}"
     #tm-offcanvas.uk-offcanvas
       .uk-offcanvas-bar
         %ul.uk-nav.uk-nav-offcanvas{:'data-uk-nav' => true}

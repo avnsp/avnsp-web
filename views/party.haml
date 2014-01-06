@@ -1,19 +1,19 @@
 %h1
-  = @event.name
+  = @party.name
   %small
-    = @event.date
+    = @party.date
 %dl.uk-description-list
   %dt När?
-  %dd= @event.date
+  %dd= @party.date
   %dt Var?
-  %dd= @event.location
+  %dd= @party.location
   %dt Tema?
-  %dd= @event.theme
+  %dd= @party.theme
   %dt Pris?
-  %dd= @event.price
+  %dd= @party.price
   %dt Att tänka på?
-  %dd= @event.comment
-- @event.photos.each do |p|
+  %dd= @party.comment
+- @party.photos.each do |p|
   %a.uk-overlay.uk-thumbnail{href: "##{p.id}", :'data-uk-modal' => ''}
     %img{src: p.thumb_temp}
     .uk-overlay-caption= p.caption

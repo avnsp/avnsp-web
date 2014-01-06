@@ -20,14 +20,14 @@ class AdminController < BaseController
     flash[:success] = "En ny aspirant är upplagd, mail kommer att skickas till den berörda personen."
     redirect back
   end
-  post '/event' do
-    event = Event.create(name: params[:name],
+  post '/party' do
+    event = Party.create(name: params[:name],
                          theme: params[:theme],
                          location: params[:location],
                          date: params[:date],
                          price: params[:price],
                          comment: params[:comment])
-    publish "event.created", event.to_hash
+    publish "party.created", event.to_hash
     flash[:success] = "Nu blir det fest!"
     redirect back
   end

@@ -1,7 +1,9 @@
 require 'bcrypt'
 require 'securerandom'
 require 'sequel'
+
 DB = Sequel.connect 'postgres://localhost/avnsp'
+Sequel::Model.plugin :json_serializer
 
 class Member < Sequel::Model
   include BCrypt
@@ -21,8 +23,11 @@ class Member < Sequel::Model
   end
 end
 
-class Event < Sequel::Model
+class Party < Sequel::Model
   one_to_many :photos
+end
+
+class Event < Sequel::Model
 end
 
 class Photo < Sequel::Model

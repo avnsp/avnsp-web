@@ -1,8 +1,8 @@
 require './controllers/base'
 
-class EventController < BaseController
+class PartyController < BaseController
   get '/:id' do |id|
-    @event = Event[id]
-    haml :event
+    @party = Party[id]
+    haml :party
   end
 end

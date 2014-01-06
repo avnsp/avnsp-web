@@ -28,8 +28,8 @@ map '/' do
   run HomeController
 end
 
-map '/event' do
-  run EventController
+map '/party' do
+  run PartyController
 end
 
 map '/photo' do

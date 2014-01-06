@@ -1,12 +1,51 @@
+#events
+%script#party-tmpl{type: "text/template"}
+  .header
+    %a{href: "/party/{id}"}
+      %strong {name} - {date}
+  .body
+    %dl
+      %dt Vart:
+      %dd {location}
+      %dt Pris:
+      %dd {price}kr
+      %dt Meddelande från arrangörer
+      %dd {comment}
+%script#party-tmpl{type: "text/template"}
+  .header
+    %strong {name} - {date}
+  .body
+    %ul
+      %li {location}
+      %li {price}kr
+      %li {comment}
 :javascript
-  function render(item) {
-    console.log(item)
+  function nano(template, data) {
+    return template.replace(/\{([\w\.]*)\}/g, function(str, key) {
+      var keys = key.split("."), v = data[keys.shift()];
+      for (i = 0, l = keys.length; i < l; _i++) v = v[this];
+      return (typeof v !== "undefined" && v !== null) ? v : "";
+    });
+  };
+
+  function render(template, item) {
+    $("#events").prepend(nano(template, item));
   };
   $(function() {
+    var partyTemplate = document.getElementById("party-tmpl").innerHTML;
     var es = new EventSource("/stream");
-
-    es.addEventListener("event.created", function(msg) {
+    var events = #{@events};
+    for(var i = 0; i < events.length; i++) {
+      var evt = events[i];
+      var data = JSON.parse(evt.data);
+      switch(evt.name) {
+        case 'party':
+          render(partyTemplate, data);
+      }
+    }
+    es.addEventListener("event.party.created", function(msg) {
       data = JSON.parse(msg.data);
-      console.log(data)
+      console.log(data);
+      render(partyTemplate, data);
     });
   });
