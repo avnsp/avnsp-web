@@ -1,4 +1,8 @@
-%form{method: :post}
-  %label Email
-  %input{type: :text, name: :email}
-  %input{type: :submit, value: :Skicka}
+%form.uk-form.uk-form-horizontal{method: :post}
+  %fieldset
+    %legend Återställ lösenordet
+    .uk-form-row
+      %label.uk-form-label Email
+      %input{type: :text, name: :email}
+    .uk-form-row
+      %input.uk-button.uk-button-success{type: :submit, value: :Skicka}

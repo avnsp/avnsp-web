@@ -11,14 +11,15 @@
       %dd {price}kr
       %dt Meddelande från arrangörer
       %dd {comment}
-%script#party-tmpl{type: "text/template"}
-  .header
-    %strong {name} - {date}
-  .body
-    %ul
-      %li {location}
-      %li {price}kr
-      %li {comment}
+%script#member-tmpl{type: "text/template"}
+  .uk-animation-slide-top
+    .header
+      %a{href: "/member/{id}"}
+        %strong Säg hej till {first_name} {nick} {last_name}
+    .body
+      %ul
+        %li {studied}
+        %li {started}
 :javascript
   function nano(template, data) {
     return template.replace(/\{([\w\.]*)\}/g, function(str, key) {
@@ -33,19 +34,25 @@
   };
   $(function() {
     var partyTemplate = document.getElementById("party-tmpl").innerHTML;
+    var memberTemplate = document.getElementById("member-tmpl").innerHTML;
     var es = new EventSource("/stream");
     var events = #{@events};
     for(var i = 0; i < events.length; i++) {
       var evt = events[i];
       var data = JSON.parse(evt.data);
+      console.log(data);
+      console.log(evt.name);
       switch(evt.name) {
         case 'party':
           render(partyTemplate, data);
+          break;
+        case 'member':
+          render(memberTemplate, data);
+          break;
       }
     }
     es.addEventListener("event.party.created", function(msg) {
       data = JSON.parse(msg.data);
-      console.log(data);
-      render(partyTemplate, data);
+      //render(partyTemplate, data);
     });
   });
