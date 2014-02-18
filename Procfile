@@ -1,1 +1,2 @@
-web: puma -p $PORT -e production
+web: puma -q -p $PORT -e $RACK_ENV
+
