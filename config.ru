@@ -1,6 +1,8 @@
 require './init'
 require './models'
 require './controllers'
+require 'rack/ssl-enforcer'
+use Rack::SslEnforcer, :hsts => true if ENV['RACK_ENV'] == 'production'
 
 use Rack::Static, {
   :root => "public",
@@ -14,6 +16,7 @@ use Rack::Session::Cookie, {
   :secure => (ENV['RACK_ENV'] == 'production'),
   #:expire_after => 24 * 3600,
 }
+
 
 map '/admin' do
   use Rack::Auth::Basic do |u, p|
