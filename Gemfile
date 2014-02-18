@@ -8,6 +8,7 @@ gem 'haml'
 gem 'puma'
 gem 'sinatra-flash'
 gem 'sinatra-contrib'
-gem 'thumper', path: "../thumper"
+#gem 'thumper', path: "../thumper"
 gem 'bcrypt-ruby'
 gem 'aws-sdk'
+gem 'bunny'
