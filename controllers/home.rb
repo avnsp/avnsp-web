@@ -13,7 +13,12 @@ class HomeController < BaseController
     topics = ["event.member.created", "event.party.created", "event.photo.created"]
     stream :keep_open do |out|
       sub = subscribe '', *topics do |data, key|
-        out << "event: #{key}\ndata: #{data.to_json}\n\n"
+        begin
+          out << "event: #{key}\ndata: #{data.to_json}\n\n"
+        rescue Exception
+          sub.cancel
+          puts "[ERROR] closed channel"
+        end
       end
       loop do
         begin
