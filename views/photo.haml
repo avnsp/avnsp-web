@@ -5,8 +5,8 @@
       %label Välj fest
       %select{name: :event_id}
         %option{value: true} Välj...
-        - @events.each do |e|
-          %option{value: e.id}= e.name
+        - @parties.each do |p|
+          %option{value: p.id}= p.name
     .uk-form-row
       %input#input{type: :file, name: 'files[]', accept: 'image/*', multiple: 'true'}
     .uk-form-row

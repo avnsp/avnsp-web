@@ -3,7 +3,7 @@ require "base64"
 
 class PhotoController < BaseController
   get '/' do
-    @events = Event.order(:date)
+    @parties = Party.order(:date)
     haml :photo
   end
   post '/' do
