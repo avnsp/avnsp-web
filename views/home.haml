@@ -1,18 +1,19 @@
 #events
-%script#party-tmpl{type: "text/template"}
-  .header
-    %a{href: "/party/{id}"}
-      %strong {name} - {date}
-  .body
-    %dl
-      %dt Vart:
-      %dd {location}
-      %dt Pris:
-      %dd {price}kr
-      %dt Meddelande från arrangörer
-      %dd {comment}
-%script#member-tmpl{type: "text/template"}
-  .uk-animation-slide-top
+%script#party-tmpl{type: "text/html"}
+  .wrapper
+    .header
+      %a{href: "/party/{id}"}
+        %strong {name} - {date}
+    .body
+      %dl
+        %dt Vart:
+        %dd {location}
+        %dt Pris:
+        %dd {price}kr
+        %dt Meddelande från arrangörer
+        %dd {comment}
+%script#member-tmpl{type: "text/html"}
+  .wrapper
     .header
       %a{href: "/member/{id}"}
         %strong Säg hej till {first_name} {nick} {last_name}
@@ -34,14 +35,14 @@
   };
   $(function() {
     var partyTemplate = document.getElementById("party-tmpl").innerHTML;
+
     var memberTemplate = document.getElementById("member-tmpl").innerHTML;
+
     var es = new EventSource("/stream");
     var events = #{@events};
     for(var i = 0; i < events.length; i++) {
       var evt = events[i];
       var data = JSON.parse(evt.data);
-      console.log(data);
-      console.log(evt.name);
       switch(evt.name) {
         case 'party':
           render(partyTemplate, data);
@@ -52,7 +53,7 @@
       }
     }
     es.addEventListener("event.party.created", function(msg) {
-      data = JSON.parse(msg.data);
-      //render(partyTemplate, data);
+      item = JSON.parse(msg.data);
+      render(partyTemplate, JSON.parse(item.data));
     });
   });
