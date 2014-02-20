@@ -5,13 +5,31 @@
       %a{href: "/party/{id}"}
         %strong {name} - {date}
     .body
-      %dl
-        %dt Vart:
-        %dd {location}
-        %dt Pris:
-        %dd {price}kr
-        %dt Meddelande från arrangörer
-        %dd {comment}
+      %span
+        Vart:
+        %strong
+          {location},
+        Pris:
+        %strong
+          {price}kr, 
+        %br
+        Meddelande:
+        %strong
+          {comment}
+      .actions
+        %form.ui-form
+          %a
+            %span
+              %i.uk-icon-thumbs-o-up
+              Gilla
+          %a
+            %span
+              %i.uk-icon-thumbs-o-down
+              Ogilla
+          %a
+            %span
+              %i.uk-icon-thumbs-o-down.rotate-x
+              Njaa..
 %script#member-tmpl{type: "text/html"}
   .wrapper
     .header
