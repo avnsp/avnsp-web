@@ -2,7 +2,6 @@ require 'bcrypt'
 require 'securerandom'
 require 'sequel'
 
-DB = Sequel.connect 'postgres://localhost/avnsp'
 Sequel::Model.plugin :json_serializer
 
 class Member < Sequel::Model
