@@ -9,13 +9,15 @@
     %script{type: 'text/javascript', src: "/js/jquery-2.0.3.js"}
     %script{type: 'text/javascript', src: "/js/uikit.js"}
   %body
-    %nav.uk-navbar
+    %nav.uk-navbar.uk-navbar-attached
       .uk-container.uk-container-center
         %a(href="#tm-offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas="")
         %a.uk-hidden-small.uk-navbar-brand{href: '/'} Academian
         %ul.uk-navbar-nav.uk-hidden-small.uk-navbar-flip
           %li.uk-parent{:'data-uk-dropdown' => "{mode:'click'}"}
-            %a{href: "#"}!= @member.nick
+            %a{href: "#"}
+              != @member.nick
+              %i.uk-icon-caret-down
             .uk-dropdown.uk-dropdown-navbar
               %ul.uk-nav.uk-nav-navbar
                 %li
@@ -26,10 +28,7 @@
                   %a{href: "/member/#{@member.id}/edit"}
                     %i.uk-icon-cog
                     Ändra
-                %li
-                  %a{href: "/member/#{@member.id}/edit#password"}
-                    %i.uk-icon-password
-                    Ändra lösenord
+                %li.uk-nav-divider
                 %li
                   %a{href: "#", onclick: "javascript:logout.submit()"}
                     %i.uk-icon-sign-out
@@ -37,13 +36,16 @@
                     %form#logout{method: :post, action: "/logout"}
     .tm-middle
       .uk-container.uk-container-center
-        .uk-grid.uk-grid-divider{:'data-uk-grid-margin' => true}
-          .tm-sidebar.uk-width-medium-1-5.uk-hidden-small
-            %ul.tm-nav.uk-nav{:'data-uk-nav' => true}
-              %li.uk-active
-                %a{href: '/'} Home
-              %li
-                %a{href: '/photo'} Ladda upp bilder
+        .uk-grid
+          %ul.uk-nav.uk-nav-side.uk-width-medium-1-5.uk-hidden-small
+            %li.uk-active
+              %a{href: '/'}
+                %i.uk-icon-home
+                Hem
+            %li
+              %a{href: '/photo'}
+                %i.uk-icon-upload
+                Ladda upp bilder
           .tm-main.uk-width-medium-3-5
             - flash.each do |k,v|
               .uk-alert{class: "uk-alert-#{k}"}
@@ -60,7 +62,8 @@
     #tm-offcanvas.uk-offcanvas
       .uk-offcanvas-bar
         %ul.uk-nav.uk-nav-offcanvas{:'data-uk-nav' => true}
+          %li.uk-nav-header Academain
           %li.uk-active
-            %a{href: '/'} Home
+            %a{href: '/'} Hem
           %li
             %a{href: '/photo'} Ladda upp bilder
