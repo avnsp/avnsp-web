@@ -29,3 +29,7 @@ i.rotate-x{
     from {-moz-transform: rotateX(0deg);}
     to {-moz-transform: rotateX(180deg);}
 }
+
+.img {
+  margin-top: 5px;
+}

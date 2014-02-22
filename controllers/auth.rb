@@ -8,11 +8,11 @@ class AuthController < BaseController
   end
 
   get '/login' do
-    haml :login
+    haml :login, layout: false
   end
 
   get '/forgot' do
-    haml :forgot
+    haml :forgot, layout: false
   end
 
   post '/forgot' do
@@ -35,5 +35,9 @@ class AuthController < BaseController
       flash[:error] = 'Användarnamn/lösenord är fel'
       redirect back
     end
+  end
+  post '/logout' do
+    session[:id] = nil
+    redirect "/"
   end
 end

@@ -1,12 +1,24 @@
-%form.uk-form.uk-form-horizontal{method: :post}
-  %fieldset
-    %legend Logga in
-    .uk-form-row
-      %label.uk-form-label Användarnamn
-      %input{type: :text, name: :nick}
-    .uk-form-row
-      %label.uk-form-label Lösenord
-      %input{type: :password, name: :password}
-    .uk-form-row
-      %input.uk-button.uk-button-success{type: :submit, value: :Login}
-      %a{href: "/forgot"} Glömt lösenordet?
+!!!
+%html
+  %head
+    %meta(charset="utf-8")
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    %title Academian - Login
+    %link{href: "/css/uikit.almost-flat.min.css", rel: :stylesheet}
+  %body
+    .uk-container.uk-container-center
+      %h1 Logga in
+      .tm-main.uk-width-medium-3-5
+        - flash.each do |k,v|
+          .uk-alert{class: "uk-alert-#{k}"}
+            != v
+      %form.uk-form.uk-form-horizontal{method: :post}
+        .uk-form-row
+          %label.uk-form-label Användarnamn
+          %input{type: :text, name: :nick}
+        .uk-form-row
+          %label.uk-form-label Lösenord
+          %input{type: :password, name: :password}
+        .uk-form-row
+          %input.uk-button.uk-button-success{type: :submit, value: 'Logga in'}
+          %a{href: "/forgot"} Glömt lösenordet?

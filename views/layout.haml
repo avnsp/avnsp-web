@@ -4,21 +4,37 @@
     %meta(charset="utf-8")
     %meta(name="viewport" content="width=device-width, initial-scale=1.0")
     %title Academian
-    %link{href: "/css/uikit.gradient.css", rel: :stylesheet, type: "text/html"}
-    %link{href: "/css/site.css", rel: :stylesheet, type: "text/html"}
+    %link{href: "/css/uikit.almost-flat.css", rel: :stylesheet}
+    %link{href: "/css/site.css", rel: :stylesheet}
     %script{type: 'text/javascript', src: "/js/jquery-2.0.3.js"}
     %script{type: 'text/javascript', src: "/js/uikit.js"}
   %body
-    %nav.tm-navbar.uk-navbar.uk-navbar-attached
+    %nav.uk-navbar
       .uk-container.uk-container-center
-        %a.uk-navbar-brand.uk-hidden-small{href: '/'}
-          Academian
         %a(href="#tm-offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas="")
-        %ul.uk-navbar-nav.uk-hidden-small
-          -if @member
-            %li
-              %a
-                != @member.nick
+        %a.uk-hidden-small.uk-navbar-brand{href: '/'} Academian
+        %ul.uk-navbar-nav.uk-hidden-small.uk-navbar-flip
+          %li.uk-parent{:'data-uk-dropdown' => "{mode:'click'}"}
+            %a{href: "#"}!= @member.nick
+            .uk-dropdown.uk-dropdown-navbar
+              %ul.uk-nav.uk-nav-navbar
+                %li
+                  %a{href: "/member/#{@member.id}"}
+                    %i.uk-icon-user
+                    Profil
+                %li
+                  %a{href: "/member/#{@member.id}/edit"}
+                    %i.uk-icon-cog
+                    Ändra
+                %li
+                  %a{href: "/member/#{@member.id}/edit#password"}
+                    %i.uk-icon-password
+                    Ändra lösenord
+                %li
+                  %a{href: "#", onclick: "javascript:logout.submit()"}
+                    %i.uk-icon-sign-out
+                    Log out
+                    %form#logout{method: :post, action: "/logout"}
     .tm-middle
       .uk-container.uk-container-center
         .uk-grid.uk-grid-divider{:'data-uk-grid-margin' => true}

@@ -1,44 +1,46 @@
 #events
 %script#party-tmpl{type: "text/html"}
-  .wrapper
-    .header
-      %a{href: "/party/{id}"}
-        %strong {name} - {date}
-    .body
-      %span
-        Vart:
-        %strong
-          {location},
-        Pris:
-        %strong
-          {price}kr, 
-        %br
-        Meddelande:
-        %strong
-          {comment}
-      .actions
-        %form.ui-form
-          %a
-            %span
-              %i.uk-icon-thumbs-o-up
-              Gilla
-          %a
-            %span
-              %i.uk-icon-thumbs-o-down
-              Ogilla
-          %a
-            %span
-              %i.uk-icon-thumbs-o-down.rotate-x
-              Njaa..
+  .wrapper.uk-grid
+    .uk-width-1-10
+      %i.uk-icon-beer.uk-icon-large.img
+    .uk-width-9-10
+      .header
+        %a{href: "/party/{id}"}
+          %strong {name} - {date}
+      .body
+        %span
+          Vart:
+          %strong
+            {location},
+          Pris:
+          %strong
+            {price}kr, 
+          %br
+          Meddelande:
+          %strong
+            {comment}
+        .actions
+          %form.ui-form
+            %a
+              %span
+                %i.uk-icon-thumbs-o-up
+                Like
+            %a
+              %span
+                %i.uk-icon-thumbs-o-down.rotate-x
+                Njaa..
 %script#member-tmpl{type: "text/html"}
-  .wrapper
-    .header
-      %a{href: "/member/{id}"}
-        %strong Säg hej till {first_name} {nick} {last_name}
-    .body
-      %ul
-        %li {studied}
-        %li {started}
+  .wrapper.uk-grid
+    .uk-width-1-10
+      %i.uk-icon-user.uk-icon-large.img
+    .uk-width-9-10
+      .header
+        %a{href: "/member/{id}"}
+          %strong Säg hej till {first_name} {nick} {last_name}
+      .body
+        %ul
+          %li {studied}
+          %li {started}
 :javascript
   function nano(template, data) {
     return template.replace(/\{([\w\.]*)\}/g, function(str, key) {
