@@ -57,8 +57,14 @@
                 Kommande fester
               -next_parties.each do |p|
                 %li
-                  %a{href: "/party/#{p.id}"}
-                    = "#{p.name} - #{p.date}"
+                  %a{href: "/party/#{p.id}"}= "#{p.name} - #{p.date}"
+                  .actions.parties
+                    .uk-badge.uk-badge-notification!= p.attendances.count
+                    %a{href: "/party/#{p.id}/attend"}
+                      -if p.attendances.any? { |a| a.member_id == @member.id}
+                        Du är anmäld
+                      -else
+                        Anmäl dig nu!
     #tm-offcanvas.uk-offcanvas
       .uk-offcanvas-bar
         %ul.uk-nav.uk-nav-offcanvas{:'data-uk-nav' => true}

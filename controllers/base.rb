@@ -11,6 +11,9 @@ class BaseController < Sinatra::Base
   configure :development do
     enable :logging
   end
+  before do
+    @member = Member[session[:id]]
+  end
 
   register Sinatra::Reloader if development?
 

@@ -1,6 +1,9 @@
 require './controllers/base'
 
 class HomeController < BaseController
+  before do
+    @member = Member[session[:id]]
+  end
   get '/' do
     id = session[:id]
     @member = Member[id]

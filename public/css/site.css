@@ -2,6 +2,16 @@
   background: rgba(127,127,127, 0.1);
   padding: 5px;
 }
+.actions.parties {
+  margin: 0 15px;
+}
+.actions.parties .uk-icon-check:hover {
+  color: green;
+}
+.actions.parties .uk-icon-times:hover {
+  color: red;
+}
+
 i.rotate-x{
     -webkit-transition-property: -webkit-transform;
     -webkit-transition-duration: 5s;
@@ -29,7 +39,6 @@ i.rotate-x{
     from {-moz-transform: rotateX(0deg);}
     to {-moz-transform: rotateX(180deg);}
 }
-
 .img {
   margin-top: 5px;
 }

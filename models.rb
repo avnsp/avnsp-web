@@ -5,6 +5,8 @@ require 'sequel'
 Sequel::Model.plugin :json_serializer
 
 class Member < Sequel::Model
+  one_to_many :attendances
+
   include BCrypt
   def password
     @password ||= Password.new(self.password_hash)
@@ -24,6 +26,7 @@ end
 
 class Party < Sequel::Model
   one_to_many :photos
+  one_to_many :attendances
 end
 
 class Event < Sequel::Model
@@ -50,4 +53,8 @@ class Photo < Sequel::Model
   def original_temp
     "https://d18qrfc4r3cv12.cloudfront.net/#{self.original_path}"
   end
+end
+class Attendance < Sequel::Model
+  many_to_one :member
+  many_to_one :party
 end
