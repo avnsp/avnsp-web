@@ -35,10 +35,6 @@ map '/party' do
   run PartyController
 end
 
-map '/party' do
-  run PartyController
-end
-
 map '/photo' do
   run PhotoController
 end

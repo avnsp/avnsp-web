@@ -2,7 +2,7 @@ require './controllers/base'
 
 class PartyController < BaseController
   get '/:id' do
-    @party = Party.new
+    @party = Party[id]
     haml :party
   end
   get '/:id/attend' do |id|
