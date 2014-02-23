@@ -17,7 +17,8 @@ Requirements
 ###Setup env
 ```
 createdb avnsp
-rabbitmqctl create_vhost avnsp
+rabbitmqctl add_vhost avnsp
+rabbitmqctl set_permission -p avnsp .* .* .*
 ```
 ###Migrate db locally
 ```
