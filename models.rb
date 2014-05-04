@@ -22,6 +22,10 @@ class Member < Sequel::Model
     self.save
     p
   end
+
+  def full_name
+    [first_name, nick && "\"#{nick}\"", last_name].compact.join " "
+  end
 end
 
 class Party < Sequel::Model
@@ -54,7 +58,18 @@ class Photo < Sequel::Model
     "https://d18qrfc4r3cv12.cloudfront.net/#{self.original_path}"
   end
 end
+
 class Attendance < Sequel::Model
   many_to_one :member
   many_to_one :party
+  def member_name
+    member.full_name
+  end
+
+  def member_studied_started
+    [member.studied, member.started].join '-'
+  end
+  def member_previus_attendanceise
+    member.attendances.select { |a| a.party.type == party.type && a.party.date < party.date }.count
+  end
 end

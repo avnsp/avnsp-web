@@ -1,8 +1,9 @@
 require './controllers/base'
 
 class PartyController < BaseController
-  get '/:id' do
+  get '/:id' do |id|
     @party = Party[id]
+    @attendances = @party.attendances
     haml :party
   end
   get '/:id/attend' do |id|

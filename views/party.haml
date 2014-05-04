@@ -18,3 +18,15 @@
     %img{src: p.thumb_temp}
     .uk-overlay-caption= p.caption
   .uk-modal{id: p.id, :'data-img-src' => p.file_temp}
+%table.uk-table
+  %thead
+    %tr
+      %th #
+      %th Namn
+      %th Program
+  %tbody
+    - @attendances.each do |a|
+      %tr
+        %td= a.member_previus_attendanceise
+        %td= a.member_name
+        %td= a.member_studied_started
