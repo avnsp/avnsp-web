@@ -37,6 +37,12 @@
   %fieldset
     %legend Ny fest
     .uk-form-row
+      %label.uk-form-label Typ
+      %select{name: :type, required: true}
+        %option Välj...
+        %option{value: 'arbetslunch'} Arbetslunch
+        %option{value: 'fest'} Fest
+    .uk-form-row
       %label.uk-form-label Namn
       %input{type: 'text', name: :name}
     .uk-form-row

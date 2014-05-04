@@ -26,6 +26,7 @@ class AdminController < BaseController
                          location: params[:location],
                          date: params[:date],
                          price: params[:price],
+                         type: params[:type],
                          comment: params[:comment])
     publish "party.created", event.to_hash
     flash[:success] = "Nu blir det fest!"
