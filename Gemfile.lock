@@ -27,6 +27,9 @@ GEM
     rack-test (0.6.2)
       rack (>= 1.0)
     sequel (4.7.0)
+    sequel_pg (1.6.9)
+      pg (>= 0.8.0)
+      sequel (>= 3.39.0)
     sinatra (1.4.4)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -51,10 +54,10 @@ DEPENDENCIES
   bcrypt-ruby
   bunny
   haml
-  pg
   puma
   rack-ssl-enforcer
   sequel
+  sequel_pg
   sinatra
   sinatra-contrib
   sinatra-flash
