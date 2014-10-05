@@ -17,5 +17,8 @@
     %textarea.uk-form-width-medium{type: :text, name: :allergies}
       != @attendance.allergies
   .uk-form-row
-    %input.uk-button.uk-button-success{type: :submit, value: 'Anmäl mig'}
-    %a.uk-button.uk-button-danger{href: '/'} Avbryt
+    -if @attendance.id
+      %input.uk-button.uk-button-success{type: :submit, value: 'Spara'}
+    -else
+      %input.uk-button.uk-button-success{type: :submit, value: 'Anmäl mig'}
+    %a{href: '/'} Avbryt

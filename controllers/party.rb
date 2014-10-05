@@ -8,7 +8,7 @@ class PartyController < BaseController
   end
   get '/:id/attend' do |id|
     @attendance = @member.attendances.select { |a| a.party_id == id.to_i }.first
-    @Attendance ||= Attendance.new
+    @attendance ||= Attendance.new
     haml :attend
   end
   post '/:id/attend' do |id|

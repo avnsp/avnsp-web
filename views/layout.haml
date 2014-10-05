@@ -59,12 +59,17 @@
                 %li
                   %a{href: "/party/#{p.id}"}= "#{p.name} - #{p.date}"
                   .actions.parties
-                    .uk-badge.uk-badge-notification!= p.attendances.count
-                    %a{href: "/party/#{p.id}/attend"}
-                      -if p.attendances.any? { |a| a.member_id == @member.id}
-                        Du är anmäld
-                      -else
-                        Anmäl dig nu!
+                    %div
+                      %label Vänster fötter
+                      != p.attendances.count
+                    -if p.attendances.any? { |a| a.member_id == @member.id}
+                      %a.uk-button.uk-button-success{href: "/party/#{p.id}/attend"}
+                        Ändra anmälan
+                      %form{method: :post}
+                        %input.uk-button.uk-button-danger{type: :submit, value: 'Avanmäl mig'}
+                    -else
+                      %a.uk-button.uk-button-success{href: "/party/#{p.id}/attend"}
+                        Jag vill gå
     #tm-offcanvas.uk-offcanvas
       .uk-offcanvas-bar
         %ul.uk-nav.uk-nav-offcanvas{:'data-uk-nav' => true}
