@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.1.2'
+ruby '2.1.5'
 
 gem 'sequel'
 gem 'sequel_pg'
@@ -12,4 +12,4 @@ gem 'bcrypt-ruby'
 gem 'aws-sdk'
 gem 'bunny'
 gem 'rack-ssl-enforcer'
-
+gem 'mail'

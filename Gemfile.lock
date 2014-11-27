@@ -16,6 +16,9 @@ GEM
     haml (4.0.5)
       tilt
     json (1.8.1)
+    mail (2.6.1)
+      mime-types (>= 1.16, < 3)
+    mime-types (2.3)
     mini_portile (0.6.0)
     multi_json (1.10.1)
     nokogiri (1.6.3.1)
@@ -56,6 +59,7 @@ DEPENDENCIES
   bcrypt-ruby
   bunny
   haml
+  mail
   puma
   rack-ssl-enforcer
   sequel
