@@ -11,8 +11,7 @@ class HomeController < BaseController
     haml :home
   end
 
-  get '/stream' do
-    content_type "text/event-stream"
+  get '/stream', provides: "text/event-stream" do
     topics = ["event.member.created", "event.party.created", "event.photo.created"]
     stream :keep_open do |out|
       sub = subscribe '', *topics do |data, key|
