@@ -23,6 +23,9 @@ map '/admin' do
     [u, p] == ['avnsp', 'One does not simply walk into mordor!']
   end if ENV['RACK_ENV'] == 'production'
   run AdminController
+  map '/economy' do
+    run EconomyController
+  end
 end
 
 use AuthController

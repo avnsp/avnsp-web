@@ -6,6 +6,7 @@ Sequel.migration do
       Bool :vegitarian, default: false, null: false
       Bool :non_alcoholic, default: false, null: false
       Text :allergies
+      Text :message
 
       DateTime :timestamp, default: Sequel.lit('NOW()')
 
