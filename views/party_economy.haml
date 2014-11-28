@@ -34,7 +34,7 @@
         %tbody
           -@members.each do |m|
             %tr
-              %td= m[:last_name]
+              %td= [m[:last_name], m[:first_name]].join(', ')
               -@parties_articles.each do |pa|
                 %td
                   %input{type: :hidden, name: 'transactions[]party_id', value: @party[:id]}

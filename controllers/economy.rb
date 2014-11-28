@@ -33,26 +33,32 @@ class EconomyController < BaseController
   end
 
   post '/parties_articles' do
-    params[:parties_articles].each do |pa|
-      price = pa[:price]
-      next if price.nil? or price.to_i == 0
-      DB[:parties_articles].insert(article_id: pa[:article_id],
-                                   party_id: pa[:party_id],
-                                   price: price.to_f)
+    DB.transaction do
+      DB[:parties_articles].where(party_id: params[:parties_articles].first[:party_id]).delete
+      params[:parties_articles].each do |pa|
+        price = pa[:price]
+        next if price.nil? or price.to_i == 0
+        DB[:parties_articles].insert(article_id: pa[:article_id],
+                                     party_id: pa[:party_id],
+                                     price: price.to_f)
+      end
     end
     redirect back
   end
 
   post '/transactions' do
-    params[:transactions].each do |t|
-      next if t[:units].to_i == 0
-      sum = -1.0 * t[:units].to_i * t[:price].to_f
-      DB[:transactions].insert(party_id: t[:party_id],
-                               member_id: t[:member_id],
-                               article_id: t[:article_id],
-                               booking_account_number: t[:ban],
-                               sum: sum,
-                               text: "#{t[:units]} #{t[:name]}")
+    DB.transaction do
+      DB[:transactions].where(party_id: params[:transactions].first[:party_id]).delete
+      params[:transactions].each do |t|
+        next if t[:units].to_i == 0
+        sum = -1.0 * t[:units].to_i * t[:price].to_f
+        DB[:transactions].insert(party_id: t[:party_id],
+                                 member_id: t[:member_id],
+                                 article_id: t[:article_id],
+                                 booking_account_number: t[:ban],
+                                 sum: sum,
+                                 text: "#{t[:units]} #{t[:name]}")
+      end
     end
     redirect back
   end
