@@ -15,20 +15,22 @@ class HomeController < BaseController
   get '/stream', provides: "text/event-stream" do
     topics = ["event.member.created", "event.party.created", "event.photo.created"]
     stream :keep_open do |out|
-      sub = subscribe '', *topics do |data, key|
+      c = subscribe '', *topics do |key, data|
+        p data
+        p key
         begin
           out << "event: #{key}\ndata: #{data.to_json}\n\n"
         rescue Exception
-          sub.cancel
-          puts "[ERROR] closed channel"
+          cancel_consumer c
+          raise "[ERROR] closed channel"
         end
       end
       loop do
         begin
           out << ":\n"
-          sleep 15
+          sleep 1
         rescue Exception
-          sub.cancel
+          cancel_consumer c
           break
         end
       end

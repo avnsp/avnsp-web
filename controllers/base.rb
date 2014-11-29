@@ -22,14 +22,13 @@ class BaseController < Sinatra::Base
     def subscribe qname, *topics, &blk
       TH.subscribe(qname, *topics, &blk)
     end
+
     def publish routing_key, data
       TH.publish routing_key, data
     end
-    def next_parties
-      today = Date.today
-      parties = Party.
-        where(date: (today..today.next_year)).
-        order(:date)
+
+    def cancel_consumer consumer
+      TH.cancel consumer
     end
   end
 end

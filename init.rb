@@ -7,6 +7,7 @@ TH = Thumper.new(publish_to: ENV['CLOUDAMQP_URL'] || 'amqp://localhost/avnsp',
 
 require './workers'
 TH.register EmailWorker
+TH.register EventWorker
 
 require 'aws-sdk'
 AWS.config(access_key_id: ENV.fetch("AWS_ACCESS_KEY_ID"),
