@@ -4,6 +4,7 @@ class HomeController < BaseController
   before do
     @member = Member[session[:id]]
   end
+
   get '/' do
     id = session[:id]
     @member = Member[id]
@@ -31,6 +32,12 @@ class HomeController < BaseController
           break
         end
       end
+    end
+  end
+
+  helpers do
+    def name
+      'home'
     end
   end
 end

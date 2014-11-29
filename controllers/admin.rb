@@ -1,9 +1,14 @@
 require './controllers/base'
 require 'securerandom'
 class AdminController < BaseController
+  configure do
+    set :haml, layout: :admin_layout
+  end
+
   get '/' do
     haml :admin
   end
+
   post '/member' do
     member = Member.create(first_name: params[:first_name],
                            last_name: params[:last_name],
@@ -20,6 +25,7 @@ class AdminController < BaseController
     flash[:success] = "En ny aspirant är upplagd, mail kommer att skickas till den berörda personen."
     redirect back
   end
+
   post '/party' do
     event = Party.create(name: params[:name],
                          theme: params[:theme],

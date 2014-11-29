@@ -1,0 +1,12 @@
+%table.table
+  %thead
+    %tr
+      %th Datum
+      %th Namn
+  %tbody
+    -@parties.each do |p|
+      %tr
+        %td
+          %a{href: "/party/#{p[:id]}"}= p[:date]
+        %td= p[:name]
+

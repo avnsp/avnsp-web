@@ -30,6 +30,10 @@ class EmailWorker
 
   private
   def send to, sub, body
+    if ENV['RACK_ENV'] == 'development'
+      puts body
+      return
+    end
     Mail.deliver do
       from          'auth@academian.se'
       to            to

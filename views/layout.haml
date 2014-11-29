@@ -4,77 +4,24 @@
     %meta(charset="utf-8")
     %meta(name="viewport" content="width=device-width, initial-scale=1.0")
     %title Academian
-    %link{href: "/css/uikit.almost-flat.css", rel: :stylesheet}
+    %link{href: "/css/bootstrap.css", rel: :stylesheet}
     %link{href: "/css/site.css", rel: :stylesheet}
     %script{type: 'text/javascript', src: "/js/jquery-2.0.3.js"}
-    %script{type: 'text/javascript', src: "/js/uikit.js"}
+    %script{type: 'text/javascript', src: "/js/bootstrap.js"}
   %body
-    %nav.uk-navbar.uk-navbar-attached
-      .uk-container.uk-container-center
-        %a(href="#tm-offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas="")
-        %a.uk-hidden-small.uk-navbar-brand{href: '/'} Academian
-        %ul.uk-navbar-nav.uk-hidden-small.uk-navbar-flip
-          %li.uk-parent{:'data-uk-dropdown' => "{mode:'click'}"}
-            %a{href: "#"}
-              != @member.nick
-              %i.uk-icon-caret-down
-            .uk-dropdown.uk-dropdown-navbar
-              %ul.uk-nav.uk-nav-navbar
-                %li
-                  %a{href: "/member/#{@member.id}"}
-                    %i.uk-icon-user
-                    Profil
-                %li
-                  %a{href: "/member/#{@member.id}/edit"}
-                    %i.uk-icon-cog
-                    Ändra
-                %li.uk-nav-divider
-                %li
-                  %a{href: "#", onclick: "javascript:logout.submit()"}
-                    %i.uk-icon-sign-out
-                    Log out
-                    %form#logout{method: :post, action: "/logout"}
-    .tm-middle
-      .uk-container.uk-container-center
-        .uk-grid
-          %ul.uk-nav.uk-nav-side.uk-width-medium-1-5.uk-hidden-small
-            %li.uk-active
-              %a{href: '/'}
-                %i.uk-icon-home
-                Hem
-            %li
-              %a{href: '/photo'}
-                %i.uk-icon-upload
-                Ladda upp bilder
-          .tm-main.uk-width-medium-3-5
-            - flash.each do |k,v|
-              .uk-alert{class: "uk-alert-#{k}"}
-                != v
-            != yield
-          .tm-sidebar.uk-width-medium-1-5.uk-hidden-small
-            %ul.tm-nav.uk-nav{:'data-uk-nav' => true}
-              %li.uk-nav-header
-                Kommande fester
-              -next_parties.each do |p|
-                %li
-                  %a{href: "/party/#{p.id}"}= "#{p.name} - #{p.date}"
-                  .actions.parties
-                    %div
-                      %label Vänster fötter
-                      != p.attendances.count
-                    -if p.attendances.any? { |a| a.member_id == @member.id}
-                      %a.uk-button.uk-button-success{href: "/party/#{p.id}/attend"}
-                        Ändra anmälan
-                      %form{method: :post}
-                        %input.uk-button.uk-button-danger{type: :submit, value: 'Avanmäl mig'}
-                    -else
-                      %a.uk-button.uk-button-success{href: "/party/#{p.id}/attend"}
-                        Jag vill gå
-    #tm-offcanvas.uk-offcanvas
-      .uk-offcanvas-bar
-        %ul.uk-nav.uk-nav-offcanvas{:'data-uk-nav' => true}
-          %li.uk-nav-header Academain
-          %li.uk-active
-            %a{href: '/'} Hem
-          %li
-            %a{href: '/photo'} Ladda upp bilder
+    %header.navbar.navbar-default{role: :navigation}
+      .container{style: "padding-top: 20px; padding-bottom: 20px;"}
+        .navbar-header
+          %button.navbar-toggle.collapsed{type: 'button', data: { target: '.nav-collapse', toggle:'collapse' } }
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{:href => "/"} Academian
+        .navbar-collapse.nav-collapse.collapse
+          %ul.nav.navbar-nav
+            %li{class: name == 'party' ? 'active' : ''}
+              %a{href: "/party"} Party
+    .container
+      .row
+        .col-md-12
+          !=yield

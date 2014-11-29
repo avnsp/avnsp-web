@@ -3,18 +3,15 @@
   %head
     %meta(charset="utf-8")
     %meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    %title Academian - Login
-    %link{href: "/css/uikit.almost-flat.min.css", rel: :stylesheet}
+    %title Academian | Login
+    %link{href: "/css/bootstrap.css", rel: :stylesheet}
   %body
-    .uk-container.uk-container-center
-      %h1 Logga in
-      .tm-main.uk-width-medium-3-5
-        - flash.each do |k,v|
-          .uk-alert{class: "uk-alert-#{k}"}
-            != v
-      %form.uk-form.uk-form-horizontal{method: :post}
-        .uk-form-row
-          %label.uk-form-label Användarnamn
-          %input{type: :text, name: :email}
-        .uk-form-row
-          %input.uk-button.uk-button-success{type: :submit, value: 'Logga in'}
+    .container
+      .row
+        .col-md-8.col-md-offset-2
+          %h4
+            Ange din email och tryck på logga in. Ett email skickas till dig, klicka på länken i mailet så loggas du in.
+          %form{method: :post}
+            .form-group
+              %input.form-control{type: :text, name: :email}
+            %input.btn{type: :submit, value: 'Logga in'}

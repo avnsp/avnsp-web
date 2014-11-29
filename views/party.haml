@@ -2,7 +2,7 @@
   = @party.name
   %small
     = @party.date
-%dl.uk-description-list
+%dl
   %dt När?
   %dd= @party.date
   %dt Var?
@@ -18,7 +18,7 @@
     %img{src: p.thumb_temp}
     .uk-overlay-caption= p.caption
   .uk-modal{id: p.id, :'data-img-src' => p.file_temp}
-%table.uk-table
+%table.table
   %thead
     %tr
       %th #

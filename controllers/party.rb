@@ -1,16 +1,23 @@
 require './controllers/base'
 
 class PartyController < BaseController
+  get '/' do
+    @parties = DB[:parties].order(:date).all
+    haml :parties
+  end
+
   get '/:id' do |id|
     @party = Party[id]
     @attendances = @party.attendances
     haml :party
   end
+
   get '/:id/attend' do |id|
     @attendance = @member.attendances.select { |a| a.party_id == id.to_i }.first
     @attendance ||= Attendance.new
     haml :attend
   end
+
   post '/:id/attend' do |id|
     if attendance = Attendance.where(member_id: @member.id, party_id: id)
       attendance.update(vegitarian: params[:vegitarian] == 'true',
@@ -28,5 +35,10 @@ class PartyController < BaseController
       publish 'attendance.create', attendance.to_hash
     end
     redirect '/'
+  end
+  helpers do
+    def name
+      'party'
+    end
   end
 end

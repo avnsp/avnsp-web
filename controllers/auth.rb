@@ -8,6 +8,7 @@ class AuthController < BaseController
   end
 
   get '/login' do
+    redirect '/' if session[:id]
     haml :login, layout: false
   end
 

@@ -1,17 +1,24 @@
-.actions {
-  background: rgba(127,127,127, 0.1);
-  padding: 5px;
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url('../fonts/lato-regular.ttf') format('truetype');
 }
-.actions.parties {
-  margin: 0 15px;
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Lato Bold'), local('Lato-Bold'), url('../fonts/lato-bold.ttf') format('truetype');
 }
-.actions.parties .uk-icon-check:hover {
-  color: green;
+body, label, input, select, p {
+  font-family: 'Lato','Droid sans', 'Lucida Grande', "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-.actions.parties .uk-icon-times:hover {
-  color: red;
+.navbar-default {
+  background-color: #fff;
+  border-color: #fff;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
 }
-
 i.rotate-x{
     -webkit-transition-property: -webkit-transform;
     -webkit-transition-duration: 5s;
@@ -30,6 +37,7 @@ i.rotate-x{
     -moz-animation-iteration-count: infinite;
     -moz-animation-timing-function: linear;
 }
+
 @-webkit-keyframes rotate {
     from {-webkit-transform: rotateX(180deg);}
     to {-webkit-transform: rotateX(0deg);}
@@ -42,3 +50,4 @@ i.rotate-x{
 .img {
   margin-top: 5px;
 }
+

@@ -3,6 +3,7 @@ class EconomyController < BaseController
   configure do
     set :haml, layout: :admin_layout
   end
+
   get '/' do
     @events = DB[:parties].order(:date).all
     haml :economy
