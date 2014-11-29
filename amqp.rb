@@ -4,10 +4,6 @@ require 'zlib'
 require 'timeout'
 
 module Amqp
-  def initialize
-    @consumers = []
-  end
-
   def stop
     @consumers.each { |c| c.cancel }
     puts "#{self.class.name} stopped"
@@ -19,7 +15,13 @@ module Amqp
     ch = @conn.create_channel
     ch.prefetch 1
     t = ch.topic 'amq.topic', durable: true
-    q = ch.queue qname, durable: true
+    opts = {}
+    if qname == ''
+      opts[:auto_delete] = true
+    else
+      opts[:durable] = true
+    end
+    q = ch.queue qname, opts
     topics.each { |topic| q.bind(t, routing_key: topic) }
     c = q.subscribe(manual_ack: true, block: false) do |delivery, headers, body|
       if delivery.redelivered?

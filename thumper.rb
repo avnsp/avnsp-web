@@ -9,6 +9,7 @@ class Thumper
     @pub_conn = Bunny.new(opts[:publish_to])
     @pub_conn.start
     @workers = []
+    @consumers = []
   end
 
   def register worker_class

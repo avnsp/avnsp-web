@@ -40,11 +40,8 @@
       %label.uk-form-label Typ
       %select{name: :type, required: true}
         %option Välj...
-        %option{value: 'arbetslunch'} Arbetslunch
-        %option{value: 'fest'} Fest
-    .uk-form-row
-      %label.uk-form-label Namn
-      %input{type: 'text', name: :name}
+        -party_types.each do |type, party|
+          %option{value: type }= party[:name]
     .uk-form-row
       %label.uk-form-label Tema
       %input{type: 'text', name: :theme}

@@ -27,15 +27,28 @@ class AdminController < BaseController
   end
 
   post '/party' do
-    event = Party.create(name: params[:name],
+    p = party_types[params[:type].to_sym]
+    p p[:name]
+    event = Party.create(name: p[:name],
+                         booking_account_number: p[:ban],
                          theme: params[:theme],
                          location: params[:location],
                          date: params[:date],
                          price: params[:price],
-                         type: params[:type],
                          comment: params[:comment])
     publish "party.created", event.to_hash
     flash[:success] = "Nu blir det fest!"
     redirect back
+  end
+
+  helpers do
+    def party_types
+      {
+        val: { ban: 3001, name: 'Vårarbetslunch'},
+        hal: { ban: 3002, name: 'Höstarbetslunch'},
+        vf:  { ban: 4001, name: 'Vårfest' },
+        hf:  { ban: 4002, name: 'Höstfest' }
+      }
+    end
   end
 end
