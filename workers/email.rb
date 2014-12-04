@@ -23,7 +23,7 @@ class EmailWorker
 
     subscribe("member.login", "member.login") do |_, msg|
       @email = msg[:email]
-      @token = "hello"
+      @token = msg[:token]
       send msg[:email], "[Academian] login länk", haml(:login)
     end
   end

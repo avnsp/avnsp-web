@@ -3,7 +3,9 @@
   %head
     %meta(charset="utf-8")
     %meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    %title Academian
+    %title
+      Academian
+      != " | #{name.capitalize}"
     %link{href: "/css/bootstrap.css", rel: :stylesheet}
     %link{href: "/css/site.css", rel: :stylesheet}
     %script{type: 'text/javascript', src: "/js/jquery-2.0.3.js"}
@@ -20,7 +22,7 @@
         .navbar-collapse.nav-collapse.collapse
           %ul.nav.navbar-nav
             %li{class: name == 'party' ? 'active' : ''}
-              %a{href: "/party"} Party
+              %a{href: "/party"} Fester
     .container
       .row
         .col-md-12

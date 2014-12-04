@@ -19,33 +19,37 @@ body, label, input, select, p {
   margin-bottom: 20px;
   border-bottom: 1px solid #eee;
 }
+.wrapper {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 i.rotate-x{
-    -webkit-transition-property: -webkit-transform;
-    -webkit-transition-duration: 5s;
+  -webkit-transition-property: -webkit-transform;
+  -webkit-transition-duration: 5s;
 
-    -moz-transition-property: -moz-transform;
-    -moz-transition-duration: 5s;
+  -moz-transition-property: -moz-transform;
+  -moz-transition-duration: 5s;
 
-    -webkit-animation-name: rotate; 
-    -webkit-animation-duration: 1s;
-    -webkit-animation-iteration-count: infinite;
-    -webkit-animation-timing-function: linear;
-    -webkit-animation-direction: alternate;
+  -webkit-animation-name: rotate; 
+  -webkit-animation-duration: 1s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-direction: alternate;
 
-    -moz-animation-name: rotate; 
-    -moz-animation-duration: 1s; 
-    -moz-animation-iteration-count: infinite;
-    -moz-animation-timing-function: linear;
+  -moz-animation-name: rotate; 
+  -moz-animation-duration: 1s; 
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-timing-function: linear;
 }
 
 @-webkit-keyframes rotate {
-    from {-webkit-transform: rotateX(180deg);}
-    to {-webkit-transform: rotateX(0deg);}
+  from {-webkit-transform: rotateX(180deg);}
+  to {-webkit-transform: rotateX(0deg);}
 }
 
 @-moz-keyframes rotate {
-    from {-moz-transform: rotateX(0deg);}
-    to {-moz-transform: rotateX(180deg);}
+  from {-moz-transform: rotateX(0deg);}
+  to {-moz-transform: rotateX(180deg);}
 }
 .img {
   margin-top: 5px;

@@ -13,7 +13,7 @@ class AuthController < BaseController
   end
 
   get '/auth' do
-    halt 401 unless params[:token] == 'hello'
+    halt 401 unless token_valid?(params[:token], params[:email])
     session[:id] = Member[email: params[:email]].id
     redirect '/'
   end
@@ -23,7 +23,7 @@ class AuthController < BaseController
     if @member.nil?
       flash[:info] = 'Den emailen finns inte registrerad.'
     else
-      publish 'member.login', @member.to_hash
+      publish 'member.login', @member.to_hash.merge(token: generate_token(@member.email))
       flash[:success] = 'Login länken är skickad till din angivna email.'
     end
     redirect back
@@ -32,5 +32,16 @@ class AuthController < BaseController
   post '/logout' do
     session[:id] = nil
     redirect "/"
+  end
+
+  helpers do
+    def generate_token(email)
+      str = "#{email}:#{ENV['SESSION_SECRET']}"
+      Digest::SHA1.hexdigest(str)
+    end
+
+    def token_valid?(token, email)
+      token == generate_token(email)
+    end
   end
 end

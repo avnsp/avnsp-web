@@ -5,9 +5,7 @@ require 'timeout'
 
 module Amqp
   def cancel consumer
-    matching = @consumers.select { |c| c.consumer_tag == consumer.consumer_tag }
-    p matching
-    matching.each(&:cancel)
+    @consumers.select { |c| c.consumer_tag == consumer.consumer_tag }.each(&:cancel)
   end
 
   def stop
@@ -50,6 +48,7 @@ module Amqp
       end
     end
     @consumers << c
+    c
   end
 
   def publish(topic, data, opts = {})

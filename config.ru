@@ -18,16 +18,6 @@ use Rack::Session::Cookie, {
   #:expire_after => 24 * 3600,
 }
 
-map '/admin' do
-  use Rack::Auth::Basic do |u, p|
-    [u, p] == ['avnsp', 'One does not simply walk into mordor!']
-  end if ENV['RACK_ENV'] == 'production'
-  run AdminController
-  map '/economy' do
-    run EconomyController
-  end
-end
-
 use AuthController
 
 map '/' do
