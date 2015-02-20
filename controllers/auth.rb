@@ -13,7 +13,9 @@ class AuthController < BaseController
   end
 
   get '/auth' do
-    halt 401 unless token_valid?(params[:token], params[:email])
+    unless token_valid?(params[:token], params[:email])
+      halt 401, 'Ngt blev fel i autensieringen. Skicka ett email till cdo@academian.se'
+    end
     session[:id] = Member[email: params[:email]].id
     redirect '/'
   end

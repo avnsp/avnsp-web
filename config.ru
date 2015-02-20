@@ -1,3 +1,4 @@
+require 'bundler/setup'
 require './init'
 require './models'
 require './controllers'
@@ -15,7 +16,7 @@ use Rack::Session::Cookie, {
   :secret => ENV['SESSION_SECRET'] || 'xKU9Ybq23jafjhh',
   :httponly => true,
   :secure => (ENV['RACK_ENV'] == 'production'),
-  #:expire_after => 24 * 3600,
+  :expire_after => 24 * 3600 * 30,
 }
 
 use AuthController

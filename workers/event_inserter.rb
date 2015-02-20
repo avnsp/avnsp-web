@@ -1,5 +1,3 @@
-require 'sequel'
-
 class EventWorker
   def start
     subscribe 'event.photo.create', 'photo.uploaded' do |_, data|

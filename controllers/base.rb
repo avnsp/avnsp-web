@@ -2,7 +2,6 @@ require 'sinatra/base'
 require 'sinatra/flash'
 require 'sinatra/reloader'
 require 'haml'
-require './amqp'
 
 class BaseController < Sinatra::Base
   register Sinatra::Flash
