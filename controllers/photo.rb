@@ -6,6 +6,15 @@ class PhotoController < BaseController
     @parties = Party.order(:date)
     haml :photo
   end
+
+  get '/:uuid/:name' do |uuid, name|
+    s3 = AWS::S3.new
+    objects = s3.buckets['avnsp'].objects
+    img = objects["avnsp/#{uuid}/#{name}"]
+    content_type img.content_type
+    img.read
+  end
+
   post '/' do
     params[:files].each_with_index do |f, i|
       tempfile = f[:tempfile]

@@ -29,5 +29,6 @@ class BaseController < Sinatra::Base
     def cancel_consumer consumer
       TH.cancel consumer
     end
+
   end
 end

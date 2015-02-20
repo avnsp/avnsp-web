@@ -27,6 +27,7 @@
           %a{href: "/member/{id}"}
             %strong Säg hej till {first_name} {nick} {last_name}
         .body
+          %img{src: "/photo/{profile_picture}"}
           %ul
             %li {studied}
             %li {started}
@@ -44,10 +45,8 @@
   };
   $(function() {
     var partyTemplate = document.getElementById("party-tmpl").innerHTML;
-
     var memberTemplate = document.getElementById("member-tmpl").innerHTML;
 
-    var es = new EventSource("/stream");
     var events = #{@events};
     for(var i = 0; i < events.length; i++) {
       var evt = events[i];
@@ -61,6 +60,8 @@
           break;
       }
     }
+
+    var es = new EventSource("/stream");
     es.addEventListener("event.party.created", function(msg) {
       item = JSON.parse(msg.data);
       render(partyTemplate, JSON.parse(item.data));

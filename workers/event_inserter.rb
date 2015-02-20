@@ -21,10 +21,8 @@ class EventWorker
         publish 'event.party.created', evt.merge(id: id)
       end
     end
-
   end
 
   def stop
-
   end
 end
