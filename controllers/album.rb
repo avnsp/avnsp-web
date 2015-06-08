@@ -1,10 +1,10 @@
 require './controllers/base'
 require "base64"
 
-class PhotoController < BaseController
+class AlbumController < BaseController
   get '/' do
-    @parties = Party.order(:date)
-    haml :photo
+    @albums = Album.order(:name)
+    haml :albums
   end
 
   get '/:uuid/:name' do |uuid, name|
@@ -32,5 +32,11 @@ class PhotoController < BaseController
     end
     flash[:info] = "Bilderna kommer snart synas."
     redirect back
+  end
+
+  helpers do
+    def name
+      "Foton"
+    end
   end
 end

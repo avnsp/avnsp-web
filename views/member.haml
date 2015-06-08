@@ -1,0 +1,24 @@
+.row
+  .col-sm-offset-3.col-sm-6.text-center
+    %h1
+      = @member[:first_name]
+      = @member[:last_name]
+.row
+  .col-sm-offset-3.col-sm-6
+    %img{src: @member[:profile_picture] && @member[:profile_picture].sub('thumb_', '')}
+.row
+  .col-sm-offset-3.col-sm-6
+    %h4 Fester
+    %table.table
+      %thead
+        %tr
+          %th Datum
+          %th Namn
+          %th Tema
+      %tbody
+        -@parties.each do |p|
+          %tr
+            %td
+              %a{href: "/party/#{p[:id]}"}= p[:date]
+            %td= p[:name]
+            %td= p[:theme]

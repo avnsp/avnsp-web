@@ -8,7 +8,8 @@ class PartyController < BaseController
 
   get '/:id' do |id|
     @party = Party[id]
-    @attendances = @party.attendances
+    @attendances = @party.attendances.sort_by(&:member_previus_attendanceise).reverse
+    @albums = Album.where(party_id: id).all
     haml :party
   end
 

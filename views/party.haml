@@ -12,12 +12,10 @@
   %dt Pris?
   %dd= @party.price
   %dt Att tänka på?
-  %dd= @party.comment
-- @party.photos.each do |p|
-  %a.uk-overlay.uk-thumbnail{href: "##{p.id}", :'data-uk-modal' => ''}
-    %img{src: p.thumb_temp}
-    .uk-overlay-caption= p.caption
-  .uk-modal{id: p.id, :'data-img-src' => p.file_temp}
+  %dd
+    != @party.comment.to_s.gsub('\n','</br>')
+- @albums.each do |a|
+  %a{href: '#'}= a.name
 %table.table
   %thead
     %tr
@@ -28,5 +26,6 @@
     - @attendances.each do |a|
       %tr
         %td= a.member_previus_attendanceise
-        %td= a.member_name
+        %td
+          %a{href: "/member/#{a[:member_id]}"}= a.member_name
         %td= a.member_studied_started

@@ -19,7 +19,7 @@ use Rack::Session::Cookie, {
   :expire_after => 24 * 3600 * 30,
 }
 
-use AuthController
+use AuthController if ENV['RACK_ENV'] == 'production'
 
 map '/' do
   run HomeController
@@ -31,4 +31,8 @@ end
 
 map '/photo' do
   run PhotoController
+end
+
+map '/member' do
+  run MemberController
 end
