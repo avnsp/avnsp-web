@@ -24,6 +24,7 @@
       Ändra
     -else
       Jag kommer!
-%form{method: :post, action: "/party/#{party_id}/attend/delete" }
-  %input{type: :hidden, name: :_method, value: :delete}
-  %button.btn.btn-danger Jag vill inte gå längre
+-if a.id
+  %form{method: :post, action: "/party/#{party_id}/attend/delete" }
+    %input{type: :hidden, name: :_method, value: :delete}
+    %button.btn.btn-danger Jag vill inte gå längre

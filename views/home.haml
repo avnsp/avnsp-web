@@ -18,4 +18,4 @@
           -if p.is_attending?(@member.id)
             Du är anmäld!
           -else
-            !=haml(:attend_form, layout: false, locals: { party_id: p.id })
+            !=haml(:attend_form, layout: false, locals: { party_id: p.id, a: @member.attendance(p.id) })
