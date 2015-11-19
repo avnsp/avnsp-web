@@ -21,7 +21,7 @@ class AuthController < BaseController
   end
 
   post '/login' do
-    @member = Member[email: params[:email]]
+    @member = Member[email: params[:email].downcase.strip]
     if @member.nil?
       flash[:info] = 'Den emailen finns inte registrerad.'
     else
