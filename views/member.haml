@@ -1,8 +1,6 @@
 .row
   .col-sm-offset-3.col-sm-6.text-center
-    %h1
-      = @member[:first_name]
-      = @member[:last_name]
+    %h1= @member.full_name
 .row
   .col-sm-offset-3.col-sm-6
     %img{src: @member[:profile_picture] && @member[:profile_picture].sub('thumb_', '')}

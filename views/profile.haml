@@ -1,0 +1,36 @@
+.row
+  .col-sm-offset-3.col-sm-6.text-center
+    %h1 Ändra din profil
+.row
+  .col-sm-offset-3.col-sm-6
+    %form{method: :post}
+      .form-group
+        %label Förnamn
+        %input.form-control{type: :text, name: :first_name, value: @member.first_name}
+      .form-group
+        %label Efternamen
+        %input.form-control{type: :text, name: :last_name, value: @member.last_name}
+      .form-group
+        %label Smeknamn
+        %input.form-control{type: :text, name: :nick, value: @member.nick}
+      .form-group
+        %label Studerade
+        %select.form-control{name: :studied}
+          -%w(M KTS Y MatNat TB Ling MT I D C IT).each do |program|
+            %option{selected: @member.studied == program}= program
+      .form-group
+        %label Började
+        %input.form-control{type: :number, name: :started, value: @member.started}
+      .form-group
+        %label Telefon
+        %input.form-control{type: :tel, name: :phone, value: @member.phone}
+      .form-group
+        %label Adress
+        %input.form-control{type: :text, name: :street, value: @member.street}
+      .form-group
+        %label Ort
+        %input.form-control{type: :text, name: :city, value: @member.city}
+      .form-group
+        %label Postnummer
+        %input.form-control{type: :number, name: :zip, value: @member.zip}
+      %button.btn.btn-default Spara
