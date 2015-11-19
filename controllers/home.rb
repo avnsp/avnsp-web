@@ -8,7 +8,7 @@ class HomeController < BaseController
   get '/' do
     id = session[:id]
     @member = Member[id]
-    @events = Event.order(:timestamp).take(10).to_json;
+    @events = Party.where("NOW() < date").order(:date).all
     haml :home
   end
 

@@ -3,7 +3,7 @@ require "base64"
 
 class AlbumController < BaseController
   get '/' do
-    @albums = Album.order(:name)
+    @albums = Album.order(:timestamp)
     haml :albums
   end
 

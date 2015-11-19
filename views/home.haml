@@ -1,69 +1,7 @@
-.row
-  #events.col-sm-6.col-sm-offset-3
-%script#party-tmpl{type: "text/html"}
-  .wrapper
-    .row
-      .col-md-12
-        .header
-          %a{href: "/party/{id}"}
-            %strong {name} - {date}
-        .body
-          %span
-            Vart:
-            %strong
-              {location},
-            Pris:
-            %strong
-              {price}kr, 
-            %br
-            Meddelande:
-            %strong
-              {comment}
-%script#member-tmpl{type: "text/html"}
-  .wrapper
-    .row
-      .col-md-12
-        .header
-          %a{href: "/member/{id}"}
-            %strong Säg hej till {first_name} {nick} {last_name}
-        .body
-          %img{src: "/photo/{profile_picture}"}
-          %ul
-            %li {studied}
-            %li {started}
-:javascript
-  function nano(template, data) {
-    return template.replace(/\{([\w\.]*)\}/g, function(str, key) {
-      var keys = key.split("."), v = data[keys.shift()];
-      for (i = 0, l = keys.length; i < l; _i++) v = v[this];
-      return (typeof v !== "undefined" && v !== null) ? v : "";
-    });
-  };
-
-  function render(template, item) {
-    $("#events").prepend(nano(template, item));
-  };
-  $(function() {
-    var partyTemplate = document.getElementById("party-tmpl").innerHTML;
-    var memberTemplate = document.getElementById("member-tmpl").innerHTML;
-
-    var events = #{@events};
-    for(var i = 0; i < events.length; i++) {
-      var evt = events[i];
-      var data = JSON.parse(evt.data);
-      switch(evt.name) {
-        case 'party':
-          render(partyTemplate, data);
-          break;
-        case 'member':
-          render(memberTemplate, data);
-          break;
-      }
-    }
-
-    var es = new EventSource("/stream");
-    es.addEventListener("event.party.created", function(msg) {
-      item = JSON.parse(msg.data);
-      render(partyTemplate, JSON.parse(item.data));
-    });
-  });
+%h1
+  Välkommen till
+  %small Academia Vestigia Nuda Sinistri Pedis
+%h3 Kommande event
+%ul
+  -@events.each do |e|
+    %li= e.description

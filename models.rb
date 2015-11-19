@@ -35,6 +35,10 @@ end
 class Party < Sequel::Model
   one_to_many :attendances
   one_to_many :albums
+
+  def description
+    "#{name}, #{date}"
+  end
 end
 
 class Event < Sequel::Model
@@ -65,6 +69,7 @@ class Photo < Sequel::Model
   def original_temp
     "https://d18qrfc4r3cv12.cloudfront.net/#{self.original_path}"
   end
+
 end
 
 class Attendance < Sequel::Model
@@ -90,4 +95,22 @@ end
 
 class Album < Sequel::Model
   many_to_one :party
+  many_to_one :member, key: :created_by
+  one_to_many :photos
+
+  def party_name
+    party && party.name
+  end
+
+  def party_date
+    party && party.date
+  end
+
+  def title
+    [name || party_name, date || party_date || timestamp.to_date].join(' - ')
+  end
+
+  def description
+    text
+  end
 end

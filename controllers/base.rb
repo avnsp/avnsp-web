@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'sinatra/flash'
 require 'sinatra/reloader'
 require 'haml'
+require 'tilt/haml'
 
 class BaseController < Sinatra::Base
   register Sinatra::Flash
