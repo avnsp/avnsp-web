@@ -17,7 +17,7 @@ class BaseController < Sinatra::Base
     if ENV['RACK_ENV'] == 'production'
       @member = Member[session[:id]]
     else
-      @member = Member.first
+      @member = Member.order(:id).first
     end
   end
 
