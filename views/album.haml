@@ -1,0 +1,9 @@
+.row
+  .col-sm-offset-3.col-sm-6.text-center
+    %h1= @album.title
+.row
+  #grid{'data-columns': ''}
+    -@photos.each do |p|
+      %div
+        %img{src: p.original_temp, width: '300'}
+%script{type: 'text/javascript', src: "/js/salvattore.min.js"}

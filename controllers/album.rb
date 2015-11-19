@@ -34,9 +34,15 @@ class AlbumController < BaseController
     redirect back
   end
 
+  get '/:id' do |id|
+    @album = Album[id]
+    @photos = @album.photos
+    haml :album
+  end
+
   helpers do
     def name
-      "Foton"
+      "Album"
     end
   end
 end
