@@ -1,4 +1,3 @@
-require 'bcrypt'
 require 'securerandom'
 require 'sequel'
 
@@ -6,22 +5,6 @@ Sequel::Model.plugin :json_serializer
 
 class Member < Sequel::Model
   one_to_many :attendances
-
-  include BCrypt
-  def password
-    @password ||= Password.new(self.password_hash)
-  end
-
-  def password=(new_password)
-    @password = Password.create(new_password)
-    self.password_hash = @password
-  end
-  def reset_password
-    p = SecureRandom.urlsafe_base64(32 * 3/4)
-    self.password = p
-    self.save
-    p
-  end
 
   def full_name
     [first_name, nick && "\"#{nick}\"", last_name].compact.join " "
