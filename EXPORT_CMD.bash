@@ -11,5 +11,5 @@ echo "select arrid as party_id, persid as member_id, fritext as message, veg as 
 echo "select id, persid as created_by, arrid as party_id, skapad as timestamp, namn as name from album" |mysql avnsp --default-character-set=utf8 > album.csv
 
 #export foton
-echo "select id, albid as album_id, dt as timestamp from bild" |mysql avnsp --default-character-set=utf8 > bild.csv
+echo "select id, albid as album_id, dt as timestamp, orgfil as name from bild" |mysql avnsp --default-character-set=utf8 > bild.csv
 
