@@ -7,13 +7,18 @@ require 'tilt/haml'
 class BaseController < Sinatra::Base
   register Sinatra::Flash
   set :views, "./views"
-  set :haml, escape_html: true
+  set :haml, format: :html5, escape_html: true
 
   configure :development do
     enable :logging
   end
+
   before do
-    @member = Member[session[:id]]
+    if ENV['RACK_ENV'] == 'production'
+      @member = Member[session[:id]]
+    else
+      @member = Member.first
+    end
   end
 
   register Sinatra::Reloader if development?

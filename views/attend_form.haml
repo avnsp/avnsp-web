@@ -1,0 +1,29 @@
+%form{method: :post, action: "/party/#{party_id}/attend" }
+  .form-group
+    %label Vegitariskt?
+    .radio
+      %label.radio-inline
+        %input{type: :radio, name: :vegitarian, value: 'true', checked: a.id && a.vegitarian.to_s } Ja
+      %label.radio-inline
+        %input{type: :radio, name: :vegitarian, value: false, checked: a.id && !a.vegitarian } Nej
+  .form-group
+    %label Alkoholfritt?
+    .radio
+      %label.radio-inline
+        %input{type: :radio, name: :non_alcoholic, value: 'true', checked: a.id && a.non_alcoholic.to_s} Ja
+      %label.radio-inline
+        %input{type: :radio, name: :non_alcoholic, value: false, checked: a.id && !a.non_alcoholic} Nej
+  .form-group
+    %label Allergier
+    %input.form-control{type: :text, name: :allergies, value: a.allergies}
+  .form-group
+    %label Meddelande till arrangörerna
+    %textarea.form-control{name: :message}= a.message
+  %button.btn.btn-default
+    -if a.id
+      Ändra
+    -else
+      Jag kommer!
+%form{method: :post, action: "/party/#{party_id}/attend/delete" }
+  %input{type: :hidden, name: :_method, value: :delete}
+  %button.btn.btn-danger Jag vill inte gå längre

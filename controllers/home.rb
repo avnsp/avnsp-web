@@ -1,14 +1,8 @@
 require './controllers/base'
 
 class HomeController < BaseController
-  before do
-    @member = Member[session[:id]]
-  end
-
   get '/' do
-    id = session[:id]
-    @member = Member[id]
-    @events = Party.where("NOW() < date").order(:date).all
+    @parties = Party.where("NOW() < date").order(:date).all
     haml :home
   end
 

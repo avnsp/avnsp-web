@@ -16,12 +16,23 @@
     != @party.comment.to_s.gsub('\n','</br>')
 - @albums.each do |a|
   %a{href: '#'}= a.name
+-if Date.today < @party.attendance_deadline
+  .panel.panel-default
+    .panel-heading
+      %h4
+        -if @party.is_attending?(@member.id)
+          Du är anmäld
+        -else
+          Anmäl dig nu
+    .panel-body
+      !=haml(:attend_form, layout: false, locals: {party_id: @party.id, a: @member.attendance(@party.id)})
 %table.table
   %thead
     %tr
       %th #
       %th Namn
       %th Program
+      %th
   %tbody
     - @attendances.each do |a|
       %tr

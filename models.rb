@@ -13,6 +13,10 @@ class Member < Sequel::Model
   def parties
     attendances.map(&:party)
   end
+
+  def attendance(party_id)
+    attendances.find { |a| a.party_id == party_id } || Attendance.new
+  end
 end
 
 class Party < Sequel::Model
@@ -21,6 +25,10 @@ class Party < Sequel::Model
 
   def description
     "#{name}, #{date}"
+  end
+
+  def is_attending?(member_id)
+    attendances.any? { |a| a.member_id == member_id }
   end
 end
 

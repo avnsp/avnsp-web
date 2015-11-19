@@ -16,27 +16,33 @@ class PartyController < BaseController
   get '/:id/attend' do |id|
     @attendance = @member.attendances.select { |a| a.party_id == id.to_i }.first
     @attendance ||= Attendance.new
-    haml :attend
+    haml :attend_form, locals: { party_id: id, a: @attendance }
   end
 
   post '/:id/attend' do |id|
-    if attendance = Attendance.where(member_id: @member.id, party_id: id)
+    if attendance = Attendance[member_id: @member.id, party_id: id]
       attendance.update(vegitarian: params[:vegitarian] == 'true',
                         non_alcoholic: params[:non_alcoholic] == 'true',
+                        message: params[:message],
                         allergies: params[:allergies])
-      flash[:success] = "Din anmälan är ändrad"
       publish 'attendance.update', attendance.to_hash
     else
       attendance = Attendance.create(vegitarian: params[:vegitarian] == 'true',
-                                       non_alcoholic: params[:non_alcoholic] == 'true',
-                                       allergies: params[:allergies],
-                                       member_id: @member.id,
-                                       party_id: id)
-      flash[:success] = "De är nu anmäld!"
+                                     non_alcoholic: params[:non_alcoholic] == 'true',
+                                     allergies: params[:allergies],
+                                     member_id: @member.id,
+                                     message: params[:message],
+                                     party_id: id)
       publish 'attendance.create', attendance.to_hash
     end
-    redirect '/'
+    redirect back
   end
+
+  post '/:id/attend/delete' do |id|
+    DB[:attendances].where(member_id: @member.id, party_id: id).delete
+    redirect back
+  end
+
   helpers do
     def name
       'party'

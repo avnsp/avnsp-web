@@ -2,13 +2,20 @@
   .col-sm-offset-3.col-sm-6.text-center
     %h1
       Välkommen till
+      %br
       %small Academia Vestigia Nuda Sinistri Pedis
 .row
   .col-sm-offset-3.col-sm-6.text-center
     %h3 Kommande event
 .row
   .col-sm-offset-3.col-sm-6.text-center
-    %ul.list-unstyled
-      -@events.each do |e|
-        %li
-          %a{href: "/party/#{e.id}"}= e.description
+    .list-group
+    -@parties.each do |p|
+      .list-group-item
+        %h4.list-group-item-heading
+          %a{href: "/party/#{p.id}"}= p.description
+        .list-group-item-text
+          -if p.is_attending?(@member.id)
+            Du är anmäld!
+          -else
+            !=haml(:attend_form, layout: false, locals: { party_id: p.id })

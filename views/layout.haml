@@ -25,6 +25,8 @@
               %a{href: "/party"} Fester
             %li{class: name == 'Album' ? 'active' : ''}
               %a{href: "/album"} Album
+            %li
+              %a{href: "/album"}= @member.full_name
     .container
       .row
         .col-md-12
