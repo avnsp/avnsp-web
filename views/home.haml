@@ -1,7 +1,14 @@
-%h1
-  Välkommen till
-  %small Academia Vestigia Nuda Sinistri Pedis
-%h3 Kommande event
-%ul
-  -@events.each do |e|
-    %li= e.description
+.row
+  .col-sm-offset-3.col-sm-6.text-center
+    %h1
+      Välkommen till
+      %small Academia Vestigia Nuda Sinistri Pedis
+.row
+  .col-sm-offset-3.col-sm-6.text-center
+    %h3 Kommande event
+.row
+  .col-sm-offset-3.col-sm-6.text-center
+    %ul.list-unstyled
+      -@events.each do |e|
+        %li
+          %a{href: "/party/#{e.id}"}= e.description
