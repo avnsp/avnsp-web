@@ -15,16 +15,10 @@ end
 
 class EmailWorker
   def start
-    subscribe("member.mailer.create", "member.created") do |_, msg|
-      plan = msg[:plan]
-      email_body = msg
-      send(msg[:email], "Välkommen till Academian", email_body)
-    end
-
     subscribe("member.login", "member.login") do |_, msg|
       @email = msg[:email]
       @token = msg[:token]
-      send msg[:email], "[Academian] login länk", haml(:login)
+      send msg[:email], "[Academian] login-länk", haml(:login)
     end
   end
 
