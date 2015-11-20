@@ -1,18 +1,12 @@
 %form{method: :post, action: "/party/#{party_id}/attend" }
-  .form-group
-    %label Vegitariskt?
-    .radio
-      %label.radio-inline
-        %input{type: :radio, name: :vegitarian, value: 'true', checked: a.id && a.vegitarian.to_s } Ja
-      %label.radio-inline
-        %input{type: :radio, name: :vegitarian, value: false, checked: a.id && !a.vegitarian } Nej
-  .form-group
-    %label Alkoholfritt?
-    .radio
-      %label.radio-inline
-        %input{type: :radio, name: :non_alcoholic, value: 'true', checked: a.id && a.non_alcoholic.to_s} Ja
-      %label.radio-inline
-        %input{type: :radio, name: :non_alcoholic, value: false, checked: a.id && !a.non_alcoholic} Nej
+  .checkbox
+    %label
+      %input{type: :checkbox, name: :vegitarian, value: 'true', checked: a.vegitarian }
+      Vegitariskt
+  .checkbox
+    %label
+      %input{type: :checkbox, name: :non_alcoholic, value: 'true', checked: a.non_alcoholic}
+      Alkoholfritt
   .form-group
     %label Allergier
     %input.form-control{type: :text, name: :allergies, value: a.allergies}
