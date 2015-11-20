@@ -3,7 +3,7 @@
     %h1= @member.full_name
 .row
   .col-sm-offset-3.col-sm-6
-    %img{src: @member[:profile_picture] && @member[:profile_picture].sub('thumb_', '')}
+    %img{src: @member.profile_picture_cdn, width: '100%' }
 .row
   .col-sm-offset-3.col-sm-6
     %h2.text-center Besökta Fester

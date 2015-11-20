@@ -3,7 +3,7 @@
     %h1 Ändra din profil
 .row
   .col-sm-offset-3.col-sm-6
-    %form{method: :post}
+    %form{method: :post, enctype: 'multipart/form-data'}
       .form-group
         %label Förnamn
         %input.form-control{type: :text, name: :first_name, value: @member.first_name}
@@ -33,4 +33,24 @@
       .form-group
         %label Postnummer
         %input.form-control{type: :number, name: :zip, value: @member.zip}
+      .form-group
+        %label Profilbild
+        %input{type: :file, accept: 'image/*', name: :profile_picture, onChange: "previewFile()"}
+        %img{src: @member.profile_picture_cdn, width: "100%", alt: "Profile picture preview..."}
       %button.btn.btn-default Spara
+:javascript
+  function previewFile() {
+    var preview = document.querySelector('img');
+    var file    = document.querySelector('input[type=file]').files[0];
+    var reader  = new FileReader();
+
+    reader.onloadend = function () {
+      preview.src = reader.result;
+    }
+
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "";
+    }
+  }

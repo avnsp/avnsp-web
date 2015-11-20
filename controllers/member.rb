@@ -17,6 +17,20 @@ class MemberController < BaseController
     }
     m[:zip] = nil if params[:zip].empty?
     m[:nick] = nil if  params[:nick].empty?
+    if f = params[:profile_picture]
+      tempfile = f[:tempfile]
+      size = tempfile.size
+      file = tempfile.read
+      path = "photos/profile-pictures/#{@member.id}.jpg"
+      m[:profile_picture] = path
+      publish('photo.upload',
+              file: Base64.encode64(file),
+              size: size,
+              content_type: f[:type],
+              versions: [
+                { path: path, quality: 75, resample: 72 },
+              ])
+    end
     Member.where(id: @member.id).update(m)
     redirect back
   end

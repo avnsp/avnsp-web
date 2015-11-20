@@ -17,6 +17,10 @@ class Member < Sequel::Model
   def attendance(party_id)
     attendances.find { |a| a.party_id == party_id } || Attendance.new
   end
+
+  def profile_picture_cdn
+    "https://d18qrfc4r3cv12.cloudfront.net/#{self.profile_picture}"
+  end
 end
 
 class Party < Sequel::Model
@@ -60,7 +64,6 @@ class Photo < Sequel::Model
   def original_temp
     "https://d18qrfc4r3cv12.cloudfront.net/#{self.original_path}"
   end
-
 end
 
 class Attendance < Sequel::Model

@@ -22,13 +22,19 @@ class AlbumController < BaseController
       file = tempfile.read
       caption = params[:captions][i]
       photo = Photo.create(name: f[:filename],
-                           s3_path: "avnsp/photos",
+                           s3_path: "photos",
                            caption: caption,
                            member_id: session[:id],
                            event_id: params[:event_id])
-      publish 'photo.upload', photo.to_hash.merge(file: Base64.encode64(file),
-                                                  size: size,
-                                                  content_type: f[:type])
+      publish('photo.upload',
+              file: Base64.encode64(file),
+              size: size,
+              content_type: f[:type],
+              versions: [
+                { path: photo[:path], quality: 75, resample: 72 },
+                { path: photo[:thumb_path], quality: 75, resample: 72, resize: '100' },
+                { path: photo[:original_path] },
+              ])
     end
     flash[:info] = "Bilderna kommer snart synas."
     redirect back
