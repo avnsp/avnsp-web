@@ -6,16 +6,18 @@ class MemberController < BaseController
   end
 
   post '/profile' do
-    m = Member.where(id: @member.id)
-    m.update(first_name: params[:first_name],
-             last_name: params[:last_name],
-             nick: params[:nick],
-             studied: params[:studied],
-             started: params[:started],
-             phone: params[:phone],
-             street: params[:street],
-             zip: params[:zip],
-             city: params[:city])
+    m = {
+      first_name: params[:first_name],
+      last_name: params[:last_name],
+      studied: params[:studied],
+      started: params[:started],
+      phone: params[:phone],
+      street: params[:street],
+      city: params[:city]
+    }
+    m[:zip] = nil if params[:zip].empty?
+    m[:nick] = nil if  params[:nick].empty?
+    Member.where(id: @member.id).update(m)
     redirect back
   end
 
