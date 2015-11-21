@@ -1,6 +1,11 @@
 require './controllers/base'
 
 class MemberController < BaseController
+  get '/' do
+    @members = Member.order(:last_name).all
+    haml :members
+  end
+
   get '/profile' do
     haml :profile
   end
@@ -43,7 +48,7 @@ class MemberController < BaseController
 
   helpers do
     def name
-      "Member"
+      "Matrikel"
     end
   end
 end

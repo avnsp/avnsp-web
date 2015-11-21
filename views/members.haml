@@ -1,0 +1,25 @@
+.row
+  .col-sm-offset-3.col-sm-6.text-center
+    %h1 Matrikel
+.row
+  .col-sm-offset-2.col-sm-6
+    %table.table
+      %thead
+        %tr
+          %th Efternamn
+          %th Förnamn
+          %th Smeknamn
+          %th Program
+          %th Inskrivningsår
+          %th Merit
+          %th Email
+      %tbody
+        -@members.each do |m|
+          %tr
+            %td= m.last_name
+            %td= m.first_name
+            %td= m.nick
+            %td= m.studied
+            %td= m.started
+            %td
+            %td= m.email

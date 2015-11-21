@@ -25,6 +25,8 @@
               %a{href: "/party"} Fester
             %li{class: name == 'Album' ? 'active' : ''}
               %a{href: "/album"} Album
+            %li{class: name == 'Matrikel' ? 'active' : ''}
+              %a{href: "/member"} Matrikel
           %ul.nav.navbar-nav.navbar-right
             %li
               %a.btn.btn-default{href: "/member/profile"}= @member.full_name
