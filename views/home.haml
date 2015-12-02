@@ -15,7 +15,7 @@
         %h4.list-group-item-heading
           %a{href: "/party/#{p.id}"}= p.description
         .list-group-item-text
-          -if p.is_attending?(@member.id)
+          -if p.is_attending?(@user.id)
             Du är anmäld!
           -else
-            !=haml(:attend_form, layout: false, locals: { party_id: p.id, a: @member.attendance(p.id) })
+            !=haml(:attend_form, layout: false, locals: { party_id: p.id, a: @user.attendance(p.id) })

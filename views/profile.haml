@@ -6,37 +6,37 @@
     %form{method: :post, enctype: 'multipart/form-data'}
       .form-group
         %label Förnamn
-        %input.form-control{type: :text, name: :first_name, value: @member.first_name}
+        %input.form-control{type: :text, name: :first_name, value: @user.first_name}
       .form-group
         %label Efternamen
-        %input.form-control{type: :text, name: :last_name, value: @member.last_name}
+        %input.form-control{type: :text, name: :last_name, value: @user.last_name}
       .form-group
         %label Smeknamn
-        %input.form-control{type: :text, name: :nick, value: @member.nick}
+        %input.form-control{type: :text, name: :nick, value: @user.nick}
       .form-group
         %label Studerade
         %select.form-control{name: :studied}
           -%w(M KTS Y MatNat TB Ling MT I D C IT).each do |program|
-            %option{selected: @member.studied == program}= program
+            %option{selected: @user.studied == program}= program
       .form-group
         %label Började
-        %input.form-control{type: :number, name: :started, value: @member.started}
+        %input.form-control{type: :number, name: :started, value: @user.started}
       .form-group
         %label Telefon
-        %input.form-control{type: :tel, name: :phone, value: @member.phone}
+        %input.form-control{type: :tel, name: :phone, value: @user.phone}
       .form-group
         %label Adress
-        %input.form-control{type: :text, name: :street, value: @member.street}
+        %input.form-control{type: :text, name: :street, value: @user.street}
       .form-group
         %label Ort
-        %input.form-control{type: :text, name: :city, value: @member.city}
+        %input.form-control{type: :text, name: :city, value: @user.city}
       .form-group
         %label Postnummer
-        %input.form-control{type: :number, name: :zip, value: @member.zip}
+        %input.form-control{type: :number, name: :zip, value: @user.zip}
       .form-group
         %label Profilbild
         %input{type: :file, accept: 'image/*', name: :profile_picture, onChange: "previewFile()"}
-        %img{src: @member.profile_picture_cdn, width: "100%", alt: "Profile picture preview..."}
+        %img{src: @user.profile_picture_cdn, width: "100%", alt: "Profile picture preview..."}
       %button.btn.btn-default Spara
 :javascript
   function previewFile() {

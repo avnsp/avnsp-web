@@ -3,7 +3,7 @@
     %h1 Matrikel
 .row
   .col-sm-offset-2.col-sm-6
-    %table.table
+    %table.table.sortable
       %thead
         %tr
           %th Efternamn
@@ -16,10 +16,13 @@
       %tbody
         -@members.each do |m|
           %tr
-            %td= m.last_name
+            %td
+              %a{href: url(m[:id])}= m.last_name
             %td= m.first_name
             %td= m.nick
             %td= m.studied
             %td= m.started
             %td
             %td= m.email
+%script{type: 'text/javascript', src: "/js/moment.min.js"}
+%script{type: 'text/javascript', src: "/js/bootstrap-sortable.js"}

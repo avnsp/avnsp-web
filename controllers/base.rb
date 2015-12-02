@@ -15,9 +15,9 @@ class BaseController < Sinatra::Base
 
   before do
     if ENV['RACK_ENV'] == 'production'
-      @member = Member[session[:id]]
+      @user = Member[session[:id]]
     else
-      @member = Member.order(:id).first
+      @user = Member.order(:id).first
     end
   end
 
@@ -35,6 +35,5 @@ class BaseController < Sinatra::Base
     def cancel_consumer consumer
       TH.cancel consumer
     end
-
   end
 end
