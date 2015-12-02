@@ -27,9 +27,12 @@
               %a{href: "/album"} Album
             %li{class: name == 'Matrikel' ? 'active' : ''}
               %a{href: "/member"} Matrikel
-          %ul.nav.navbar-nav.navbar-right
-            %li
-              %a.btn.btn-default{href: "/member/profile"}= @member.full_name
+          .navbar-right
+            %p.navbar-text
+              Signed in as
+              %a.navbar-link{href: "/member/#{@member.id}"}= @member.full_name
+            %form.navbar-form.navbar-right{method: :post, action: "/logout"}
+              %button.btn.btn-default Logga ut
     .container
       .row
         .col-md-12
