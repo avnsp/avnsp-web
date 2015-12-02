@@ -6,11 +6,11 @@ class MemberController < BaseController
     haml :members
   end
 
-  get '/profile' do
+  get '/edit' do
     haml :profile
   end
 
-  post '/profile' do
+  post '/edit' do
     m = {
       first_name: params[:first_name],
       last_name: params[:last_name],
