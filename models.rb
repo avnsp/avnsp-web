@@ -5,6 +5,7 @@ Sequel::Model.plugin :json_serializer
 
 class Member < Sequel::Model
   one_to_many :attendances
+  one_to_many :transactions
 
   def full_name
     [first_name, nick && "\"#{nick}\"", last_name].compact.join " "
@@ -20,6 +21,10 @@ class Member < Sequel::Model
 
   def profile_picture_cdn
     "https://d18qrfc4r3cv12.cloudfront.net/#{self.profile_picture}"
+  end
+
+  def balance
+    transactions_dataset.sum(:sum)
   end
 end
 
@@ -107,4 +112,7 @@ class Album < Sequel::Model
   def description
     text
   end
+end
+
+class Transaction < Sequel::Model
 end

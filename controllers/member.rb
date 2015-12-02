@@ -43,6 +43,7 @@ class MemberController < BaseController
   get '/:id' do |id|
     @member = Member[id]
     @parties = @member.parties.sort_by(&:date)
+    @transactions = @member.transactions.sort_by(&:timestamp).take(10)
     haml :member
   end
 

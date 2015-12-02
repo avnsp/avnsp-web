@@ -6,6 +6,28 @@
     %img{src: @member.profile_picture_cdn, width: '100%' }
 .row
   .col-sm-offset-3.col-sm-6
+    %dl
+      %dt Program
+      %dd= @member.studied
+      %dt Inskrivningsår
+      %dd= @member.started
+      %dt Telefon
+      %dd= @member.phone
+      %dt Hemadress
+      %dd
+        %address
+          = @member.street
+          = @member.zip
+          = @member.city
+      %dt Meriter
+      %dd
+      %dt Saldo
+      %dd= @member.balance
+      %dt Kontotransaktioner
+      -@transactions.each do |t|
+        %dd #{t[:text]}: #{t[:sum]}
+.row
+  .col-sm-offset-3.col-sm-6
     %h2.text-center Besökta Fester
     %table.table
       %thead
