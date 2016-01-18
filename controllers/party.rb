@@ -2,7 +2,7 @@ require './controllers/base'
 
 class PartyController < BaseController
   get '/' do
-    @parties = DB[:parties].order(:date).all
+    @parties = DB[:parties].reverse_order(:date).all
     haml :parties
   end
 
