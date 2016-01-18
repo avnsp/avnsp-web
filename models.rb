@@ -3,6 +3,8 @@ require 'sequel'
 
 Sequel::Model.plugin :json_serializer
 
+CF_DOMAIN = 'd18qrfc4r3cv12.cloudfront.net'.freeze
+
 class Member < Sequel::Model
   one_to_many :attendances
   one_to_many :transactions
@@ -20,7 +22,7 @@ class Member < Sequel::Model
   end
 
   def profile_picture_cdn
-    "https://d18qrfc4r3cv12.cloudfront.net/#{self.profile_picture}"
+    "https://#{CF_DOMAIN}/#{self.profile_picture}"
   end
 
   def balance
@@ -59,15 +61,15 @@ class Photo < Sequel::Model
   end
 
   def thumb_temp
-    "https://d18qrfc4r3cv12.cloudfront.net/#{self.thumb_path}"
+    "https://#{CF_DOMAIN}/#{self.thumb_path}"
   end
 
   def file_temp
-    "https://d18qrfc4r3cv12.cloudfront.net/#{self.path}"
+    "https://#{CF_DOMAIN}/#{self.path}"
   end
 
   def original_temp
-    "https://d18qrfc4r3cv12.cloudfront.net/#{self.original_path}"
+    "https://#{CF_DOMAIN}/#{self.original_path}"
   end
 end
 
