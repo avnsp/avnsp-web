@@ -18,32 +18,33 @@ class MemberController < BaseController
       started: params[:started],
       phone: params[:phone],
       street: params[:street],
-      city: params[:city]
+      city: params[:city],
+      zip: params[:zip].strip
     }
-    m[:zip] = nil if params[:zip].empty?
     m[:nick] = nil if  params[:nick].empty?
     if f = params[:profile_picture]
       tempfile = f[:tempfile]
       size = tempfile.size
       file = tempfile.read
-      path = "photos/profile-pictures/#{@member.id}.jpg"
+      _, ending = f[:type].split('/')
+      path = "photos/profile-pictures/#{@user.id}_#{Time.now.to_i}.#{ending}"
       m[:profile_picture] = path
       publish('photo.upload',
               file: Base64.encode64(file),
               size: size,
               content_type: f[:type],
               versions: [
-                { path: path, quality: 75, resample: 72 },
+                { path: path, quality: 80, resample: 80 }
               ])
     end
-    Member.where(id: @member.id).update(m)
+    Member.where(id: @user.id).update(m)
     redirect back
   end
 
   get '/:id' do |id|
     @member = Member[id]
     @parties = @member.parties.sort_by(&:date)
-    @transactions = @member.transactions.sort_by(&:timestamp).take(10)
+    @transactions = @member.transactions.sort_by(&:timestamp).reverse.take(10)
     haml :member
   end
 
