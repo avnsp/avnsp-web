@@ -16,7 +16,6 @@ class PhotoUploader
           b.resize(v[:resize]) if v[:resize]
         end
 
-        i.write v[:path].split('/').last
         ct = i.mime_type
         objects = s3.buckets['avnsp'].objects
         object = {
