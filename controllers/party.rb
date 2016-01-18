@@ -14,13 +14,13 @@ class PartyController < BaseController
   end
 
   get '/:id/attend' do |id|
-    @attendance = @member.attendances.select { |a| a.party_id == id.to_i }.first
+    @attendance = @user.attendances.select { |a| a.party_id == id.to_i }.first
     @attendance ||= Attendance.new
     haml :attend_form, locals: { party_id: id, a: @attendance }
   end
 
   post '/:id/attend' do |id|
-    if attendance = Attendance[member_id: @member.id, party_id: id]
+    if attendance = Attendance[member_id: @user.id, party_id: id]
       attendance.update(vegitarian: params[:vegitarian] == 'true',
                         non_alcoholic: params[:non_alcoholic] == 'true',
                         message: params[:message],
@@ -30,7 +30,7 @@ class PartyController < BaseController
       attendance = Attendance.create(vegitarian: params[:vegitarian] == 'true',
                                      non_alcoholic: params[:non_alcoholic] == 'true',
                                      allergies: params[:allergies],
-                                     member_id: @member.id,
+                                     member_id: @user.id,
                                      message: params[:message],
                                      party_id: id)
       publish 'attendance.create', attendance.to_hash
@@ -39,7 +39,7 @@ class PartyController < BaseController
   end
 
   post '/:id/attend/delete' do |id|
-    DB[:attendances].where(member_id: @member.id, party_id: id).delete
+    DB[:attendances].where(member_id: @user.id, party_id: id).delete
     redirect back
   end
 
