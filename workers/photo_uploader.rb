@@ -5,14 +5,16 @@ require 'mini_magick'
 class PhotoUploader
   def start
     subscribe 'photo.upload', 'photo.upload' do |rk, data|
-      s3 = AWS::S3.new
+      s3 = AWS::S3.new(region: 'eu-west-1')
       file = Base64.decode64(data[:file])
       image = MiniMagick::Image.read(file)
       data[:versions].each do |v|
         i = image.dup
-        i.quality(v[:quality]) if v[:quality]
-        i.resample(v[:resample]) if v[:resample]
-        i.resize(v[:resize]) if v[:resize]
+        i.combine_options do |b|
+          b.quality(v[:quality]) if v[:quality]
+          b.resample(v[:resample]) if v[:resample]
+          b.resize(v[:resize]) if v[:resize]
+        end
 
         i.write v[:path].split('/').last
         ct = i.mime_type
