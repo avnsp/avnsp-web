@@ -1,6 +1,5 @@
 require 'sinatra/base'
 require 'sinatra/flash'
-require 'sinatra/reloader'
 require 'haml'
 require 'tilt/haml'
 
@@ -20,8 +19,6 @@ class BaseController < Sinatra::Base
       @user = Member.order(:id).first
     end
   end
-
-  register Sinatra::Reloader if development?
 
   helpers do
     def subscribe qname, *topics, &blk
