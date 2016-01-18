@@ -23,9 +23,11 @@
       %dd
       %dt Saldo
       %dd= @member.balance
-      %dt Kontotransaktioner
-      -@transactions.each do |t|
-        %dd #{t[:text]}: #{t[:sum]}
+      %dt Kontotransaktioner:
+      %dd
+        %ul
+          -@transactions.each do |t|
+            %li #{t[:text]}: #{t[:sum]}
 .row
   .col-sm-offset-3.col-sm-6
     %h2.text-center Besökta Fester
