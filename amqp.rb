@@ -37,7 +37,9 @@ module Amqp
         if headers.content_type != 'application/json'
           raise "Unknown Content-Type: '#{headers.content_type}'"
         end
-        puts "=> #{qname} #{delivery.routing_key} #{body} #{headers}" if ENV['DEBUG']
+        if ENV['DEBUG'] == 'true'
+          puts "=> #{qname} #{delivery.routing_key} #{body} #{headers}"
+        end
         data = JSON.parse body, symbolize_names: true
 
         blk.call delivery.routing_key, data, headers
@@ -52,7 +54,7 @@ module Amqp
   end
 
   def publish(topic, data, opts = {})
-    puts "<= #{topic} #{opts} #{data}" if ENV['DEBUG']
+    puts "<= #{topic} #{opts} #{data}" if ENV['DEBUG'] == 'true'
     ch = Thread.current[:ch] ||= @pub_conn.create_channel
     t = ch.topic 'amq.topic', durable: true
     t.publish data.to_json, opts.merge(content_type: 'application/json', routing_key: topic)
