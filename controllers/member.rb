@@ -2,7 +2,7 @@ require './controllers/base'
 
 class MemberController < BaseController
   get '/' do
-    @members = Member.order(:last_name).all
+    @members = Member.all.sort_by(&:last_name)
     haml :members
   end
 
