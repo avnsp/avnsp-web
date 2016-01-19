@@ -5,7 +5,7 @@
       %small
         = @party.date
 .row
-  .col-sm-offset-3.col-sm-6
+  .col-sm-6
     %dl
       %dt När?
       %dd= @party.date
@@ -18,29 +18,34 @@
       %dt Att tänka på?
       %dd
         != @party.comment.to_s.gsub('\n','</br>')
-    - @albums.each do |a|
-      %a{href: '#'}= a.name
-    -if Date.today < @party.attendance_deadline
+  -if Date.today < @party.attendance_deadline
+    .col-sm-6
       .panel.panel-default
         .panel-heading
           %h4
             -if @party.is_attending?(@user.id)
               Du är anmäld
             -else
-              Anmäl dig nu
+              Anmäl dig nu!
         .panel-body
           !=haml(:attend_form, layout: false, locals: {party_id: @party.id, a: @user.attendance(@party.id)})
-    %table.table
-      %thead
-        %tr
-          %th #
-          %th Namn
-          %th Program
-          %th
-      %tbody
-        - @attendances.each do |a|
-          %tr
-            %td= a.member_previus_attendanceise
-            %td
-              %a{href: "/member/#{a[:member_id]}"}= a.member_name
-            %td= a.member_studied_started
+-unless @albums.empty?
+  %h4 Fotoalbum
+  %ul
+    - @albums.each do |a|
+      %li
+        %a{href: '#'}= a.name
+%table.table
+  %thead
+    %tr
+      %th #
+      %th Namn
+      %th Program
+      %th
+  %tbody
+    - @attendances.each do |a|
+      %tr
+        %td= a.member_previus_attendanceise
+        %td
+          %a{href: "/member/#{a[:member_id]}"}= a.member_name
+        %td= a.member_studied_started

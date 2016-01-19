@@ -13,15 +13,49 @@
 body, label, input, select, p {
   font-family: 'Lato','Droid sans', 'Lucida Grande', "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+.list-group, .list-group-item  {
+  background: inherit;
+}
+body {
+  background: transparent url('/img/tweed.png') repeat 0 0;
+  color: #fff;
+}
+.list-group-item {
+  border: none;
+}
+.jumbotron.jumbotron-avnsp {
+  color: #333;
+}
+.navbar.navbar-avnsp {
+  border-radius: 0;
+  margin-bottom; 20px;
+}
+.navbar.navbar-avnsp a {
+  color: #ccc;
+}
+.navbar.navbar-avnsp li a {
+  color: #aaa;
+}
+p.navbar-text.dark-background {
+  color: #aaa;
+}
+.content {
+  border 1px solid #ccc;
+  padding-bottom: 10em;
+}
+
 .navbar-default {
-  background-color: #fff;
-  border-color: #fff;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #eee;
+  background-color: rgba(100, 100, 100, 0.9);
+  border-color: #1f1f1f;
 }
 .wrapper {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+.btn.btn-default.btn-dark {
+  color: #ccc;
+  background: #333;
+  border-color: #444;
 }
 i.rotate-x{
   -webkit-transition-property: -webkit-transform;

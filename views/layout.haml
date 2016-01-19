@@ -11,7 +11,7 @@
     %script{type: 'text/javascript', src: "/js/jquery-2.0.3.js"}
     %script{type: 'text/javascript', src: "/js/bootstrap.js"}
   %body
-    %header.navbar.navbar-default{role: :navigation}
+    %header.navbar-avnsp.navbar.navbar-default{role: :navigation}
       .container{style: "padding-top: 20px; padding-bottom: 20px;"}
         .navbar-header
           %button.navbar-toggle.collapsed{type: 'button', data: { target: '.nav-collapse', toggle:'collapse' } }
@@ -28,12 +28,15 @@
             %li{class: name == 'Matrikel' ? 'active' : ''}
               %a{href: "/member"} Matrikel
           .navbar-right
-            %p.navbar-text
+            %p.navbar-text.dark-background
               Inloggad som
               %a.navbar-link{href: "/member/edit"}= @user.full_name
             %form.navbar-form.navbar-right{method: :post, action: "/logout"}
-              %button.btn.btn-default Logga ut
+              %button.btn.btn-default.btn-dark Logga ut
     .container
       .row
-        .col-md-12
-          !=yield
+        .col-sm-offset-1.col-sm-10.col-md-offset-1.col-md-10.content
+          .jumbotron.jumbotron-avnsp
+            .text-center
+              %img{src: '/img/avnsp-logo.png'}
+            !=yield
