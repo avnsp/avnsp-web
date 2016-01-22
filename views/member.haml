@@ -5,7 +5,9 @@
   .col-sm-12.text-center
     %img{src: @member.profile_picture_cdn, width: '100%', alt: 'Ingen profilbild uppladdad' }
 .row
-  .col-sm-12
+  .col-sm-6
+    .text-center
+      %h4 Info
     %dl
       %dt Program
       %dd= @member.studied
@@ -28,6 +30,13 @@
         %ul
           -@transactions.each do |t|
             %li #{t[:text]}: #{t[:sum]}
+  .col-sm-6
+    .text-center
+      %h4 Meriter
+    %dl
+      -@merits.each do |m|
+        %dt= [m.start, m.end].join(' - ')
+        %dd= m.appointment
 .row
   .col-sm-12
     %h2.text-center Besökta Fester

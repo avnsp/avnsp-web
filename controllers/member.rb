@@ -45,6 +45,7 @@ class MemberController < BaseController
     @member = Member[id]
     @parties = @member.parties.sort_by(&:date)
     @transactions = @member.transactions_dataset.reverse_order(:timestamp).take(10)
+    @merits = @member.merits
     haml :member
   end
 

@@ -8,6 +8,7 @@ CF_DOMAIN = 'd18qrfc4r3cv12.cloudfront.net'.freeze
 class Member < Sequel::Model
   one_to_many :attendances
   one_to_many :transactions
+  one_to_many :merits
 
   def full_name
     [first_name, nick && "\"#{nick}\"", last_name].compact.join " "
@@ -117,4 +118,7 @@ class Album < Sequel::Model
 end
 
 class Transaction < Sequel::Model
+end
+
+class Merit < Sequel::Model
 end
