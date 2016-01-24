@@ -25,9 +25,8 @@ class AuthController < BaseController
     if @member.nil?
       flash[:info] = 'Den emailen finns inte registrerad.'
     else
-      ts = DateTime.now
-      publish 'member.login', @member.to_hash.merge(ts: ts.to_s, token: generate_token(@member.email, ts))
-      flash[:success] = 'Login länken är skickad till din angivna email.'
+      ts = Time.now.to_i
+      publish 'member.login', @member.to_hash.merge(ts: ts, token: generate_token(@member.email, ts))
     end
     redirect back
   end
@@ -44,8 +43,7 @@ class AuthController < BaseController
     end
 
     def token_valid?(token, email, ts)
-      dt = DateTime.parse(ts)
-      dt < (DateTime.now - 300) && token == generate_token(email, params[:ts])
+      (Time.now - 300) < Time.at(ts.to_i) && token == generate_token(email, ts)
     end
   end
 end
