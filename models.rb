@@ -73,6 +73,12 @@ class Photo < Sequel::Model
   def original_temp
     "https://#{CF_DOMAIN}/#{self.original_path}"
   end
+  
+  def surrounding_ids
+    rows = Photo.dataset.order_by(:id).all
+    i = rows.index { |r| r[:id] == id }
+    rows[(i - 1)..(i + 1)].select { |r| r[:id] != id }.map(&:id)
+  end
 end
 
 class Attendance < Sequel::Model

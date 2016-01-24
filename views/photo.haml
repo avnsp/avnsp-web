@@ -1,7 +1,12 @@
 .row.text-center
   %h3= @photo.caption || "Tagen #{@photo.timestamp.to_date}"
 .row
-  %img.img-responsive{src: @photo.original_temp}
+  .overlay
+    %a.pull-left{href: url("/#{@photo.album_id}/#{@prev_id}")}
+      %i.glyphicon.glyphicon-chevron-left
+    %a.pull-right{href: url("/#{@photo.album_id}/#{@next_id}")}
+      %i.glyphicon.glyphicon-chevron-right
+    %img.img-responsive{src: @photo.original_temp}
 .row
   %h2.text-center
     Kommentarer

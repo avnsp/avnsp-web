@@ -9,6 +9,8 @@ class AlbumController < BaseController
 
   get '/:album_id/:id' do |album_id, id|
     @photo = Photo[id]
+    halt 404 unless @photo
+    @prev_id, @next_id = @photo.surrounding_ids
     @comments = @photo.comments
     haml :photo
   end
