@@ -43,9 +43,9 @@ class AuthController < BaseController
       Digest::SHA1.hexdigest(str)
     end
 
-    def token_valid?(token, email, params[:ts])
-      dt = DateTime.parse(params[:ts])
-      (dt < (DateTime.now - 300)) && token == generate_token(email, params[:ts])
+    def token_valid?(token, email, ts)
+      dt = DateTime.parse(ts)
+      dt < (DateTime.now - 300) && token == generate_token(email, params[:ts])
     end
   end
 end
