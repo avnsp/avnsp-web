@@ -34,7 +34,8 @@ class MemberController < BaseController
               size: size,
               content_type: f[:type],
               versions: [
-                { path: path, quality: 80, resample: 80 }
+                { path: path, quality: 80, resample: 80, resize: 820 },
+                { path: "#{path}.thumb", quality: 80, resample: 80, resize: 112 }
               ])
     end
     Member.where(id: @user.id).update(m)

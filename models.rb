@@ -26,6 +26,10 @@ class Member < Sequel::Model
     "https://#{CF_DOMAIN}/#{self.profile_picture}"
   end
 
+  def thumb_cdn
+    "https://#{CF_DOMAIN}/#{self.profile_picture}.thumb"
+  end
+
   def balance
     transactions_dataset.sum(:sum)
   end

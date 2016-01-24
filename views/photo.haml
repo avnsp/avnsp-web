@@ -16,7 +16,7 @@
       %a{href: "/member/#{c.member_id}"}= c.member.full_name
   .row
     .col-xs-3.col-sm-2
-      %img.img-responsive{src: c.member.profile_picture_cdn, alt: "ingen profilbild"}
+      %img.img-responsive{src: c.member.thumb_cdn, alt: "ingen profilbild"}
     .col-xs-9.col-sm-10
       = c.comment
   .row
