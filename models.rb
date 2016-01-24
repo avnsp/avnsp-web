@@ -38,6 +38,7 @@ end
 class Party < Sequel::Model
   one_to_many :attendances
   one_to_many :albums
+  one_to_many :organizers
 
   def description
     "#{name}, #{date}"
@@ -136,4 +137,9 @@ end
 
 class PhotoComment < Sequel::Model
   many_to_one :member
+end
+
+class Organizer < Sequel::Model
+  many_to_one :member
+  many_to_one :party
 end

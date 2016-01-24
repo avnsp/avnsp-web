@@ -10,6 +10,7 @@ class PartyController < BaseController
     @party = Party[id]
     @attendances = @party.attendances.sort_by(&:member_previus_attendanceise).reverse
     @albums = Album.where(party_id: id).all
+    @organizers = @party.organizers
     haml :party
   end
 

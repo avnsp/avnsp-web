@@ -18,6 +18,12 @@
       %dt Att tänka på?
       %dd
         != @party.comment.to_s.gsub('\n','</br>')
+      %dt Arrangörer
+      %dd
+        %ul
+          -@organizers.each do |o|
+            %li
+              %a{href: "/member/#{o.member_id}"}= o.member.full_name
   -if Date.today < @party.attendance_deadline
     .col-sm-6
       .panel.panel-default
@@ -34,7 +40,7 @@
   %ul
     - @albums.each do |a|
       %li
-        %a{href: '#'}= a.name
+        %a{href: "/album/#{a.id}"}= a.name || a.timestamp
 %table.table
   %thead
     %tr
