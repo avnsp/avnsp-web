@@ -16,9 +16,7 @@ end
 class EmailWorker
   def start
     subscribe("member.login", "member.login") do |_, msg|
-      @email = msg[:email]
-      @token = msg[:token]
-      send msg[:email], "[Academian] login-länk", haml(:login)
+      send msg[:email], "[Academian] login-länk", haml(:login, msg)
     end
   end
 
@@ -37,10 +35,10 @@ class EmailWorker
     end 
   end
 
-  def haml file_name
+  def haml(file_name, extras)
     file = File.read("./emails/#{file_name}.haml")
     engine = Haml::Engine.new(file)
-    s = Struct.new(:email, :token)
-    engine.render(s.new(@email, @token))
+    s = Struct.new(:email, :token, :ts)
+    engine.render(s.new(extras[:email], extras[:token], extras[:ts]))
   end
 end

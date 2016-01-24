@@ -25,8 +25,8 @@ class AuthController < BaseController
     if @member.nil?
       flash[:info] = 'Den emailen finns inte registrerad.'
     else
-      dt = DateTime.now
-      publish 'member.login', @member.to_hash.merge(token: generate_token(@member.email, dt))
+      ts = DateTime.now
+      publish 'member.login', @member.to_hash.merge(ts: ts.to_s, token: generate_token(@member.email, ts))
       flash[:success] = 'Login länken är skickad till din angivna email.'
     end
     redirect back
