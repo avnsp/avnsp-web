@@ -22,7 +22,8 @@ class MemberController < BaseController
       zip: params[:zip].strip
     }
     m[:nick] = nil if  params[:nick].empty?
-    if f = params[:profile_picture]
+    p params[:cropped]
+    if f = params[:cropped]
       tempfile = f[:tempfile]
       size = tempfile.size
       file = tempfile.read
@@ -34,8 +35,8 @@ class MemberController < BaseController
               size: size,
               content_type: f[:type],
               versions: [
-                { path: path, quality: 80, resample: 80, resize: 820 },
-                { path: "#{path}.thumb", quality: 80, resample: 80, resize: 112 }
+                { path: path, quality: 95, resample: 95},
+                { path: "#{path}.thumb", quality: 95, resample: 95, resize: 112 }
               ])
     end
     Member.where(id: @user.id).update(m)
