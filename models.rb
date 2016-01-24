@@ -49,6 +49,7 @@ end
 
 class Photo < Sequel::Model
   many_to_one :member
+  one_to_many :comments, order_by: :timestamp, class: :PhotoComment
 
   def s3_path= path
     self.path = path + "/#{SecureRandom.uuid}.jpg"
@@ -121,4 +122,8 @@ class Transaction < Sequel::Model
 end
 
 class Merit < Sequel::Model
+end
+
+class PhotoComment < Sequel::Model
+  many_to_one :member
 end

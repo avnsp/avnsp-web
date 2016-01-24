@@ -5,5 +5,8 @@
   #grid{'data-columns': ''}
     -@photos.each do |p|
       %div
-        %img{src: p.original_temp, width: '300'}
+        %a{href: url("/#{p.album_id}/#{p.id}")}
+          %img{src: p.original_temp, width: '300'}
+
+!= #haml(:photoswipe, layout: false)
 %script{type: 'text/javascript', src: "/js/salvattore.min.js"}

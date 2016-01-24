@@ -7,12 +7,17 @@ class AlbumController < BaseController
     haml :albums
   end
 
-  get '/:uuid/:name' do |uuid, name|
-    s3 = AWS::S3.new
-    objects = s3.buckets['avnsp'].objects
-    img = objects["avnsp/#{uuid}/#{name}"]
-    content_type img.content_type
-    img.read
+  get '/:album_id/:id' do |album_id, id|
+    @photo = Photo[id]
+    @comments = @photo.comments
+    haml :photo
+  end
+
+  post '/:id/comment' do |id|
+    PhotoComment.insert(member_id: @user.id,
+                        photo_id: id,
+                        comment: params[:comment])
+    redirect back
   end
 
   post '/' do

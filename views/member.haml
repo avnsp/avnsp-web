@@ -5,7 +5,7 @@
   .col-sm-12.text-center
     %img{src: @member.profile_picture_cdn, width: '100%', alt: 'Ingen profilbild uppladdad' }
 .row
-  .col-sm-6
+  .col-sm-4
     .text-center
       %h4 Info
     %dl
@@ -25,12 +25,14 @@
       %dd
       %dt Saldo
       %dd= @member.balance
-      %dt Kontotransaktioner:
-      %dd
-        %ul
-          -@transactions.each do |t|
-            %li #{t[:text]}: #{t[:sum]}
-  .col-sm-6
+  .col-sm-4
+    .text-center
+      %dt Kontotransaktioner
+    %dl
+      -@transactions.each do |t|
+        %dt= t[:text]
+        %dd= t[:sum]
+  .col-sm-4
     .text-center
       %h4 Meriter
     %dl

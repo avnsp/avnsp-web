@@ -1,55 +1,28 @@
-%form.uk-form{method: :post, enctype: 'multipart/form-data'}
-  %fieldset
-    %legend Ladda upp bilder
-    .uk-form-row
-      %label Välj fest
-      %select{name: :event_id}
-        %option{value: true} Välj...
-        - @parties.each do |p|
-          %option{value: p.id}= p.name
-    .uk-form-row
-      %input#input{type: :file, name: 'files[]', accept: 'image/*', multiple: 'true'}
-    .uk-form-row
-      #previews
-    .uk-form-row
-      %input.uk-button.uk-button-success{type: :submit, value: 'Ladda upp'}
-:javascript
-  $(function() {
-    var inputElement = document.getElementById("input");
-    inputElement.addEventListener("change", handleFiles, false);
-    function handleFiles() {
-      var fileList = this.files; /* now you can work with the file list */
-      console.log(fileList);
-      PreviewImage(fileList);
-    }
-  });
-  function PreviewImage(files) {
-    var preview = $("#previews")[0];
-    for (var i = 0; i < files.length; i++) {
-      var file = files[i];
-      var imageType = /image.*|video.*/;
-
-      if (!file.type.match(imageType)) {
-        continue;
-      }
-
-      var div = document.createElement("div");
-      div.classList.add("uk-thumbnail");
-      var img = document.createElement("img");
-      //img.classList.add("uk-thumbnail");
-      img.file = file;
-      var caption = document.createElement("input");
-      caption.type = "text";
-      caption.placeholder = "Caption";
-      caption.name = "captions[]";
-      caption.classList.add("uk-thumbnail-caption");
-
-      div.appendChild(img);
-      div.appendChild(caption);
-      previews.appendChild(div);
-
-      var reader = new FileReader();
-      reader.onload = (function(aImg) { return function(e) { aImg.src = e.target.result; }; })(img);
-        reader.readAsDataURL(file);
-      }
-    };
+.row.text-center
+  %h3= @photo.caption || "Tagen #{@photo.timestamp.to_date}"
+.row
+  %img.img-responsive{src: @photo.original_temp}
+.row
+  %h2.text-center
+    Kommentarer
+-@comments.each do |c|
+  .row
+    .col-sm-12
+      %a{href: "/member/#{c.member_id}"}= c.member.full_name
+  .row
+    .col-xs-3.col-sm-2
+      %img.img-responsive{src: c.member.profile_picture_cdn, alt: "ingen profilbild"}
+    .col-xs-9.col-sm-10
+      = c.comment
+  .row
+    .col-sm-12
+      %small.text-muted
+        %em= c.timestamp.strftime('%Y-%m-%d %H:%M')
+  .row
+    %hr
+.row
+  .col-sm-12
+    %form{method: :post, action: url("/#{@photo.id}/comment")}
+      .form-group
+        %input.form-control{type: :text, name: :comment, placeholder: "Kommentera här" }
+      %button.btn.btn-default{type: :submit} Spara
