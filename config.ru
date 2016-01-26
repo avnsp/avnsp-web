@@ -19,6 +19,21 @@ use Rack::Session::Cookie, {
   :expire_after => 24 * 3600 * 30,
 }
 
+class CloudFrontForwaredProtoFix
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    if env['HTTP_CLOUDFRONT_FORWARDED_PROTO']
+      env['SERVER_NAME'] = env['HTTP_HOST'] = "beta.academian.se"
+    end
+    @app.call(env)
+  end
+end
+
+use CloudFrontForwaredProtoFix
+
 use AuthController if ENV['RACK_ENV'] == 'production'
 
 map '/' do
