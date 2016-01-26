@@ -4,19 +4,11 @@ require './models'
 require './controllers'
 require 'rack/ssl-enforcer'
 
-use Rack::SslEnforcer, :hsts => true if ENV['RACK_ENV'] == 'production'
 
 use Rack::Static, {
   :root => "public",
   :urls => ["/fonts", "/css", "/js", "/img", "/favicon.ico", "/robots.txt"],
   :cache_control => 'public'
-}
-
-use Rack::Session::Cookie, {
-  :secret => ENV['SESSION_SECRET'] || 'xKU9Ybq23jafjhh',
-  :httponly => true,
-  :secure => (ENV['RACK_ENV'] == 'production'),
-  :expire_after => 24 * 3600 * 30,
 }
 
 class CloudFrontForwaredProtoFix
@@ -33,6 +25,14 @@ class CloudFrontForwaredProtoFix
 end
 
 use CloudFrontForwaredProtoFix
+use Rack::SslEnforcer, hsts: true if ENV['RACK_ENV'] == 'production'
+
+use Rack::Session::Cookie, {
+  :secret => ENV['SESSION_SECRET'] || 'xKU9Ybq23jafjhh',
+  :httponly => true,
+  :secure => (ENV['RACK_ENV'] == 'production'),
+  :expire_after => 24 * 3600 * 30,
+}
 
 use AuthController if ENV['RACK_ENV'] == 'production'
 
