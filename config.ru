@@ -4,7 +4,6 @@ require './models'
 require './controllers'
 require 'rack/ssl-enforcer'
 
-
 use Rack::Static, {
   :root => "public",
   :urls => ["/fonts", "/css", "/js", "/img", "/favicon.ico", "/robots.txt"],
@@ -18,7 +17,7 @@ class CloudFrontForwaredProtoFix
 
   def call(env)
     if env['HTTP_CLOUDFRONT_FORWARDED_PROTO']
-      env['SERVER_NAME'] = env['HTTP_HOST'] = "beta.academian.se"
+      env['SERVER_NAME'] = env['HTTP_HOST'] = FQDN
     end
     @app.call(env)
   end

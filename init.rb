@@ -1,5 +1,7 @@
 require 'aws'
 
+FQDN = 'beta.academian.se'
+
 require 'sequel'
 DB = Sequel.connect ENV['ELEPHANTSQL_URL'] || 'postgres://localhost/avnsp'
 
