@@ -3,7 +3,7 @@ require 'sequel'
 
 Sequel::Model.plugin :json_serializer
 
-CF_DOMAIN = 'FQDN'.freeze
+CF_DOMAIN = FQDN.freeze
 
 class Member < Sequel::Model
   one_to_many :attendances
