@@ -13,6 +13,7 @@ class BaseController < Sinatra::Base
   end
 
   before do
+    cache_control :public, :must_revalidate, max_age: 24 * 3600
     if ENV['RACK_ENV'] == 'production'
       @user = Member[session[:id]]
     else
