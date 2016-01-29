@@ -63,7 +63,9 @@
 
   btn.addEventListener('click', function(evt) {
     var nick = window.prompt('Nytt smeknamn')
-
+    if (nick == null) {
+      return
+    }
     var request = new XMLHttpRequest();
     request.open('PUT', #{@member.id} + '/nick', true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
