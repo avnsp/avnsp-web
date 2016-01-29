@@ -1,6 +1,9 @@
 .row
   .col-sm-12.text-center
     %h1= @member.full_name
+    -if @member.id != @user.id
+      %small.text-muted
+        %button.new-nick.btn.btn-link Ändra smeknamn
 .row
   .col-sm-12.text-center
     %img{src: @member.profile_picture_cdn, width: '100%', alt: 'Ingen profilbild uppladdad' }
@@ -55,3 +58,14 @@
               %a{href: "/party/#{p[:id]}"}= p[:date]
             %td= p[:name]
             %td= p[:theme]
+:javascript
+  var btn = document.querySelector(".new-nick")
+  btn.addEventListener('click', function(evt) {
+    var nick = window.prompt('Nytt smeknamn')
+
+    var request = new XMLHttpRequest();
+    request.open('PUT', #{@member.id} + '/nick', true);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    request.send("nick=" + nick);
+    location.reload();
+  });

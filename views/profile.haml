@@ -12,9 +12,6 @@
         %label Efternamn
         %input.form-control{type: :text, name: :last_name, value: @user.last_name}
       .form-group
-        %label Smeknamn
-        %input.form-control{type: :text, name: :nick, value: @user.nick}
-      .form-group
         %label Studerade
         %select.form-control{name: :studied}
           -%w(M KTS Y MatNat TB Ling MT I D C IT).each do |program|

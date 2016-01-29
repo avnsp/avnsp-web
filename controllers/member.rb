@@ -10,6 +10,13 @@ class MemberController < BaseController
     haml :profile
   end
 
+  put '/:id/nick' do |id|
+    nick = params[:nick]
+    nick = nil if nick.empty?
+    Member[id].update(nick: nick)
+    204
+  end
+
   post '/edit' do
     m = {
       first_name: params[:first_name],
