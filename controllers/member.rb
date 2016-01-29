@@ -13,8 +13,10 @@ class MemberController < BaseController
   put '/:id/nick' do |id|
     nick = params[:nick]
     nick = nil if nick.empty?
-    Member[id].update(nick: nick)
-    204
+    m = Member[id]
+    m.update(nick: nick)
+    content_type :text
+    m.full_name
   end
 
   post '/edit' do

@@ -1,6 +1,6 @@
 .row
   .col-sm-12.text-center
-    %h1= @member.full_name
+    %h1.full-name= @member.full_name
     -if @member.id != @user.id
       %small.text-muted
         %button.new-nick.btn.btn-link Ändra smeknamn
@@ -59,7 +59,8 @@
             %td= p[:name]
             %td= p[:theme]
 :javascript
-  var btn = document.querySelector(".new-nick")
+  var btn = document.querySelector(".new-nick");
+
   btn.addEventListener('click', function(evt) {
     var nick = window.prompt('Nytt smeknamn')
 
@@ -67,5 +68,9 @@
     request.open('PUT', #{@member.id} + '/nick', true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
     request.send("nick=" + nick);
-    location.reload();
+    request.onload = function() {
+      var resp = request.responseText;
+      document.querySelector('.full-name').innerHTML = resp;
+    };
+    request.responseText;
   });
