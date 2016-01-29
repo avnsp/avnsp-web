@@ -6,7 +6,9 @@ require 'tilt/haml'
 class BaseController < Sinatra::Base
   register Sinatra::Flash
   set :views, "./views"
-  set :haml, format: :html5, escape_html: true
+  set :haml, escape_html: true, ugly: true, format: :html5
+  set :protection, session: true
+  set :protected, true
 
   configure :development do
     enable :logging

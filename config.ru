@@ -25,6 +25,7 @@ end
 
 use CloudFrontForwaredProtoFix
 use Rack::SslEnforcer, hsts: true if ENV['RACK_ENV'] == 'production'
+use Rack::Deflater
 
 use Rack::Session::Cookie, {
   :secret => ENV['SESSION_SECRET'] || 'xKU9Ybq23jafjhh',
