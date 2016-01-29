@@ -2,6 +2,7 @@ require './controllers/base'
 
 class AuthController < BaseController
   before do
+    cache_control :public, max_age: 24 * 3600
     unless session[:id] || request.path =~ /^\/log(in|out)|auth/
       redirect "/login?return_url=#{request.url}"
     end
