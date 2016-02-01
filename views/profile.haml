@@ -1,10 +1,9 @@
-%link{href: "/css/cropper.min.css", rel: :stylesheet}
 .row
   .col-sm-12.text-center
     %h1 Ändra din profil
 .row
   .col-sm-12
-    %form#form-profile{method: :post, enctype: 'multipart/form-data'}
+    %form{method: :post, enctype: 'multipart/form-data'}
       .form-group
         %label Förnamn
         %input.form-control{type: :text, name: :first_name, value: @user.first_name}
@@ -32,47 +31,5 @@
         %label Postnummer
         %input.form-control{type: :text, name: :zip, value: @user.zip}
       .form-group
-        %label Profilbild
-        %input{type: :file, accept: 'image/*', name: :profile_picture, onChange: "previewFile()"}
-        %img.profile.img-responsive{src: @user.profile_picture_cdn, alt: "Profile picture preview..."}
+        %a{href: url('/profile-picture')} Byt profilbild här
       %button.btn.btn-default Spara
-%script{type: 'text/javascript', src: "/js/cropper.min.js"}
-:javascript
-  var imgProfile = $('img.profile');
-  function previewFile() {
-    var file    = document.querySelector('input[type=file]').files[0];
-    var reader  = new FileReader();
-
-    reader.onloadend = function () {
-      imgProfile.cropper('replace', reader.result);
-    }
-
-    if (file) {
-      reader.readAsDataURL(file);
-    } else {
-      preview.src = "";
-    }
-  }
-
-  imgProfile.cropper();
-
-  $('#form-profile').submit(function(e) {
-    e.preventDefault();
-    imgProfile.cropper('getCroppedCanvas').toBlob(function (blob) {
-      var formData = new FormData(e.target);
-        formData.append('cropped', blob);
-        $.ajax('/member/edit', {
-          type: 'POST',
-          data: formData,
-          processData: false,
-          contentType: false,
-          success: function () {
-            console.log('Upload success');
-          },
-          error: function () {
-            console.log('Upload error');
-          }
-        })
-      })
-    return false
-  })

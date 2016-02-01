@@ -10,6 +10,29 @@ class MemberController < BaseController
     haml :profile
   end
 
+  get '/profile-picture' do
+    haml :profile_picture
+  end
+
+  post '/profile_picture' do
+    f = params[:cropped]
+    return redirect back unless f
+    tempfile = f[:tempfile]
+    size = tempfile.size
+    file = tempfile.read
+    _, ending = f[:type].split('/')
+    path = "photos/profile-pictures/#{@user.id}_#{Time.now.to_i}.#{ending}"
+    Member[@user.id].update(profile_picture: path)
+    publish('photo.upload',
+            file: Base64.encode64(file),
+            size: size,
+            content_type: f[:type],
+            versions: [
+              { path: path, quality: 95, resample: 95},
+              { path: "#{path}.thumb", quality: 95, resample: 95, resize: 112 }
+            ])
+  end
+
   put '/:id/nick' do |id|
     nick = params[:nick]
     nick = nil if nick.empty?
@@ -30,22 +53,6 @@ class MemberController < BaseController
       city: params[:city],
       zip: params[:zip].strip
     }
-    if f = params[:cropped]
-      tempfile = f[:tempfile]
-      size = tempfile.size
-      file = tempfile.read
-      _, ending = f[:type].split('/')
-      path = "photos/profile-pictures/#{@user.id}_#{Time.now.to_i}.#{ending}"
-      m[:profile_picture] = path
-      publish('photo.upload',
-              file: Base64.encode64(file),
-              size: size,
-              content_type: f[:type],
-              versions: [
-                { path: path, quality: 95, resample: 95},
-                { path: "#{path}.thumb", quality: 95, resample: 95, resize: 112 }
-              ])
-    end
     Member.where(id: @user.id).update(m)
     redirect back
   end
