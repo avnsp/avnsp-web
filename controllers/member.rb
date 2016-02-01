@@ -30,8 +30,6 @@ class MemberController < BaseController
       city: params[:city],
       zip: params[:zip].strip
     }
-    m[:nick] = nil if  params[:nick].empty?
-    p params[:cropped]
     if f = params[:cropped]
       tempfile = f[:tempfile]
       size = tempfile.size
