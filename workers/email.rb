@@ -38,7 +38,7 @@ class EmailWorker
   def haml(file_name, extras)
     file = File.read("./emails/#{file_name}.haml")
     engine = Haml::Engine.new(file)
-    s = Struct.new(:email, :token, :ts)
-    engine.render(s.new(extras[:email], extras[:token], extras[:ts]))
+    s = Struct.new(:email, :token, :ts, :hostname)
+    engine.render(s.new(extras[:email], extras[:token], extras[:ts], extras[:hostname]))
   end
 end
