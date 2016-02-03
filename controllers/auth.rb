@@ -28,9 +28,9 @@ class AuthController < BaseController
       flash[:info] = 'Den emailen finns inte registrerad.'
     else
       ts = Time.now.to_i
-      domain = ENV['RACK_ENV'] == 'production' ? FQDN : 'localhost:9292'
+      hostname = ENV['RACK_ENV'] == 'production' ? FQDN : 'localhost:9292'
       token = generate_token(@member.email, ts)
-      msg = { email: @member.email, ts: ts, domain: domain, token: token }
+      msg = { email: @member.email, ts: ts, hostname: hostname, token: token }
       publish('member.login', msg)
     end
     redirect back
