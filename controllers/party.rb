@@ -36,7 +36,7 @@ class PartyController < BaseController
                                      party_id: id)
       publish 'attendance.create', attendance.to_hash
     end
-    redirect back
+    redirect url(id)
   end
 
   post '/:id/attend/delete' do |id|
