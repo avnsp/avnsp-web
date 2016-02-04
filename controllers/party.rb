@@ -41,7 +41,7 @@ class PartyController < BaseController
 
   post '/:id/attend/delete' do |id|
     DB[:attendances].where(member_id: @user.id, party_id: id).delete
-    redirect back
+    redirect url(id)
   end
 
   helpers do
