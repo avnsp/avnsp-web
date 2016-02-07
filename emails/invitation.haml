@@ -1,0 +1,33 @@
+%p
+  Kära #{nick}!
+  Lördagen den #{party_date} är det dags för #{party_name}!
+  %br
+  Inbjudan: finns
+  = succeed ('.') do
+    %a{href: "https://academian.se/party/#{party_id}/invitation"} här
+  %br
+  Anmälan görs på hemsidan, senast söndagen den #{party_last_att_date}.
+  -if 
+    Notera att anmälningsavgiften ökar med 50 öre om dagen.
+  %br
+  Du har #{balance} kr på kontot. Om du anmäler dig får du #{balance_after } kr kvar att strecka för.
+%p
+  ="----"
+  Det går inte att nog understryka hur viktigt det är att vi har aktuella och så framtidssäkra adressuppgifter som möjligt. Var vänlig hör av dig (eller ändra själv på hemsidan) om nedastående inte stämmer.
+
+  Den postadress vi har registrerad till dig är:
+  %address
+    #{street}
+    %br
+    #{zip} #{city}
+    ="----"
+%p
+  Med vänliga hälsningar,
+  Arbetslunchkommittén och Cheferiet
+  %br
+  genom
+  %br
+  Magnus Hörberg
+  Chef d'Ordinateur Emeritus
+  %br
+  %a{href: 'https://academian.se'} https://academian.se
