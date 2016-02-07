@@ -18,7 +18,7 @@ class EmailWorker
     subscribe("member.login", "member.login") do |_, msg|
       s = Struct.new(:email, :token, :ts, :hostname)
       extras = s.new(msg[:email], msg[:token], msg[:ts], msg[:hostname])
-      send msg[:email], "[Academian] login-länk", haml(:login, extras)
+      send msg[:email], "login-länk", haml(:login, extras)
     end
 
     subscribe('party.invitation', 'send-invitations') do |_, msg|
@@ -28,7 +28,7 @@ class EmailWorker
                      msg[:party_last_att_date], msg[:party_id], msg[:balance],
                      msg[:balance_after], msg[:street], msg[:zip], msg[:city])
       send(msg[:email],
-           "[Academian] Inbjudan #{msg[:party_name]}",
+           "Inbjudan #{msg[:party_name]}",
            haml(:invitation, extras))
     end
   end
@@ -40,9 +40,9 @@ class EmailWorker
       return
     end
     Mail.deliver do
-      from          'auth@academian.se'
+      from          'cdo@academian.se'
       to            to
-      subject       sub
+      subject       "[Academian] #{sub}"
       content_type  'text/html; charset=UTF-8'
       body          body
     end 
