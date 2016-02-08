@@ -1,0 +1,18 @@
+%h1.text-center
+  Kontohändelser
+%table.table
+  %thead
+    %tr
+      %th Datum
+      %th Text
+      %th Summa
+      %th Saldo
+  %tbody
+    - balance = 0
+    -@transactions.each do |t|
+      - balance += t.sum
+      %tr
+        %td= t.timestamp
+        %td= t.text
+        %td= t.sum
+        %td= balance
