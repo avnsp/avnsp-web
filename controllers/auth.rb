@@ -15,6 +15,9 @@ class AuthController < BaseController
 
   get '/auth' do
     cache_control :public, max_age: 0
+    if (Time.now - 600) < Time.at(params[:ts].to_i)
+      halt 401, 'Den här länken är inte giltig längre, länkarna är giltiga i 10 min. Försök beställa en ny, annars skicka ett email till cdo@academian.se'
+    end
     unless token_valid?(params[:token], params[:email], params[:ts])
       halt 401, 'Ngt blev fel i autensieringen. Skicka ett email till cdo@academian.se'
     end
@@ -48,7 +51,7 @@ class AuthController < BaseController
     end
 
     def token_valid?(token, email, ts)
-      (Time.now - 300) < Time.at(ts.to_i) && token == generate_token(email, ts)
+      (Time.now - 600) < Time.at(ts.to_i) && token == generate_token(email, ts)
     end
   end
 end
