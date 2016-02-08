@@ -8,7 +8,7 @@ class AuthController < BaseController
   end
 
   get '/login' do
-    return redirect '/' if session[:id]
+    redirect '/' if session[:id]
     cache_control :public, :must_revalidate, max_age: 24 * 3600
     haml :login, layout: false
   end
