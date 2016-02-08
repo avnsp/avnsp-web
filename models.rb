@@ -7,7 +7,7 @@ CF_DOMAIN = FQDN.freeze
 
 class Member < Sequel::Model
   one_to_many :attendances
-  one_to_many :transactions
+  one_to_many :transactions, order: :timestamp
   one_to_many :merits
 
   def full_name

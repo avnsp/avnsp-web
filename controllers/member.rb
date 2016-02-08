@@ -65,6 +65,12 @@ class MemberController < BaseController
     haml :member
   end
 
+  get '/:id/transactions' do |id|
+    member = Member[id]
+    @transactions = member.transactions
+    haml :transactions
+  end
+
   helpers do
     def name
       "Matrikel"

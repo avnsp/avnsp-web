@@ -30,7 +30,12 @@
       %dd= @member.balance
   .col-sm-4
     .text-center
-      %dt Kontotransaktioner
+      %h4
+        Kontotransaktioner
+        %small
+          %a{href: url("/#{@member.id}/transactions")}
+            =surround('(', ')') do
+              alla händelser
     %dl
       -@transactions.each do |t|
         %dt= t[:text]
