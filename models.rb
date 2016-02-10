@@ -14,8 +14,10 @@ class Member < Sequel::Model
     [first_name, nick && "\"#{nick}\"", last_name].compact.join " "
   end
 
-  def parties
-    attendances.map(&:party)
+  def parties(date = nil)
+    parties = attendances.map(&:party)
+    parties = parties.select { |p| p.date < date } if date
+    parties.sort_by(&:date)
   end
 
   def attendance(party_id)

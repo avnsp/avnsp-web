@@ -59,7 +59,7 @@ class MemberController < BaseController
 
   get '/:id' do |id|
     @member = Member[id]
-    @parties = @member.parties.sort_by(&:date)
+    @parties = @member.parties(Date.today)
     @transactions = @member.transactions_dataset.reverse_order(:timestamp).take(10)
     @merits = @member.merits
     haml :member
