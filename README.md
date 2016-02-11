@@ -10,9 +10,9 @@ On the other end a photo processing app handles compression, scaling and uploadi
 
 Requirements
 ------------
-* Ruby-2.1
-* RabbitMQ 3.2
-* Postgresql 9.3
+* Ruby-2.3
+* RabbitMQ 3.5
+* Postgresql 9.2 +
 
 ###Setup env
 ```
