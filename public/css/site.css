@@ -41,13 +41,18 @@ body {
   background: inherit;
   margin-top: -2px;
 }
-.navbar.navbar-avnsp a {
+.navbar.navbar-avnsp a, .navbar-avnsp .dropdown-menu a {
   color: #ccc;
+}
+.navbar-avnsp .dropdown-menu form {
+  border: none;
+  box-shadow: none;
+  margin: 0;
 }
 .navbar.navbar-avnsp li a {
   color: #aaa;
 }
-p.navbar-text.dark-background {
+.dark-background {
   color: #aaa;
 }
 .content {
