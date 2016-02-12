@@ -41,17 +41,23 @@
     - @albums.each do |a|
       %li
         %a{href: "/album/#{a.id}"}= a.name || a.timestamp
-%table.table
-  %thead
-    %tr
-      %th #
-      %th Namn
-      %th Program
-      %th
-  %tbody
-    - @attendances.each do |a|
+.row
+  .text-center
+    %h3
+      Anmälda
+      %small
+        = @attendances.count
+  %table.table
+    %thead
       %tr
-        %td= a.member_previus_attendanceise
-        %td
-          %a{href: "/member/#{a[:member_id]}"}= a.member_name
-        %td= a.member_studied_started
+        %th #
+        %th Namn
+        %th Program
+        %th
+    %tbody
+      - @attendances.each do |a|
+        %tr
+          %td= a.member_previus_attendanceise
+          %td
+            %a{href: "/member/#{a[:member_id]}"}= a.member_name
+          %td= a.member_studied_started
