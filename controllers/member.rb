@@ -6,7 +6,7 @@ class MemberController < BaseController
     haml :members
   end
 
-  get '/edit' do
+  get '/profile-edit' do
     haml :profile
   end
 
@@ -14,7 +14,7 @@ class MemberController < BaseController
     haml :profile_picture
   end
 
-  post '/profile_picture' do
+  post '/profile-picture' do
     f = params[:cropped]
     return redirect back unless f
     tempfile = f[:tempfile]
@@ -42,7 +42,7 @@ class MemberController < BaseController
     m.full_name
   end
 
-  post '/edit' do
+  post '/profile-edit' do
     m = {
       first_name: params[:first_name],
       last_name: params[:last_name],
