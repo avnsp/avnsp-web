@@ -23,8 +23,15 @@ class PartyController < BaseController
     haml :buy
   end
 
+  get '/:id/stream' do |id|
+    @password = @username = 'avnsp'
+    @party = Party[id]
+    p @attendances = @party.attendances.map(&:nick).sort
+    p @purchases = @party.purchases_highchart
+    haml :stream, layout: false
+  end
+
   post '/:id/buy' do |id|
-    redirect back if q == 0
     a = DB[:articles].where(name: params[:name]).first
     q = params[:q].to_i + params[:change].to_i
     redirect back if q == 0
@@ -38,6 +45,7 @@ class PartyController < BaseController
                             article_id: a[:id],
                             quantity: q)
     end
+    publish("mqtt-bridge.#{id}", Party[id].purchases_highchart)
     redirect back
   end
 

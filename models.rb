@@ -46,6 +46,7 @@ class Party < Sequel::Model
   one_to_many :attendances
   one_to_many :albums
   one_to_many :organizers
+  one_to_many :purchases
 
   def description
     "#{name}, #{date}"
@@ -53,6 +54,20 @@ class Party < Sequel::Model
 
   def is_attending?(member_id)
     attendances.any? { |a| a.member_id == member_id }
+  end
+
+  def purchases_highchart
+    %w(Öl Snaps Cider Bastuöl Sångbok Läsk).map do |name|
+      data = attendances.sort_by(&:nick).map do |a|
+        p = purchases.find { |p| p.name == name && p.member_id == a.member_id }
+        p&.quantity || 0
+      end
+      {
+        id: name,
+        name: name,
+        data: data.flatten,
+      }
+    end
   end
 end
 
@@ -96,6 +111,10 @@ end
 class Attendance < Sequel::Model
   many_to_one :member
   many_to_one :party
+
+  def nick
+    member.nick || member.first_name
+  end
 
   def member_name
     member.full_name
@@ -153,6 +172,8 @@ end
 
 class Purchase < Sequel::Model
   many_to_one :article
+  many_to_one :party
+  many_to_one :member
 
   def name
     article.name
