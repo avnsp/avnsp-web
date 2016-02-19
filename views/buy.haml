@@ -7,4 +7,4 @@
         %input.btn.btn-primary.btn-lg{type: :submit, value: '-1', name: :change, disabled: q == 0 || @party.date != Date.today}
         %input{type: :hidden, name: :q, value: q}
         %label= q
-        %input.btn.btn-primary.btn-lg{type: :submit, value: '+1', name: :change, disabled: @party.date == Date.today}
+        %input.btn.btn-primary.btn-lg{type: :submit, value: '+1', name: :change, disabled: @party.date != Date.today}
