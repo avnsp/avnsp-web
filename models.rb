@@ -9,6 +9,11 @@ class Member < Sequel::Model
   one_to_many :attendances
   one_to_many :transactions, order: :timestamp
   one_to_many :merits
+  one_to_many :purchases
+
+  def purchases(id)
+    purchases_dataset.where(party_id: id)
+  end
 
   def full_name
     [first_name, nick && "\"#{nick}\"", last_name].compact.join " "
@@ -144,4 +149,15 @@ end
 class Organizer < Sequel::Model
   many_to_one :member
   many_to_one :party
+end
+
+class Purchase < Sequel::Model
+  many_to_one :article
+
+  def name
+    article.name
+  end
+end
+
+class Article < Sequel::Model
 end

@@ -14,6 +14,33 @@ class PartyController < BaseController
     haml :party
   end
 
+  get '/:id/buy' do |id|
+    @party = Party[id]
+    @purchases = { Öl: 0, Snaps: 0, Cider: 0, Bastuöl: 0, Sångbok: 0, Läsk: 0 }
+    @user.purchases(id).each do |p|
+      @purchases[p.name.to_sym] = p.quantity
+    end
+    haml :buy
+  end
+
+  post '/:id/buy' do |id|
+    redirect back if q == 0
+    a = DB[:articles].where(name: params[:name]).first
+    q = params[:q].to_i + params[:change].to_i
+    redirect back if q == 0
+    if DB[:purchases].where(party_id: id, member_id: @user.id, article_id: a[:id]).any?
+      DB[:purchases].
+        where(party_id: id, member_id: @user.id, article_id: a[:id]).
+        update(quantity: q)
+    else
+      DB[:purchases].insert(party_id: id,
+                            member_id: @user.id,
+                            article_id: a[:id],
+                            quantity: q)
+    end
+    redirect back
+  end
+
   get '/:id/invitation' do |id|
     party = Party[id]
     s3 = AWS::S3.new(region: 'eu-west-1')
@@ -61,6 +88,9 @@ class PartyController < BaseController
   helpers do
     def name
       'party'
+    end
+
+    def party_articles
     end
   end
 end
