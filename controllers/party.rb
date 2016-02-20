@@ -34,7 +34,7 @@ class PartyController < BaseController
   post '/:id/buy' do |id|
     a = DB[:articles].where(name: params[:name]).first
     q = params[:q].to_i + params[:change].to_i
-    redirect url("/#{id}/buy") if q == 0
+    redirect url("/#{id}/buy") if q < 0
     if DB[:purchases].where(party_id: id, member_id: @user.id, article_id: a[:id]).any?
       DB[:purchases].
         where(party_id: id, member_id: @user.id, article_id: a[:id]).
