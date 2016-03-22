@@ -36,7 +36,7 @@
             -else
               Anmäl dig nu!
         .panel-body
-          !=haml(:attend_form, layout: false, locals: {party_id: @party.id, a: @user.attendance(@party.id)})
+          !=haml(:attend_form, layout: false, locals: {party_id: @party.id, a: @user.attendance(@party.id), party_type: @party.type })
 -unless @albums.empty?
   %h4 Fotoalbum
   %ul

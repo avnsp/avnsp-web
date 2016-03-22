@@ -38,7 +38,7 @@ class Member < Sequel::Model
   end
 
   def balance
-    transactions_dataset.sum(:sum)
+    transactions_dataset.sum(:sum) || 0
   end
 end
 
@@ -111,6 +111,11 @@ end
 class Attendance < Sequel::Model
   many_to_one :member
   many_to_one :party
+  one_to_many :right_feet, class: :RightFoot
+
+  def right_foot
+    right_feet.first
+  end
 
   def nick
     member.nick || member.first_name
@@ -130,6 +135,15 @@ class Attendance < Sequel::Model
     attendances.select do |a|
       a.party.type.include?(type) && a.party.date < party.date
     end.count
+  end
+
+  def add_right_foot(right_foot)
+    RightFoot.where(attendance_id: id).delete
+    RightFoot.create(attendance_id: id,
+                     name: right_foot['name'],
+                     vegitarian: right_foot['vegitarian'] == 'true',
+                     non_alcoholic: right_foot['non_alcoholic'] == 'true',
+                     allergies: right_foot['allergies'])
   end
 end
 
@@ -182,3 +196,8 @@ end
 
 class Article < Sequel::Model
 end
+
+class RightFoot < Sequel::Model(:right_feet)
+  many_to_one :attendance
+end
+

@@ -13,6 +13,22 @@
   .form-group
     %label Meddelande till arrangörerna
     %textarea.form-control{name: :message}= a.message
+  -if party_type.include?('fest')
+    %h4 Högerfot
+    .form-group
+      %label Namn
+      %input.form-control{type: :text, name: 'right_foot[name]', value: a.right_foot&.name}
+    .checkbox
+      %label
+        %input{type: :checkbox, name: 'right_foot[vegitarian]', value: 'true', checked: a.right_foot&.vegitarian }
+        Vegetariskt
+    .checkbox
+      %label
+        %input{type: :checkbox, name: 'right_foot[non_alcoholic]', value: 'true', checked: a.right_foot&.non_alcoholic}
+        Alkoholfritt
+    .form-group
+      %label Allergier
+      %input.form-control{type: :text, name: 'right_foot[allergies]', value: a.right_foot&.allergies}
   %button.btn.btn-default
     -if a.id
       Ändra

@@ -75,6 +75,7 @@ class PartyController < BaseController
                         non_alcoholic: params[:non_alcoholic] == 'true',
                         message: params[:message],
                         allergies: params[:allergies])
+      attendance.add_right_foot(params[:right_foot])
       publish 'attendance.update', attendance.to_hash
     else
       attendance = Attendance.create(vegitarian: params[:vegitarian] == 'true',
@@ -83,6 +84,7 @@ class PartyController < BaseController
                                      member_id: @user.id,
                                      message: params[:message],
                                      party_id: id)
+      attendance.add_right_foot(params[:right_foot])
       publish 'attendance.create', attendance.to_hash
     end
     redirect url(id)

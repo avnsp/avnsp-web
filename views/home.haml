@@ -28,4 +28,4 @@
             -if p.is_attending?(@user.id)
               Du är anmäld!
             -elsif DateTime.now < p.attendance_deadline
-              !=haml(:attend_form, layout: false, locals: { party_id: p.id, a: @user.attendance(p.id) })
+              !=haml(:attend_form, layout: false, locals: { party_id: p.id, a: @user.attendance(p.id), party_type: p.type })
