@@ -10,20 +10,28 @@
     %a{href: "https://academian.se/party/#{party_id}/invitation"} här
   %br
   Anmälan görs på hemsidan, senast söndagen den #{party_last_att_date}.
-  -if 
-    Notera att anmälningsavgiften ökar med 50 öre om dagen.
+  Notera att anmälningsavgiften ökar med 50 öre om dagen.
   %br
-  Du har #{balance} kr på kontot. Om du anmäler dig får du #{balance_after } kr kvar att strecka för.
+  Du har #{balance} kr på kontot. Om du anmäler dig har du #{balance_after} kr
+  -if balance_after < 0
+    sätt gärna in pengar innan festen så du har något att strecka för.
+  -else
+    kvar att strecka för.
 %p
   ="----"
   %br
-  Det går inte att nog understryka hur viktigt det är att vi har aktuella och så framtidssäkra adressuppgifter som möjligt. Var vänlig hör av dig (eller ändra själv på hemsidan) om nedastående inte stämmer.
+  -if street && zip && city
+    Det går inte att nog understryka hur viktigt det är att vi har aktuella och så framtidssäkra adressuppgifter som möjligt. Var vänlig hör av dig (eller ändra själv på hemsidan) om nedastående inte stämmer.
 
-  Den postadress vi har registrerad till dig är:
-  %address
-    #{street}
-    %br
-    #{zip} #{city}
+    Den postadress vi har registrerad till dig är:
+    %address
+      #{street}
+      %br
+      #{zip} #{city}
+  -else
+    Vi saknar din postadress, gå gärna in på 
+    %a{href: "https://academian.se/member/profile-edit"} hemsidan
+    för att lägga till en den.
   ="----"
 %p
   Med vänliga hälsningar,
