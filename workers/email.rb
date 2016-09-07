@@ -39,13 +39,19 @@ class EmailWorker
       puts body
       return
     end
-    Mail.deliver do
+    m = Mail.new do
       from          'cdo@academian.se'
       to            to
       subject       "[Academian] #{sub}"
       content_type  'text/html; charset=UTF-8'
       body          body
     end 
+    if ENV['RACK_ENV'] == 'production' || ENV['TEST']
+      m.deliver
+    else
+      puts "=== EMAIL ==="
+      puts m.to_s
+    end
   end
 
   def haml(file_name, extras)
