@@ -70,13 +70,12 @@ class PartyController < BaseController
   end
 
   post '/:id/attend' do |id|
-    if attendance = Attendance[member_id: @user.id, party_id: id]
+    rk = if attendance = Attendance[member_id: @user.id, party_id: id]
       attendance.update(vegitarian: params[:vegitarian] == 'true',
                         non_alcoholic: params[:non_alcoholic] == 'true',
                         message: params[:message],
                         allergies: params[:allergies])
-      attendance.add_right_foot(params[:right_foot])
-      publish 'attendance.update', attendance.to_hash
+      'attendance.update'
     else
       attendance = Attendance.create(vegitarian: params[:vegitarian] == 'true',
                                      non_alcoholic: params[:non_alcoholic] == 'true',
@@ -84,9 +83,10 @@ class PartyController < BaseController
                                      member_id: @user.id,
                                      message: params[:message],
                                      party_id: id)
-      attendance.add_right_foot(params[:right_foot])
-      publish 'attendance.create', attendance.to_hash
+      'attendance.create'
     end
+    attendance.add_right_foot(params[:right_foot]) if params[:right_foot]
+    publish rk, attendance.to_hash
     redirect url(id)
   end
 
