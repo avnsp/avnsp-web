@@ -1,3 +1,4 @@
+require 'bcrypt'
 require 'securerandom'
 require 'sequel'
 
@@ -39,6 +40,16 @@ class Member < Sequel::Model
 
   def balance
     transactions_dataset.sum(:sum) || 0
+  end
+
+  include BCrypt
+  def password
+    @password ||= Password.new(password_hash)
+  end
+
+  def password=(new_password)
+    @password = Password.create(new_password)
+    self.password_hash = @password
   end
 end
 

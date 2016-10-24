@@ -1,14 +1,14 @@
 require 'sinatra/base'
-require 'sinatra/flash'
+require 'rack-flash'
 require 'haml'
 require 'tilt/haml'
 
 class BaseController < Sinatra::Base
-  register Sinatra::Flash
   set :views, "./views"
   set :haml, escape_html: true, ugly: true, format: :html5
   set :protection, session: true
   set :protected, true
+  use Rack::Flash, sweep: true
 
   configure :development do
     enable :logging
@@ -16,11 +16,7 @@ class BaseController < Sinatra::Base
 
   before do
     cache_control :public, :must_revalidate, max_age: 0
-    if ENV['RACK_ENV'] == 'production'
-      @user = Member[session[:id]]
-    else
-      @user = Member.order(:id).first
-    end
+    @user = Member[session[:id]]
   end
 
   helpers do

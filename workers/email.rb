@@ -20,6 +20,12 @@ class EmailWorker
       extras = s.new(msg[:email], msg[:token], msg[:ts], msg[:hostname])
       send msg[:email], "login-länk", haml(:login, extras)
     end
+    
+    subscribe("member.change-password", "member.reset-password") do |_, msg|
+      s = Struct.new(:email, :token, :ts, :hostname)
+      extras = s.new(msg[:email], msg[:token], msg[:ts], msg[:hostname])
+      send msg[:email], 'Ändra lösenord', haml(:reset_password, extras)
+    end
 
     subscribe('party.invitation', 'send-invitations') do |_, msg|
       s = Struct.new(:nick, :party_date, :party_name, :party_last_att_date,
