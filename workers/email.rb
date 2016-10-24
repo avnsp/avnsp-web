@@ -27,7 +27,7 @@ class EmailWorker
       body = <<-EOF
       Klicka på länken för att ändra lösenordet.
 
-      https://#{msg[:hostname]}/change-password?token=#{msg[:token]}&ts=#{msg[:ts]}&email=#{[:email]}
+      https://#{msg[:hostname]}/change-password?token=#{msg[:token]}&ts=#{msg[:ts]}&email=#{msg[:email]}
       
       /CdO
       EOF
