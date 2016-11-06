@@ -150,6 +150,7 @@ class Attendance < Sequel::Model
 
   def add_right_foot(right_foot)
     RightFoot.where(attendance_id: id).delete
+    return if right_foot['name']&.empty?
     RightFoot.create(attendance_id: id,
                      name: right_foot['name'],
                      vegitarian: right_foot['vegitarian'] == 'true',
