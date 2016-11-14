@@ -85,7 +85,7 @@ class PartyController < BaseController
                                      party_id: id)
       'attendance.create'
     end
-    attendance.add_right_foot(params[:right_foot]) if params[:right_foot]
+    attendance.add_right_foot(params[:right_foot]) unless params[:right_foot]&.empty?
     publish rk, attendance.to_hash
     redirect url(id)
   end
