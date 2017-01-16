@@ -57,6 +57,7 @@ class EmailWorker
       content_type  ct
       body          body
     end 
+    puts "[INFO] send-email to=#{to} sub=#{sub}"
     if ENV['RACK_ENV'] == 'production' || ENV['TEST']
       m.deliver
     else
