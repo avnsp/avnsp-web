@@ -70,8 +70,8 @@ class Party < Sequel::Model
   def purchases_highchart
     %w(Öl Snaps Cider Bastuöl Sångbok Läsk).map do |name|
       data = attendances.sort_by(&:nick).map do |a|
-        p = purchases.find { |p| p.name == name && p.member_id == a.member_id }
-        p&.quantity || 0
+        pur = purchases.find { |p| p.name == name && p.member_id == a.member_id }
+        pur&.quantity || 0
       end
       {
         id: name,
@@ -149,8 +149,8 @@ class Attendance < Sequel::Model
   end
 
   def add_right_foot(right_foot)
-    RightFoot.where(attendance_id: id).delete
     return if right_foot['name']&.empty?
+    RightFoot.where(attendance_id: id).delete
     RightFoot.create(attendance_id: id,
                      name: right_foot['name'],
                      vegitarian: right_foot['vegitarian'] == 'true',
