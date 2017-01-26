@@ -18,7 +18,7 @@ class AuthController < BaseController
   end
 
   post '/forgotten' do
-    email = (params[:email] || '').strip.downcase
+    email = params[:email]&.strip.downcase
     reset_password!(email) if Member[email: email]
     flash[:info] = 'Ett email har skickats'
     redirect back

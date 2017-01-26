@@ -149,7 +149,8 @@ class Attendance < Sequel::Model
   end
 
   def add_right_foot(right_foot)
-    return if right_foot['name']&.empty?
+    return unless right_foot
+    return if right_foot[:name]&.empty? || right_foot['name']&.empty?
     RightFoot.where(attendance_id: id).delete
     RightFoot.create(attendance_id: id,
                      name: right_foot['name'],
