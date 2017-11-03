@@ -22,8 +22,6 @@ class EmailWorker
     end
     
     subscribe("member.change-password", "member.reset-password") do |_, msg|
-      s = Struct.new(:email, :token, :ts, :hostname)
-      extras = s.new(msg[:email], msg[:token], msg[:ts], msg[:hostname])
       body = <<-EOF
       Klicka på länken för att ändra lösenordet.
 
