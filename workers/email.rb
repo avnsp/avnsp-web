@@ -62,6 +62,9 @@ class EmailWorker
       puts "=== EMAIL ==="
       puts m.to_s
     end
+  rescue ArgumentError => e
+    puts "[ERROR] failed-to-send-email to=#{to} sub=#{sub}"
+    puts e.inspect
   end
 
   def haml(file_name, extras)
