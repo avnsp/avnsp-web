@@ -1,7 +1,6 @@
 AVNSP
 =========
 This is a distributed web application. Where the different parts are connected via AMQP (RabbitMQ).
-Specific actions should emit events which other applications then can react on.
 
 For example the image upload works like this:
 The web app has a page where users can select which files to upload.
@@ -10,8 +9,8 @@ On the other end a photo processing app handles compression, scaling and uploadi
 
 Requirements
 ------------
-* Ruby-2.3
-* RabbitMQ 3.5
+* Ruby-2.4
+* RabbitMQ 3.6
 * Postgresql 9.2 +
 
 ###Setup env
@@ -27,5 +26,5 @@ sequel -m migrations/ postgres://localhost/avnsp
 ###Start
 ```
 bundle install
-bundle exec puma
+foreman start
 ```
