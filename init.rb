@@ -3,6 +3,8 @@ require 'aws'
 FQDN = 'academian.se'
 
 require 'sequel'
+Sequel.extension :core_extensions, :pg_json, :pg_json_ops
+Sequel.split_symbols = true
 DB = Sequel.connect ENV['ELEPHANTSQL_URL'] || 'postgres://localhost/avnsp'
 
 require './thumper'
