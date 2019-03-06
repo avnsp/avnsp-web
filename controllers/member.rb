@@ -42,6 +42,29 @@ class MemberController < BaseController
     m.full_name
   end
 
+  get '/send-reminder' do
+    # @members = Member.select{|m| m.balance < 0}
+    @members = Member
+    .all
+    .select{|m| m.balance < 0}
+    .map{|m| {:balance=> m.balance, :full_name => m.full_name}}
+    haml :send_reminder
+  end
+
+  post '/send-reminder' do
+    members = Member.all
+    nonPayingMembers = members.select{|m| m.balance < 0}
+    nonPayingMembers.each do |member|
+      msg = { 
+        :email => 'axelskyttner@gmail.com', 
+        :name => member.full_name,  
+        :balance => member.balance 
+      }
+      publish('member.reminder', msg)
+    end
+    redirect back
+  end
+
   post '/profile-edit' do
     m = {
       first_name: params[:first_name],
