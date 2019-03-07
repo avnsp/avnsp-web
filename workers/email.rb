@@ -20,6 +20,24 @@ class EmailWorker
       extras = s.new(msg[:email], msg[:token], msg[:ts], msg[:hostname])
       send(msg[:email], "login-länk", 'text/html; charset=UTF-8', haml(:login, extras))
     end
+
+    subscribe("member.reminder", "member.reminder") do |_, msg|
+      body = <<-EOF
+      #{msg[:name]}!
+      Det här är ett automatgenererat utskick från Academians ekonomiska falang.
+  
+      Enligt noteringar i datan är du skyldig Academia Vestigia Nuda Sinistri Pedis #{msg[:balance]} kr. Var vänlig sätt in (minst) detta belopp på föreningens plusgiro 819950-7.
+  
+  
+      Om det är något galet med denna anmodan vore jag glad om du hörde av dig.
+  
+      Ex officio,
+  
+      Chef des Argent
+  
+      EOF
+      send(msg[:email], 'Påminnelsemail', 'text/plain; charset=UTF-8', body.gsub(/^ */, ''))
+    end
     
     subscribe("member.change-password", "member.reset-password") do |_, msg|
       body = <<-EOF
