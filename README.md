@@ -28,3 +28,10 @@ sequel -m migrations/ postgres://localhost/avnsp
 bundle install
 foreman start
 ```
+
+###deploy
+
+
+```
+git push origin heroku
+```
