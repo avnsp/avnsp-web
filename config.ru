@@ -51,3 +51,7 @@ end
 map '/member' do
   run MemberController
 end
+
+map '/statistics' do
+  run StatisticsController
+end
