@@ -1,12 +1,10 @@
 .text-center
   .row{style: "margin-top:50px"}
-    %h1 Academian och programmen för dess medlemmar
-    %p Här ser man hur många det finns av de olika sektionerna.
+    %h3 Fördelningen över utbildningar
     %canvas{id: 'studied-chart'}
     
   .row{style: "margin-top:50px"}
-    %h1 Academian och åren som dess medlemmar började studera
-    %p Här ser man hur många det finns för varje årskull. Observera att det finns stor del som inte har någon ålder specificerad.
+    %h3 Fördelningen över inträdesår
     %canvas{id: 'started-chart'}
 
 %script{src: "https://cdn.jsdelivr.net/npm/chart.js@2.8.0"}

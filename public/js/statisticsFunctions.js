@@ -178,7 +178,10 @@ function drawStarted(ctx, years) {
       a.name = 'Unknown'
     }
   })
-  addDataToChart(years, ctx, 'bar')
+  addDataToChart(years, ctx, 'bar', {
+    backgroundColor: 0xeeee,
+    datasetLabels: 'Antal människor som började'
+  })
 }
 
 function drawStudied(ctx, programs) {
@@ -187,23 +190,32 @@ function drawStudied(ctx, programs) {
 }
 
 function drawCity(ctx, cities) {
-  console.log('cities', sortOnQuantity(cities).map(a=>a.name).join(','))
   cities = preprocessProgramData(cities, generateStandardCities())
   addDataToChart(cities, ctx, 'bar');
 }
 
-function addDataToChart(programs, ctx, type) {
+function addDataToChart(programs, ctx, type,args) {
+  args = args || {}
   const labels = programs.map(a => a.name);
   const data = programs.map(a => a.quantity);
-  const backgroundColor = data.map(getRandomColor);
+  const backgroundColor = args.backgroundColor !== undefined 
+   ? args.backgroundColor 
+   : data.map(getRandomColor);
+  const datasetLabels = args.datasetLabels !== undefined 
+   ? args.datasetLabels
+   : undefined
   new Chart(ctx, {
     type,
     data: {
       labels,
       datasets: [{
+        label: datasetLabels,
         data,
         backgroundColor
       }]
+    },
+    options: {
+      label: 'testing'
     }
   });
 }
