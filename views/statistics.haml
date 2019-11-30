@@ -1,59 +1,34 @@
 .text-center
-  .row
-    %h1 Statistik
-    -# -@programs.each do |program|
-    -#   %h1{id: program[:label]}=program[:quantity]
-    %p
-      %Här kan du se oss academian och dess historia. @test
-      -@test
-  .row
-    .some-idparse
-    %canvas{id: 'my-chart'}
+  .row{style: "margin-top:50px"}
+    %h1 Academian och programmen för dess medlemmar
+    %p Här ser man hur många det finns av de olika sektionerna.
+    %canvas{id: 'studied-chart'}
+    
+  .row{style: "margin-top:50px"}
+    %h1 Academian och åren som dess medlemmar började studera
+    %p Här ser man hur många det finns för varje årskull. Observera att det finns stor del som inte har någon ålder specificerad.
+    %canvas{id: 'started-chart'}
 
 %script{src: "https://cdn.jsdelivr.net/npm/chart.js@2.8.0"}
 %script{type: 'text/javascript', src: "https://d3js.org/d3.v5.js"}
+%script{type: 'text/javascript', src: "/js/statisticsFunctions.js"}
 :javascript
-  const programs = "#{@programs}"
-  console.log('programs', programs)
-  
-  function get_number_of_elements(programString){
 
-    return document.getElementById(programString).innerHTML
+  function getContextFromId(id) {
+    return document
+    .getElementById(id)
+    .getContext("2d")
   }
-  const chart = document.getElementById('my-chart')
-
-  const labels = programs.map(a=>a.label)
-  const data = programs.map(a=>a.quantity)
-  console.log('#{@programs}')
-  console.log('chart', chart)
-  var ctx = chart.getContext('2d');
-  new Chart(ctx, {
-      // The type of chart we want to create
-      type: 'bar',
-
-      // The data for our dataset
-      data: {
-          labels,
-          datasets: [{
-              label: 'My First dataset',
-              backgroundColor: 'rgb(255, 99, 132)',
-              borderColor: 'rgb(255, 99, 132)',
-              data
-          }]
-      },
-
-      // Configuration options go here
-      options: {}
-  });
-  d3
-  .select(".some-id")
-  .append("svg")
-  .attr("width", 50)
-  .attr("height", 50)
-  .append("circle")
-  .attr("cx", 25)
-  .attr("cy", 25)
-  .attr("r", 25)
-  .style("fill", "purple");
-
+  function fetchAndDrawData(url, functionToDraw, context) {
+    fetch(url).then(a => {
+        return a.text()
+      }).then(jsonText => {
+        return JSON.parse(jsonText)
+      }).then(data => {
+        functionToDraw(context, data)
+      })
+  }
+      
+  fetchAndDrawData('/statistics/data/studied', drawStudied, getContextFromId('studied-chart'))
+  fetchAndDrawData('/statistics/data/started', drawStarted, getContextFromId('started-chart'))
   
