@@ -1,7 +1,4 @@
 require 'bundler/setup'
-require './init'
-require './models'
-require './controllers'
 require 'rack/ssl-enforcer'
 
 use Rack::Static, {
