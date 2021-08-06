@@ -1,1 +1,2 @@
-web: rackup tmp_config.ru -p $PORT
+web: puma -q -p $PORT -e $RACK_ENV
+
