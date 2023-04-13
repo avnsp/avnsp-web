@@ -13,23 +13,23 @@ Requirements
 * RabbitMQ 3.6
 * Postgresql 9.2 +
 
-###Setup env
+### Setup env
 ```
 createdb avnsp
 rabbitmqctl add_vhost avnsp
 rabbitmqctl set_permission -p avnsp .* .* .*
 ```
-###Migrate db locally
+### Migrate db locally
 ```
 sequel -m migrations/ postgres://localhost/avnsp
 ```
-###Start
+### Start
 ```
 bundle install
 foreman start
 ```
 
-###deploy
+### deploy
 
 Install Heroku Cli, guide: https://devcenter.heroku.com/articles/heroku-cli#install-the-heroku-cli
 Then link the local repositry with the remote Heroku repository with:
