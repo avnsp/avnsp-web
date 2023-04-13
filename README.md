@@ -31,7 +31,12 @@ foreman start
 
 ###deploy
 
-
+Install Heroku Cli, guide: https://devcenter.heroku.com/articles/heroku-cli#install-the-heroku-cli
+Then link the local repositry with the remote Heroku repository with:
 ```
-git push origin heroku
+heroku git:remote -a avnsp
+```
+Then deploy to Heroku with:
+```
+git push heroku master
 ```
