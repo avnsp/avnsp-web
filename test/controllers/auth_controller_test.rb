@@ -30,7 +30,7 @@ class AuthControllerTest < ControllerTest
   end
 
   def test_post_login_no_password_triggers_reset
-    m = create_member(email: "nopass@academian.se")
+    create_member(email: "nopass@academian.se")
     post '/login', { email: "nopass@academian.se", password: "" },
          'HTTP_REFERER' => '/login'
     assert_equal 302, last_response.status
@@ -50,14 +50,14 @@ class AuthControllerTest < ControllerTest
   end
 
   def test_post_forgotten
-    m = create_member(email: "forgot@academian.se")
+    create_member(email: "forgot@academian.se")
     post '/forgotten', { email: "forgot@academian.se" },
          'HTTP_REFERER' => '/forgotten'
     assert_equal 302, last_response.status
   end
 
   def test_get_change_password_with_valid_token
-    m = create_member(email: "reset@academian.se")
+    create_member(email: "reset@academian.se")
     ts = Time.now.to_i.to_s
     token = Digest::SHA1.hexdigest("reset@academian.se:#{ts}:#{ENV['SESSION_SECRET']}")
     get '/change-password', { email: "reset@academian.se", ts: ts, token: token }

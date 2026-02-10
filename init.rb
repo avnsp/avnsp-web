@@ -15,8 +15,9 @@ TH.register EmailWorker
 TH.register EventWorker
 TH.register Uploader
 
-Aws.config.update(
-  access_key_id: ENV.fetch("AWS_ACCESS_KEY_ID"),
-  secret_access_key: ENV.fetch("AWS_SECRET_ACCESS_KEY"),
-  region: "eu-west-1"
-)
+aws_opts = { region: "eu-west-1" }
+if ENV["AWS_ACCESS_KEY_ID"]
+  aws_opts[:access_key_id] = ENV["AWS_ACCESS_KEY_ID"]
+  aws_opts[:secret_access_key] = ENV.fetch("AWS_SECRET_ACCESS_KEY")
+end
+Aws.config.update(aws_opts)

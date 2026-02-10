@@ -3,16 +3,18 @@
 require "json"
 require "mail"
 
-Mail.defaults do
-  delivery_method :smtp, {
-    address: "email-smtp.us-east-1.amazonaws.com",
-    port: 587,
-    domain: "academian.se",
-    user_name: ENV.fetch("SES_ACCESS_KEY"),
-    password: ENV.fetch("SES_SECRET_KEY"),
-    authentication: "plain",
-    enable_starttls_auto: true,
-  }
+unless ENV["RACK_ENV"] == "development"
+  Mail.defaults do
+    delivery_method :smtp, {
+      address: "email-smtp.us-east-1.amazonaws.com",
+      port: 587,
+      domain: "academian.se",
+      user_name: ENV.fetch("SES_ACCESS_KEY"),
+      password: ENV.fetch("SES_SECRET_KEY"),
+      authentication: "plain",
+      enable_starttls_auto: true,
+    }
+  end
 end
 
 class EmailWorker

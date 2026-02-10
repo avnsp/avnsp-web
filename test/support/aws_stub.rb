@@ -12,8 +12,8 @@ module Aws
       def get_object(bucket:, key:)
         data = @objects[key]
         raise Errors::NoSuchKey.new(nil, "NoSuchKey") unless data
-        OpenStruct.new(content_type: data[:content_type] || "application/octet-stream",
-                       body: StringIO.new(data[:body] || ""))
+        { content_type: data[:content_type] || "application/octet-stream",
+          body: StringIO.new(data[:body] || "") }
       end
     end
 
@@ -54,7 +54,7 @@ module Aws
       end
 
       def get
-        OpenStruct.new(body: StringIO.new(@body || ""), content_type: @content_type)
+        { body: StringIO.new(@body || ""), content_type: @content_type }
       end
     end
 

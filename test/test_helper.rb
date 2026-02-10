@@ -7,9 +7,9 @@ require 'bundler/setup'
 require 'minitest/autorun'
 require 'rack/test'
 require 'webmock/minitest'
+require 'rack-flash'
 require 'database_cleaner-sequel'
 require 'securerandom'
-require 'ostruct'
 require 'digest'
 
 # --- Database setup (bypass init.rb) ---
@@ -161,6 +161,7 @@ end
 def build_app
   Rack::Builder.new do
     use Rack::Session::Cookie, secret: ENV['SESSION_SECRET'], httponly: true
+    use Rack::Flash, sweep: true, helper: false
     use AuthController
     map '/' do
       run HomeController
