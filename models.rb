@@ -23,13 +23,16 @@ class Member < Sequel::Model
   end
 
   def parties(date = nil)
-    parties = attendances.map(&:party)
-    parties = parties.select { |p| p.date < date } if date
-    parties.sort_by(&:date)
+    ds = Party.join(:attendances, party_id: :id)
+      .where(Sequel[:attendances][:member_id] => self.id)
+      .select_all(:parties)
+      .order(Sequel[:parties][:date])
+    ds = ds.where { Sequel[:parties][:date] < date } if date
+    ds.all
   end
 
   def attendance(party_id)
-    attendances.find { |a| a.party_id == party_id } || Attendance.new
+    attendances_dataset.where(party_id: party_id).first || Attendance.new
   end
 
   def profile_picture_cdn
@@ -71,16 +74,17 @@ class Party < Sequel::Model
   end
 
   def purchases_highchart
+    # Build lookup: {[article_name, member_id] => quantity}
+    purchase_map = {}
+    purchases_dataset.eager(:article).all.each do |p|
+      purchase_map[[p.article.name, p.member_id]] = p.quantity
+    end
+
+    sorted_attendances = attendances_dataset.eager(:member).all.sort_by(&:nick)
+
     %w[Öl Snaps Cider Bastuöl Sångbok Läsk].map do |name|
-      data = attendances.sort_by(&:nick).map do |a|
-        pur = purchases.find { |p| p.name == name && p.member_id == a.member_id }
-        pur&.quantity || 0
-      end
-      {
-        id: name,
-        name:,
-        data: data.flatten,
-      }
+      data = sorted_attendances.map { |a| purchase_map[[name, a.member_id]] || 0 }
+      { id: name, name:, data: }
     end
   end
 end
@@ -116,9 +120,10 @@ class Photo < Sequel::Model
   end
 
   def surrounding_ids
-    rows = Photo.dataset.order_by(:id).all
-    i = rows.index { |r| r[:id] == id }
-    rows[(i - 1)..(i + 1)].select { |r| r[:id] != id }.map(&:id)
+    pk = self.id
+    prev_id = Photo.where(Sequel.lit('id < ?', pk)).reverse_order(:id).get(:id)
+    next_id = Photo.where(Sequel.lit('id > ?', pk)).order(:id).get(:id)
+    [prev_id, next_id].compact
   end
 end
 
@@ -144,11 +149,13 @@ class Attendance < Sequel::Model
   end
 
   def member_previus_attendanceise
-    attendances = member.attendances
-    type = party.type.include?("lunch") ? "lunch" : "fest"
-    attendances.count do |a|
-      a.party.type.include?(type) && a.party.date < party.date
-    end
+    type_pattern = party.type.include?("lunch") ? "%lunch%" : "%fest%"
+    party_date = party.date
+    Attendance.join(:parties, id: :party_id)
+      .where(Sequel[:attendances][:member_id] => member_id)
+      .where(Sequel.like(Sequel[:parties][:type], type_pattern))
+      .where { Sequel[:parties][:date] < party_date }
+      .count
   end
 
   def add_right_foot(right_foot)
