@@ -31,7 +31,9 @@ class PhotoTest < Minitest::Test
 
   def test_original_temp
     photo = create_photo(attrs: { original_path: "photos/abc.orig.jpg" })
-    assert_equal "https://avnsp.s3.eu-west-1.amazonaws.com/photos/abc.orig.jpg", photo.original_temp
+    url = photo.original_temp
+    assert_match %r{^https://avnsp\.s3\.eu-west-1\.amazonaws\.com/photos/abc\.orig\.jpg\?}, url
+    assert_match(/X-Amz-Expires=3600/, url)
   end
 
   def test_surrounding_ids_middle

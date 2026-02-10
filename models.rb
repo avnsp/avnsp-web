@@ -112,7 +112,7 @@ class Photo < Sequel::Model
   end
 
   def original_temp
-    s3.object(original_path).public_url
+    s3.object(original_path).presigned_url(:get, expires_in: 3600)
   end
 
   def surrounding_ids
