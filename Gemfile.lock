@@ -145,6 +145,7 @@ DEPENDENCIES
   rack-test (~> 2.1)
   rackup
   rake
+  rexml
   sequel (~> 5.77)
   sequel_pg
   sinatra (~> 4.0)
