@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require "aws-sdk-s3"
 
-FQDN = "www.academian.se"
+FQDN = "avnsp.herokuapp.com"
 
 require "sequel"
 Sequel.extension :core_extensions, :pg_json, :pg_json_ops
