@@ -63,7 +63,5 @@
           %td
             %a{href: "/member/#{a[:member_id]}"}= a.member_name
             -if a.right_foot
-              !=surround('(', ')') do
-                Högerfot:
-                = a.right_foot.name
+              (Högerfot: #{a.right_foot.name})
           %td= a.member_studied_started

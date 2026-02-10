@@ -33,9 +33,7 @@
       %h4
         Kontotransaktioner
         %small
-          %a{href: url("/#{@member.id}/transactions")}
-            =surround('(', ')') do
-              alla händelser
+          %a{href: url("/#{@member.id}/transactions")} (alla händelser)
     %dl
       -@transactions.each do |t|
         %dt= t[:text]
