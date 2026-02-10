@@ -3,7 +3,7 @@ require "base64"
 
 class AlbumController < BaseController
   get '/' do
-    @albums = Album.order(:timestamp)
+    @albums = Album.eager(:member, :party).order(:timestamp)
     haml :albums
   end
 
@@ -11,7 +11,7 @@ class AlbumController < BaseController
     @photo = Photo[id]
     halt 404 unless @photo
     @prev_id, @next_id = @photo.surrounding_ids
-    @comments = @photo.comments
+    @comments = @photo.comments_dataset.eager(:member).all
     haml :photo
   end
 

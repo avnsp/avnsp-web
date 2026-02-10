@@ -8,9 +8,27 @@ class PartyController < BaseController
 
   get '/:id' do |id|
     @party = Party[id]
-    @attendances = @party.attendances.sort_by(&:member_previus_attendanceise).reverse
+    @attendances = @party.attendances_dataset.eager(:member, :right_feet).all
     @albums = Album.where(party_id: id).all
-    @organizers = @party.organizers
+    @organizers = @party.organizers_dataset.eager(:member).all
+
+    # Batch-compute prior attendance counts in one query
+    member_ids = @attendances.map(&:member_id)
+    @prior_counts = {}
+    if member_ids.any?
+      type_pattern = @party.type.include?("lunch") ? "%lunch%" : "%fest%"
+      party_date = @party.date
+      DB[:attendances]
+        .join(:parties, id: :party_id)
+        .where(Sequel[:attendances][:member_id] => member_ids)
+        .where(Sequel.like(Sequel[:parties][:type], type_pattern))
+        .where { Sequel[:parties][:date] < party_date }
+        .group_and_count(Sequel[:attendances][:member_id])
+        .each { |r| @prior_counts[r[:member_id]] = r[:count] }
+    end
+
+    @attendances.sort_by! { |a| @prior_counts[a.member_id] || 0 }
+    @attendances.reverse!
     haml :party
   end
 
@@ -26,7 +44,7 @@ class PartyController < BaseController
   get '/:id/stream' do |id|
     @password = @username = 'avnsp'
     @party = Party[id]
-    @attendances = @party.attendances.map(&:nick).sort
+    @attendances = @party.attendances_dataset.eager(:member).all.map(&:nick).sort
     @purchases = @party.purchases_highchart
     haml :stream, layout: false
   end

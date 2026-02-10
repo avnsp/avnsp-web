@@ -5,15 +5,18 @@ class StatisticsController < BaseController
   end
 
   get '/data/studied' do
-    Member.all.group_by(&:studied).map {|k,v| {:name=> k, :quantity => v.length}}.to_json
+    DB[:members].group_and_count(:studied).all
+      .map { |r| { name: r[:studied], quantity: r[:count] } }.to_json
   end
 
   get '/data/started' do
-    Member.all.group_by(&:started).map {|k,v| {:name=> k, :quantity => v.length}}.to_json
+    DB[:members].group_and_count(:started).all
+      .map { |r| { name: r[:started], quantity: r[:count] } }.to_json
   end
 
   get '/data/city' do
-    Member.all.group_by(&:city).map {|k,v| {:name=> k, :quantity => v.length}}.to_json
+    DB[:members].group_and_count(:city).all
+      .map { |r| { name: r[:city], quantity: r[:count] } }.to_json
   end
 
   helpers do

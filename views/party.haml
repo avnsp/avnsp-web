@@ -59,7 +59,7 @@
     %tbody
       - @attendances.each do |a|
         %tr
-          %td= a.member_previus_attendanceise
+          %td= @prior_counts[a.member_id] || 0
           %td
             %a{href: "/member/#{a[:member_id]}"}= a.member_name
             -if a.right_foot

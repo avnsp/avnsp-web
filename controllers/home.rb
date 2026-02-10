@@ -2,7 +2,7 @@ require './controllers/base'
 
 class HomeController < BaseController
   get '/' do
-    @parties = Party.where(Sequel.lit("NOW() < date + 1")).order(:attendance_deadline).all
+    @parties = Party.eager(:attendances).where(Sequel.lit("NOW() < date + 1")).order(:attendance_deadline).all
     haml :home
   end
 
