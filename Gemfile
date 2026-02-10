@@ -24,3 +24,7 @@ group :test do
   gem 'webmock', '~> 3.23'
   gem 'database_cleaner-sequel', '~> 2.0'
 end
+
+group :development do
+  gem "rubocop"
+end

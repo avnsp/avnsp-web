@@ -31,7 +31,7 @@ class PhotoTest < Minitest::Test
 
   def test_original_temp
     photo = create_photo(attrs: { original_path: "photos/abc.orig.jpg" })
-    assert_equal "https://www.academian.se/photos/abc.orig.jpg", photo.original_temp
+    assert_equal "https://avnsp.s3.eu-west-1.amazonaws.com/photos/abc.orig.jpg", photo.original_temp
   end
 
   def test_surrounding_ids_middle

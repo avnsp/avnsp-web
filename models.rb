@@ -1,6 +1,8 @@
-require 'bcrypt'
-require 'securerandom'
-require 'sequel'
+# frozen_string_literal: true
+
+require "bcrypt"
+require "securerandom"
+require "sequel"
 
 Sequel::Model.plugin :json_serializer
 
@@ -31,11 +33,11 @@ class Member < Sequel::Model
   end
 
   def profile_picture_cdn
-    "https://#{CF_DOMAIN}/#{self.profile_picture}"
+    "https://#{CF_DOMAIN}/#{profile_picture}"
   end
 
   def thumb_cdn
-    "https://#{CF_DOMAIN}/#{self.profile_picture}.thumb"
+    "https://#{CF_DOMAIN}/#{profile_picture}.thumb"
   end
 
   def balance
@@ -43,6 +45,7 @@ class Member < Sequel::Model
   end
 
   include BCrypt
+
   def password
     @password ||= Password.new(password_hash)
   end
@@ -68,14 +71,14 @@ class Party < Sequel::Model
   end
 
   def purchases_highchart
-    %w(Öl Snaps Cider Bastuöl Sångbok Läsk).map do |name|
+    %w[Öl Snaps Cider Bastuöl Sångbok Läsk].map do |name|
       data = attendances.sort_by(&:nick).map do |a|
         pur = purchases.find { |p| p.name == name && p.member_id == a.member_id }
         pur&.quantity || 0
       end
       {
         id: name,
-        name: name,
+        name:,
         data: data.flatten,
       }
     end
@@ -89,29 +92,29 @@ class Photo < Sequel::Model
   many_to_one :member
   one_to_many :comments, order_by: :timestamp, class: :PhotoComment
 
-  def s3_path= path
+  def s3_path=(path)
     self.path = path + "/#{SecureRandom.uuid}.jpg"
-    self.thumb_path = self.path.sub('.jpg', '.thumb.jpg')
-    self.original_path = self.path.sub('.jpg', '.orig.jpg')
+    self.thumb_path = self.path.sub(".jpg", ".thumb.jpg")
+    self.original_path = self.path.sub(".jpg", ".orig.jpg")
   end
-  
+
   def s3
-    @s3_client ||= Aws::S3::Resource.new(region: 'eu-west-1')
-    @s3_bucket ||= @s3_client.bucket('avnsp')
+    @s3_client ||= Aws::S3::Resource.new(region: "eu-west-1")
+    @s3 ||= @s3_client.bucket("avnsp")
   end
 
   def thumb_temp
-    "https://#{CF_DOMAIN}/#{self.thumb_path}"
+    "https://#{CF_DOMAIN}/#{thumb_path}"
   end
 
   def file_temp
-    "https://#{CF_DOMAIN}/#{self.path}"
+    "https://#{CF_DOMAIN}/#{path}"
   end
 
   def original_temp
-    "https://#{CF_DOMAIN}/#{self.original_path}"
+    s3.object(original_path).public_url
   end
-  
+
   def surrounding_ids
     rows = Photo.dataset.order_by(:id).all
     i = rows.index { |r| r[:id] == id }
@@ -137,26 +140,27 @@ class Attendance < Sequel::Model
   end
 
   def member_studied_started
-    [member.studied, member.started].join '-'
+    [member.studied, member.started].join "-"
   end
 
   def member_previus_attendanceise
     attendances = member.attendances
-    type = party.type.include?('lunch') ? 'lunch' : 'fest'
-    attendances.select do |a|
+    type = party.type.include?("lunch") ? "lunch" : "fest"
+    attendances.count do |a|
       a.party.type.include?(type) && a.party.date < party.date
-    end.count
+    end
   end
 
   def add_right_foot(right_foot)
     return unless right_foot
-    return if right_foot[:name]&.empty? || right_foot['name']&.empty?
+    return if right_foot[:name]&.empty? || right_foot["name"]&.empty?
+
     RightFoot.where(attendance_id: id).delete
     RightFoot.create(attendance_id: id,
-                     name: right_foot['name'],
-                     vegitarian: right_foot['vegitarian'] == 'true',
-                     non_alcoholic: right_foot['non_alcoholic'] == 'true',
-                     allergies: right_foot['allergies'])
+                     name: right_foot["name"],
+                     vegitarian: right_foot["vegitarian"] == "true",
+                     non_alcoholic: right_foot["non_alcoholic"] == "true",
+                     allergies: right_foot["allergies"])
   end
 end
 
@@ -166,15 +170,15 @@ class Album < Sequel::Model
   one_to_many :photos
 
   def party_name
-    party && party.name
+    party&.name
   end
 
   def party_date
-    party && party.date
+    party&.date
   end
 
   def title
-    [name || party_name, date || party_date || timestamp.to_date].join(' - ')
+    [name || party_name, date || party_date || timestamp.to_date].join(" - ")
   end
 
   def description
@@ -213,4 +217,3 @@ end
 class RightFoot < Sequel::Model(:right_feet)
   many_to_one :attendance
 end
-
