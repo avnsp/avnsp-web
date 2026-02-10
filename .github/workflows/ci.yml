@@ -28,7 +28,6 @@ jobs:
       PGUSER: postgres
       SES_ACCESS_KEY: test
       SES_SECRET_KEY: test
-      SESSION_SECRET: ci-test-session-secret-that-is-long-enough-for-validation
 
     steps:
       - uses: actions/checkout@v4
