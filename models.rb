@@ -96,8 +96,8 @@ class Photo < Sequel::Model
   end
   
   def s3
-    s3 = AWS::S3.new
-    @objects ||= s3.buckets['avnsp'].objects
+    @s3_client ||= Aws::S3::Resource.new(region: 'eu-west-1')
+    @s3_bucket ||= @s3_client.bucket('avnsp')
   end
 
   def thumb_temp

@@ -5,10 +5,9 @@ require 'tilt/haml'
 
 class BaseController < Sinatra::Base
   set :views, "./views"
-  set :haml, escape_html: true, ugly: true, format: :html5
+  set :haml, escape_html: true, format: :html5
   set :protection, session: true, :except => :frame_options
   set :protected, true
-  use Rack::Flash, sweep: true
 
   configure :development do
     enable :logging
@@ -20,6 +19,10 @@ class BaseController < Sinatra::Base
   end
 
   helpers do
+    def flash
+      env['x-rack.flash']
+    end
+
     def subscribe qname, *topics, &blk
       TH.subscribe(qname, *topics, &blk)
     end

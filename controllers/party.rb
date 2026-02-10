@@ -51,13 +51,12 @@ class PartyController < BaseController
 
   get '/:id/invitation' do |id|
     party = Party[id]
-    s3 = AWS::S3.new(region: 'eu-west-1')
-    objects = s3.buckets['avnsp'].objects
-    file = objects[party.invitation]
+    s3 = Aws::S3::Client.new(region: 'eu-west-1')
     begin
-    content_type file.content_type
-    file.read
-    rescue AWS::S3::Errors::NoSuchKey => e
+      resp = s3.get_object(bucket: 'avnsp', key: party.invitation)
+      content_type resp.content_type
+      resp.body.read
+    rescue Aws::S3::Errors::NoSuchKey => e
       puts "[WARN] #{e}"
       "Ingen inbjudan är uppladdad för den här festen"
     end
@@ -66,7 +65,8 @@ class PartyController < BaseController
   get '/:id/attend' do |id|
     @attendance = @user.attendances.select { |a| a.party_id == id.to_i }.first
     @attendance ||= Attendance.new
-    haml :attend_form, locals: { party_id: id, a: @attendance }
+    @party = Party[id]
+    haml :attend_form, locals: { party_id: id, a: @attendance, party_type: @party.type }
   end
 
   post '/:id/attend' do |id|

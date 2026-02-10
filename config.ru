@@ -34,6 +34,7 @@ use Rack::Session::Cookie, {
   :expire_after => 24 * 3600 * 30,
 }
 
+use Rack::Flash, sweep: true, helper: false
 use AuthController
 
 map '/' do

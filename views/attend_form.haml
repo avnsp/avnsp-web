@@ -13,7 +13,7 @@
   .form-group
     %label Meddelande till arrangörerna
     %textarea.form-control{name: :message}= a.message
-  -if party_type.include?('fest')
+  -if party_type&.include?('fest')
     %h4 Högerfot
     .form-group
       %label Namn
