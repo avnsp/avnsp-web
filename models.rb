@@ -69,7 +69,7 @@ class Party < Sequel::Model
     "#{name}, #{date}"
   end
 
-  def is_attending?(member_id)
+  def attending?(member_id)
     attendances.any? { |a| a.member_id == member_id }
   end
 

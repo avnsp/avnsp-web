@@ -1,0 +1,60 @@
+:css
+  input {
+    height: 22px !important;
+    text-align: left;
+    min-width: fit-content;
+  }
+  td {
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
+    margin-bottom: 0;
+    border-top: none !important;
+    font-size: 10pt;
+  }
+%h1
+  = @party[:name]
+  %small= @party[:date]
+  %a.btn.pull-right{type: :button, href: url('/')} Tillbaks
+
+%form{method: :post, action: url("/parties_articles") }
+  %fieldset
+    %legend 1. Ange priser för festen
+    %table.table
+      %thead
+        %tr
+          %th Namn
+          %th Pris
+      %tbody
+        - @articles.each do |a|
+          %tr
+            %td= a[:name]
+            %td
+              - pa = @parties_articles.select { |pa| pa[:article_id] == a[:id] }.first
+              %input{type: :hidden, name: 'parties_articles[]party_id', value: @party[:id]}
+              %input{type: :hidden, name: 'parties_articles[]article_id', value: a[:id]}
+              - default_price = (a[:name] == 'Anm' ? @party[:price] : nil)
+              %input{type: :text, name: 'parties_articles[]price', value: (pa ? pa[:price] : default_price) }
+    %button.btn Spara
+%form{method: :post, action: url("/#{@party[:id]}/transactions") }
+  %fieldset
+    %legend 2. Fyll i vad alla drack utifrån strecklistorna
+    %table.table
+      %thead
+        %tr
+          %th Namn
+          - @articles.each do |a|
+            %th= a[:name]
+      %tbody
+        - @members.each do |m|
+          %tr
+            %td= "#{m[:first_name]} #{m[:last_name]}"
+            - @articles.each do |a|
+              %td
+                %input{type: :hidden, name: 'purchases[]member_id', value: m[:id]}
+                %input{type: :hidden, name: 'purchases[]article_id', value: a[:id]}
+                %input.col-xs-7{type: :text, name: "purchases[]quantity", value: m[:purchases][a[:id]]}
+        - if @members.empty?
+          %tr
+            %td.text-center{colspan: @articles.count + 1}
+              %strong Inga medlemmar
+    %button.btn Spara

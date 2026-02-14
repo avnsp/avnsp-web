@@ -73,6 +73,10 @@ def create_booking_account(number: 2021, name: "Test")
   number
 end
 
+def create_admin(attrs = {})
+  create_member({ admin: true }.merge(attrs))
+end
+
 def create_member(attrs = {})
   defaults = {
     first_name: "Erik",
@@ -178,6 +182,23 @@ def build_app
     map '/statistics' do
       run StatisticsController
     end
+    map '/cheferiet' do
+      map '/members' do
+        run AdminMembersController
+      end
+      map '/parties' do
+        run AdminPartiesController
+      end
+      map '/economy' do
+        run AdminEconomyController
+      end
+      map '/balance' do
+        run AdminBalanceController
+      end
+      map '/' do
+        run AdminDashboardController
+      end
+    end
   end
 end
 
@@ -212,6 +233,10 @@ class ControllerTest < Minitest::Test
   end
 
   def put(uri, params = {}, env = {}, &block)
+    super(uri, params, custom_env.merge(env), &block)
+  end
+
+  def delete(uri, params = {}, env = {}, &block)
     super(uri, params, custom_env.merge(env), &block)
   end
 

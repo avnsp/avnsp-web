@@ -31,7 +31,7 @@
       .panel.panel-default
         .panel-heading
           %h4
-            -if @party.is_attending?(@user.id)
+            -if @party.attending?(@user.id)
               Du är anmäld
             -else
               Anmäl dig nu!

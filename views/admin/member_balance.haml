@@ -1,0 +1,24 @@
+%h1
+  #{@member[:first_name]} #{@member[:last_name]}
+  %small.pull-right
+    = @total_balance
+%table.table
+  %thead
+    %tr
+      %th Datum
+      %th Text
+      %th Fest
+      %th Summa
+      %th Saldo
+  %tbody
+    - balance = 0
+    - @transactions.each do |t|
+      %tr
+        - balance += t[:sum]
+        %td= t[:timestamp].strftime("%Y-%m-%d %H:%M")
+        %td= t[:text]
+        %td
+          - if t[:name]
+            %a{href: "/cheferiet/economy/#{t[:party_id]}"}= "#{t[:name]} - #{t[:party_date]}"
+        %td= t[:sum]
+        %td= balance

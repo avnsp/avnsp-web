@@ -1,0 +1,22 @@
+%form{method: :post, action: url('remind')}
+  %h3
+    Medlemmar
+    %small.pull-right
+      - if @members.any? { |m| m[:balance]&.negative? }
+        %input.btn.btn-default{type: :submit, value: 'Skicka Påminnelse'}
+      %a.btn.btn-default{href: url('new')} Ny medlem
+  %table.table
+    %thead
+      %tr
+        %th Namn
+        %th Email
+        %th Sektion
+        %th Saldo
+    %tbody
+      - @members.each do |m|
+        %tr{class: m[:balance]&.negative? ? 'danger' : nil}
+          %td
+            %a{href: url(m[:id])}= [m[:last_name], m[:first_name]].join(', ')
+          %td= m[:email]
+          %td= m[:studied]
+          %td= m[:balance]
