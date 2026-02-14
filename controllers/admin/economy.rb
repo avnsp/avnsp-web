@@ -73,20 +73,21 @@ class AdminEconomyController < AdminBaseController
   post '/:id/transactions' do |id|
     DB.transaction do
       params[:purchases].each do |p|
+        qty = p['quantity'].to_i
         p_db = DB[:purchases].where(
           member_id: p['member_id'],
           article_id: p['article_id'],
           party_id: id
         )
         if p_db.any?
-          p_db.update(quantity: p['quantity'])
+          p_db.update(quantity: qty)
         else
-          next if p['quantity'].to_i == 0
+          next if qty == 0
           DB[:purchases].insert(
             member_id: p['member_id'],
             article_id: p['article_id'],
             party_id: id,
-            quantity: p['quantity']
+            quantity: qty
           )
         end
       end
