@@ -112,6 +112,19 @@ class AdminEconomyController < AdminBaseController
           text: "#{p[:quantity]} #{a[:name]}"
         )
       end
+
+      # Automatically deduct attendance fee for all attendees
+      if party[:price] && party[:price] > 0
+        DB[:attendances].where(party_id: id).each do |a|
+          DB[:transactions].insert(
+            party_id: id,
+            member_id: a[:member_id],
+            booking_account_number: party[:booking_account_number],
+            sum: -1.0 * party[:price].to_f,
+            text: "Anm"
+          )
+        end
+      end
     end
     redirect back
   end

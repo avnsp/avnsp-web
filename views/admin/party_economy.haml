@@ -32,7 +32,8 @@
               - pa = @parties_articles.select { |pa| pa[:article_id] == a[:id] }.first
               %input{type: :hidden, name: 'parties_articles[]party_id', value: @party[:id]}
               %input{type: :hidden, name: 'parties_articles[]article_id', value: a[:id]}
-              %input{type: :text, name: 'parties_articles[]price', value: (pa and pa[:price]) }
+              - default_price = (a[:name] == 'Anm' ? @party[:price] : nil)
+              %input{type: :text, name: 'parties_articles[]price', value: (pa ? pa[:price] : default_price) }
     %button.btn Spara
 %form{method: :post, action: url("/#{@party[:id]}/transactions") }
   %fieldset
@@ -52,4 +53,8 @@
                 %input{type: :hidden, name: 'purchases[]member_id', value: m[:id]}
                 %input{type: :hidden, name: 'purchases[]article_id', value: a[:id]}
                 %input.col-xs-7{type: :text, name: "purchases[]quantity", value: m[:purchases][a[:id]]}
+        - if @members.empty?
+          %tr
+            %td.text-center{colspan: @articles.count + 1}
+              %strong Inga medlemmar
     %button.btn Spara
