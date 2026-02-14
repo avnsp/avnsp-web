@@ -6,7 +6,9 @@ FQDN = "avnsp.herokuapp.com"
 
 require "sequel"
 Sequel.extension :core_extensions, :pg_json, :pg_json_ops
-DB = Sequel.connect ENV["ELEPHANTSQL_URL"] || "postgres://localhost/avnsp"
+DB = Sequel.connect(ENV["ELEPHANTSQL_URL"] || "postgres://localhost/avnsp")
+DB.extension :connection_validator
+DB.pool.connection_validation_timeout = -1
 
 require "./thumper"
 TH = Thumper.new(publish_to: ENV["CLOUDAMQP_URL"] || "amqp://localhost/avnsp",
