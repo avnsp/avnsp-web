@@ -1,0 +1,17 @@
+%h3
+  Medlemmar
+  %small.pull-right
+    %a.btn.btn-default{href: url('new')} Ny medlem
+%table.table
+  %thead
+    %tr
+      %th Namn
+      %th Email
+      %th Sektion
+  %tbody
+    - @members.each do |m|
+      %tr
+        %td
+          %a{href: url(m[:id])}= [m[:last_name], m[:first_name]].join(', ')
+        %td= m[:email]
+        %td= m[:studied]

@@ -1,0 +1,16 @@
+%h1
+  Saldo
+  %small.pull-right
+    = @total_balance
+
+%table.table
+  %thead
+    %tr
+      %th Namn
+      %th Saldo
+  %tbody
+    - @members.each do |m|
+      %tr
+        %td
+          %a{href: url("/#{m[:id]}")} #{m[:first_name]} #{m[:last_name]}
+        %td= m[:balance]

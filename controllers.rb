@@ -1,4 +1,4 @@
-Dir['./controllers/*'].each do |path|
+Dir['./controllers/**/*.rb'].each do |path|
   require path
 end
 

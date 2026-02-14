@@ -1,0 +1,49 @@
+%h1= [@m[:first_name], @m[:last_name]].join(' ') || 'Ny medlem'
+%form.form-horizontal{method: :post, enctype: "multipart/form-data" }
+  .form-group
+    %label.col-sm-2.control-label Förnamn
+    .col-sm-10
+      %input.form-control{type: 'text', name: :first_name, value: @m[:first_name]}
+  .form-group
+    %label.col-sm-2.control-label Efternamn
+    .col-sm-10
+      %input.form-control{type: 'text', name: :last_name, value: @m[:last_name]}
+  .form-group
+    %label.col-sm-2.control-label Smeknamn
+    .col-sm-10
+      %input.form-control{type: 'text', name: :nick, value: @m[:nick]}
+  .form-group
+    %label.col-sm-2.control-label Sektion
+    .col-sm-10
+      %input.form-control{type: 'text', name: :studied, value: @m[:studied]}
+  .form-group
+    %label.col-sm-2.control-label Startår
+    .col-sm-10
+      %input.form-control{type: 'number', name: :started, value: @m[:started], required: true}
+  .form-group
+    %label.col-sm-2.control-label Email
+    .col-sm-10
+      %input.form-control{type: 'text', name: :email, value: @m[:email]}
+  .form-group
+    %label.col-sm-2.control-label Telefon
+    .col-sm-10
+      %input.form-control{type: 'text', name: :phone, value: @m[:phone]}
+  .form-group
+    %label.col-sm-2.control-label Postadress
+    .col-sm-10
+      %input.form-control{type: 'text', name: :street, value: @m[:street]}
+  .form-group
+    %label.col-sm-2.control-label Postnummer
+    .col-sm-10
+      %input.form-control{type: 'text', name: :zip, value: @m[:zip]}
+  .form-group
+    %label.col-sm-2.control-label Ort
+    .col-sm-10
+      %input.form-control{type: 'text', name: :city, value: @m[:city]}
+  .form-group
+    %label.col-sm-2.control-label Admin
+    .col-sm-10
+      %input.form-control{type: 'checkbox', name: :admin, value: :true, checked: @m[:admin]}
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      %input.btn.btn-default{type: 'submit', value: :Spara}

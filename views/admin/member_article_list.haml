@@ -1,0 +1,18 @@
+%table.table.table-bordered
+  %thead
+    %tr
+      %th
+      %th Snaps
+      %th Öl
+      %th Cider
+      %th Läsk
+      %th Sångbok
+  %tbody
+    - @attendances.each do |a|
+      %tr
+        %td= "#{a[:first_name]} #{a[:last_name]}"
+        %td
+        %td
+        %td
+        %td
+        %td

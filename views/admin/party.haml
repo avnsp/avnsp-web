@@ -1,0 +1,127 @@
+%h1.text-center
+  - if @p[:id]
+    = @p[:name] || @p[:type]
+  - else
+    Ny fest
+- if @p[:id]
+  .text-center
+    %h3 Dokument
+    %ul
+      %li
+        %a{href: url("/#{@p[:id]}/emails")} Emailadresser
+      %li
+        %a{href: url("/#{@p[:id]}/attendance")} Deltagarlista
+      %li
+        %a{href: url("/#{@p[:id]}/member_article_list")} Strecklistor
+      %li
+        %a{href: url("/#{@p[:id]}/snaps_lottery")} Snappslotteri
+%form.form-horizontal{method: :post, enctype: 'multipart/form-data'}
+  .form-group
+    %label.col-sm-2.control-label Namn
+    .col-sm-10
+      %input.form-control{type: 'text', name: :name, value: @p[:name]}
+  .form-group
+    %label.col-sm-2.control-label Typ
+    .col-sm-10
+      %select.form-control{name: :type, required: true}
+        %option Välj...
+        - party_types.each do |type, party|
+          %option{value: type, selected: @p[:type] == party[:name] }= party[:name]
+  .form-group
+    %label.col-sm-2.control-label Tema
+    .col-sm-10
+      %input.form-control{type: 'text', name: :theme, value: @p[:theme]}
+  .form-group
+    %label.col-sm-2.control-label Plats
+    .col-sm-10
+      %input.form-control{type: 'text', name: :location, value: @p[:location]}
+  .form-group
+    %label.col-sm-2.control-label Datum
+    .col-sm-10
+      %input.form-control{type: 'date', name: :date, value: @p[:date], required: true}
+  .form-group
+    %label.col-sm-2.control-label Sista svarsdag
+    .col-sm-10
+      %input.form-control{type: 'date', name: :attendance_deadline, value: @p[:attendance_deadline], required: true}
+  .form-group
+    %label.col-sm-2.control-label Pris
+    .col-sm-10
+      %input.form-control{type: 'number', name: :price, step: '0.5', value: @p[:price]}
+  .form-group
+    %label.col-sm-2.control-label Kommentar
+    .col-sm-10
+      %textarea.form-control{name: :comment}= @p[:comment].to_s.gsub('\n', "\n")
+  .form-group
+    %label.col-sm-2.control-label Inbjudan
+    .col-sm-10
+      %input{type: :file, name: :invitation}
+      - if @p[:invitation]
+        %a{href: "/party/#{@p[:id]}/invitation"} Inbjudan
+  .form-group
+    %label.col-sm-2.control-label Arrangörer
+    .col-sm-10#organizers
+      - @organizers.each do |o|
+        .input-group
+          %input{type: :hidden, value: o[:id], name: 'organizers[]'}
+          %input.form-control{type: :text, list: :members, value: "#{o[:first_name]} #{o[:last_name]}"}
+          %span.input-group-btn
+            %button.btn.btn-danger{type: :button, onclick: 'removeOrganizer(this)'}
+              %i.glyphicon.glyphicon-remove
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      %input.btn.btn-default{type: 'submit', value: :Spara}
+  %template#new-organizer
+    .input-group
+      %input{type: :hidden, name: 'organizers[]'}
+      %input.form-control{type: :text, list: :members}
+      %span.input-group-btn
+        %button.btn.btn-success{type: :button, onclick: 'addOrganizer(this)'}
+          %i.glyphicon.glyphicon-ok
+  %datalist#members
+    - @members.each do |m|
+      %option{data: {id: m[:id], name: "#{m[:first_name]} #{m[:last_name]}"}} #{m[:first_name]} #{m[:last_name]}
+%hr
+.hidden
+  %h3.text-center Actions
+  %form{method: :post, action: url("/#{@p[:id]}/send-invitations")}
+    %button.btn.btn-default{type: :submit} Skicka inbjudningarna!
+:javascript
+  function getMember(name) {
+    var selector = '#members option[data-name="' + name + '"]'
+    var member = document.querySelector(selector)
+    return member.dataset
+  }
+
+  function removeOrganizer(elem) {
+    elem.parentElement.parentElement.remove()
+  }
+
+  function addOrganizer(elem) {
+    var nodes = elem.parentElement.parentElement.children;
+    var id_node = nodes[0];
+    var name_node = nodes[1];
+    var member = getMember(name_node.value);
+    id_node.value = member.id
+    convertOrganizerInput(elem);
+
+    renderTemplate();
+  }
+
+  function convertOrganizerInput(elem) {
+    elem.classList.remove('btn-success')
+    elem.classList.add('btn-danger')
+    var lst = elem.children[0].classList;
+    lst.add('glyphicon-remove');
+    lst.remove('glyphicon-ok');
+    elem.onclick = function() {
+      removeOrganizer(this);
+    };
+  }
+
+  function renderTemplate() {
+    var list = document.querySelector('#organizers')
+    var t = document.querySelector('#new-organizer')
+    var clone = document.importNode(t.content, true);
+    list.appendChild(clone);
+  }
+  renderTemplate()

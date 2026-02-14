@@ -1,0 +1,10 @@
+%table.table.table-bordered
+  %tbody
+    - @attendances.each_slice(3) do |row|
+      %tr
+        - row.each do |a|
+          - nick = a[:nick]
+          %td
+            %strong= [a[:first_name], nick && "\"#{nick}\"", a[:last_name]].compact.join(" ")
+            %br
+            = a[:timestamp]&.strftime("%Y-%m-%d %H:%M")

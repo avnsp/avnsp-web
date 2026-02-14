@@ -1,0 +1,47 @@
+%h1 Registrera insättning
+%p.alert.alert-error
+  %ul
+    - @errors&.each do |e|
+      %li= e
+
+%form{method: :post}
+  .form-group
+    %label.col-sm-2.control-label Medlem
+    .col-sm-10
+      .input-group
+        %input.member_id{type: :hidden, name: :member_id}
+        %input.member.form-control{type: :text, list: :members, onchange: 'setMember(this)'}
+  .form-group
+    %label.col-sm-2.control-label Belopp
+    .col-sm-10
+      %input{type: :number, name: :sum, step: 0.01}
+  .form-group
+    %label.col-sm-2.control-label Datum
+    .col-sm-10
+      %input{type: :date, name: :date}
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      %input.btn.btn-default{type: 'submit', value: :Spara}
+
+  %datalist#members
+    - @members.each do |m|
+      %option{data: {id: m[:id], name: "#{m[:first_name]} #{m[:last_name]}"}} #{m[:first_name]} #{m[:last_name]}
+:javascript
+  function getMemberId(name) {
+    var selector = '#members option[data-name="' + name + '"]'
+    var member = document.querySelector(selector)
+    if (member == null) {
+      return null;
+    }
+    return member.dataset.id
+  }
+
+  function setMember() {
+    var id_node = document.querySelector("input.member_id");
+    var name_node = document.querySelector("input.member");
+    var memberId = getMemberId(name_node.value);
+    id_node.value = memberId;
+    console.log(id_node);
+  }
+
+  setMember()

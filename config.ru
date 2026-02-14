@@ -56,3 +56,24 @@ end
 map '/statistics' do
   run StatisticsController
 end
+
+map '/cheferiet' do
+  map '/members' do
+    run AdminMembersController
+  end
+  map '/parties' do
+    run AdminPartiesController
+  end
+  map '/economy' do
+    run AdminEconomyController
+  end
+  map '/balance' do
+    run AdminBalanceController
+  end
+  map '/reminder' do
+    run AdminReminderController
+  end
+  map '/' do
+    run AdminDashboardController
+  end
+end

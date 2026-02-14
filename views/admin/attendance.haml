@@ -1,0 +1,86 @@
+%form.print-hide{method: :post }
+  %fieldset
+    %legend Ny anmälan
+    .form-group
+      %label Medlem
+      %input#member_id{type: :hidden, name: 'member_id'}
+      %input.form-control{type: :text, list: :members, onchange: 'setMember(this)'}
+    .checkbox
+      %label
+        %input{type: :checkbox, name: :vegitarian, value: 'true' }
+        Vegetariskt
+    .checkbox
+      %label
+        %input{type: :checkbox, name: :non_alcoholic, value: 'true' }
+        Alkoholfritt
+    .form-group
+      %label Allergier
+      %input.form-control{type: :text, name: :allergies }
+    .form-group
+      %label Meddelande till arrangörerna
+      %textarea.form-control{name: :message}
+    %h4 Högerfot
+    .form-group
+      %label Namn
+      %input.form-control{type: :text, name: 'right_foot[name]'}
+    .checkbox
+      %label
+        %input{type: :checkbox, name: 'right_foot[vegitarian]', value: 'true'}
+        Vegetariskt
+    .checkbox
+      %label
+        %input{type: :checkbox, name: 'right_foot[non_alcoholic]', value: 'true'}
+        Alkoholfritt
+    .form-group
+      %label Allergier
+      %input.form-control{type: :text, name: 'right_foot[allergies]'}
+    %button.btn.btn-default
+      spara
+  %datalist#members
+    - @members.each do |m|
+      %option{data: {id: m[:id], name: "#{m[:first_name]} #{m[:last_name]}"}} #{m[:first_name]} #{m[:last_name]}
+.print-hide
+  %hr
+  %h3 Anmälningar
+
+%table.table
+  %thead
+    %tr
+      %th Namn
+      %th Allergier
+      %th Alkoholfritt
+      %th Vegiterian
+      %th Meddelande
+      %th Högerfot
+      %th.print-hide &nbsp;
+  %tbody
+    - @attendances.each do |a|
+      %tr
+        %td= "#{a[:first_name]} #{a[:last_name]}"
+        %td= a[:allergies]
+        %td= a[:non_alcoholic] ? 'Ja' : 'Nej'
+        %td= a[:vegitarian] ? 'Ja' : 'Nej'
+        %td= a[:message]
+        %td= a[:rf_name] && 'Ja'
+        %td.print-hide
+          %form{method: :post, action: url("/attendance/#{a[:id]}")}
+            %input{type: :hidden, name: '_method', value: :delete}
+            %button.btn.btn-small.btn-danger -
+      - if a[:rf_name]
+        %tr
+          %td= "#{a[:rf_name]}"
+          %td= a[:rf_allergies]
+          %td= a[:rf_non_alcoholic] ? 'Ja' : 'Nej'
+          %td{colspan: 4}= a[:rf_vegitarian] ? 'Ja' : 'Nej'
+:javascript
+  function getMember(name) {
+    var selector = '#members option[data-name="' + name + '"]'
+    var member = document.querySelector(selector)
+    return member.dataset
+  }
+
+  function setMember(name_node) {
+    var id_node = document.querySelector("#member_id");
+    var member = getMember(name_node.value);
+    id_node.value = member.id;
+  }

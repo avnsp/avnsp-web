@@ -1,0 +1,16 @@
+%h3
+  Fester
+  %small.pull-right
+    %a.btn.btn-default{href: url('new')} Ny fest
+%table.table
+  %thead
+    %tr
+      %th Datum
+      %th Namn
+  %tbody
+    - @parties.each do |p|
+      %tr
+        %td
+          = p[:date]
+        %td
+          %a{href: url(p[:id])}= p[:name]
