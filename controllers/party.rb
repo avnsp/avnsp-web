@@ -34,6 +34,10 @@ class PartyController < BaseController
 
   get '/:id/buy' do |id|
     @party = Party[id]
+    unless @party.attending?(@user.id)
+      flash[:error] = 'Du måste vara anmäld till festen'
+      redirect url("/#{id}")
+    end
     @purchases = { Öl: 0, Snaps: 0, Cider: 0, Bastuöl: 0, Sångbok: 0, Läsk: 0 }
     @user.purchases(id).each do |p|
       @purchases[p.name.to_sym] = p.quantity
@@ -44,12 +48,21 @@ class PartyController < BaseController
   get '/:id/stream' do |id|
     @password = @username = 'avnsp'
     @party = Party[id]
+    unless @party.attending?(@user.id)
+      flash[:error] = 'Du måste vara anmäld till festen'
+      redirect url("/#{id}")
+    end
     @attendances = @party.attendances_dataset.eager(:member).all.map(&:nick).sort
     @purchases = @party.purchases_highchart
     haml :stream, layout: false
   end
 
   post '/:id/buy' do |id|
+    party = Party[id]
+    unless party.attending?(@user.id)
+      flash[:error] = 'Du måste vara anmäld till festen'
+      redirect url("/#{id}")
+    end
     a = DB[:articles].where(name: params[:name]).first
     q = params[:q].to_i + params[:change].to_i
     redirect url("/#{id}/buy") if q < 0
