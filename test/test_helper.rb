@@ -195,9 +195,6 @@ def build_app
       map '/balance' do
         run AdminBalanceController
       end
-      map '/reminder' do
-        run AdminReminderController
-      end
       map '/' do
         run AdminDashboardController
       end
