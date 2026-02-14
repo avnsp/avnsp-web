@@ -70,20 +70,50 @@ class PartyControllerTest < ControllerTest
     m = create_member
     login_as(m)
     p = create_party
-    # Ensure articles exist (seeded by migration 09)
+    create_attendance(member: m, party: p)
     get "/party/#{p.id}/buy"
     assert_equal 200, last_response.status
+  end
+
+  def test_get_buy_redirects_non_attendee
+    m = create_member
+    login_as(m)
+    p = create_party
+    get "/party/#{p.id}/buy"
+    assert_equal 302, last_response.status
+    assert_match %r{/party/#{p.id}$}, last_response.location
+  end
+
+  def test_get_stream_redirects_non_attendee
+    m = create_member
+    login_as(m)
+    p = create_party
+    get "/party/#{p.id}/stream"
+    assert_equal 302, last_response.status
+    assert_match %r{/party/#{p.id}$}, last_response.location
   end
 
   def test_post_buy_creates_purchase
     m = create_member
     login_as(m)
     p = create_party
+    create_attendance(member: m, party: p)
     article = create_article(name: "Öl")
     post "/party/#{p.id}/buy", { name: "Öl", q: "0", change: "1" }
     assert_equal 302, last_response.status
     purchase = DB[:purchases].where(party_id: p.id, member_id: m.id, article_id: article.id).first
     assert purchase
     assert_equal 1, purchase[:quantity]
+  end
+
+  def test_post_buy_redirects_non_attendee
+    m = create_member
+    login_as(m)
+    p = create_party
+    create_article(name: "Öl")
+    post "/party/#{p.id}/buy", { name: "Öl", q: "0", change: "1" }
+    assert_equal 302, last_response.status
+    assert_match %r{/party/#{p.id}$}, last_response.location
+    assert_nil DB[:purchases].where(party_id: p.id, member_id: m.id).first
   end
 end

@@ -10,13 +10,13 @@ class PartyTest < Minitest::Test
     m = create_member
     p = create_party
     create_attendance(member: m, party: p)
-    assert p.reload.is_attending?(m.id)
+    assert p.reload.attending?(m.id)
   end
 
   def test_is_attending_false
     m = create_member
     p = create_party
-    refute p.reload.is_attending?(m.id)
+    refute p.reload.attending?(m.id)
   end
 
   def test_purchases_highchart_returns_six_categories
