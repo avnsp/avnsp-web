@@ -35,12 +35,19 @@ class Member < Sequel::Model
     attendances_dataset.where(party_id: party_id).first || Attendance.new
   end
 
+  def s3
+    @s3_client ||= Aws::S3::Resource.new(region: "eu-west-1")
+    @s3 ||= @s3_client.bucket("avnsp")
+  end
+
   def profile_picture_cdn
-    "https://#{CF_DOMAIN}/#{profile_picture}"
+    return unless profile_picture
+    s3.object(profile_picture).presigned_url(:get, expires_in: 3600)
   end
 
   def thumb_cdn
-    "https://#{CF_DOMAIN}/#{profile_picture}.thumb"
+    return unless profile_picture
+    s3.object("#{profile_picture}.thumb").presigned_url(:get, expires_in: 3600)
   end
 
   def balance
