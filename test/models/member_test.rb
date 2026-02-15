@@ -70,11 +70,25 @@ class MemberTest < Minitest::Test
 
   def test_profile_picture_cdn
     m = create_member(profile_picture: "photos/profile.jpg")
-    assert_equal "https://www.academian.se/photos/profile.jpg", m.profile_picture_cdn
+    url = m.profile_picture_cdn
+    assert_match %r{^https://avnsp\.s3\.eu-west-1\.amazonaws\.com/photos/profile\.jpg\?}, url
+    assert_match(/X-Amz-Expires=3600/, url)
+  end
+
+  def test_profile_picture_cdn_nil_when_no_picture
+    m = create_member(profile_picture: nil)
+    assert_nil m.profile_picture_cdn
   end
 
   def test_thumb_cdn
     m = create_member(profile_picture: "photos/profile.jpg")
-    assert_equal "https://www.academian.se/photos/profile.jpg.thumb", m.thumb_cdn
+    url = m.thumb_cdn
+    assert_match %r{^https://avnsp\.s3\.eu-west-1\.amazonaws\.com/photos/profile\.jpg\.thumb\?}, url
+    assert_match(/X-Amz-Expires=3600/, url)
+  end
+
+  def test_thumb_cdn_nil_when_no_picture
+    m = create_member(profile_picture: nil)
+    assert_nil m.thumb_cdn
   end
 end
