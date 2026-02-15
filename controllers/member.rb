@@ -31,6 +31,8 @@ class MemberController < BaseController
               { path: path, quality: 95, resample: 95},
               { path: "#{path}.thumb", quality: 95, resample: 95, resize: 112 }
             ])
+    content_type :text
+    'ok'
   end
 
   put '/:id/nick' do |id|

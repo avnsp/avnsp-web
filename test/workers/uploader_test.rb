@@ -23,4 +23,23 @@ class UploaderTest < Minitest::Test
     # If we get here without error, the handler decoded and attempted upload
     assert true
   end
+
+  def test_photo_upload_handler_processes_versions
+    # Create a minimal 2x2 red PNG via ImageMagick
+    tmpfile = Tempfile.new(['test', '.png'])
+    system('magick', '-size', '2x2', 'xc:red', tmpfile.path)
+    encoded = Base64.encode64(File.binread(tmpfile.path))
+    tmpfile.unlink
+
+    @worker.simulate("photo.upload", {
+      file: encoded,
+      content_type: "image/png",
+      versions: [
+        { path: "photos/test.png", quality: 95, resample: 95 },
+        { path: "photos/test.png.thumb", quality: 95, resample: 95, resize: 1 }
+      ]
+    })
+    # If we get here without error, the handler processed both versions
+    assert true
+  end
 end
