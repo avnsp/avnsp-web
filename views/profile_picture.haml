@@ -5,6 +5,7 @@
 .row
   .col-sm-12
     %form#form-profile{method: :post, enctype: 'multipart/form-data'}
+      != csrf_token_tag
       .form-group
         %label Profilbild
         %input{type: :file, accept: 'image/*', name: :profile_picture, onChange: "previewFile()"}

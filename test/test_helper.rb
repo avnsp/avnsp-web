@@ -11,6 +11,7 @@ require 'rack-flash'
 require 'database_cleaner-sequel'
 require 'securerandom'
 require 'digest'
+require 'openssl'
 
 # --- Database setup (bypass init.rb) ---
 require 'sequel'
@@ -164,7 +165,7 @@ end
 # --- Rack app builder for controller tests ---
 def build_app
   Rack::Builder.new do
-    use Rack::Session::Cookie, secret: ENV['SESSION_SECRET'], httponly: true
+    use Rack::Session::Cookie, secret: ENV['SESSION_SECRET'], httponly: true, same_site: :lax
     use Rack::Flash, sweep: true, helper: false
     use AuthController
     map '/' do

@@ -16,6 +16,8 @@
         .col-md-8.col-md-offset-2
           %h4 Välkommen till Academian
           %form{method: :post}
+            != csrf_token_tag
+            %input{type: :hidden, name: :return_url, value: params[:return_url]}
             .form-group
               %label Email
               %input.form-control{type: :text, name: :email}

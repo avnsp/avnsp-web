@@ -5,6 +5,7 @@
       %li= e
 
 %form{method: :post}
+  != csrf_token_tag
   .form-group
     %label.col-sm-2.control-label Medlem
     .col-sm-10

@@ -59,7 +59,7 @@ class AuthControllerTest < ControllerTest
   def test_get_change_password_with_valid_token
     create_member(email: "reset@academian.se")
     ts = Time.now.to_i.to_s
-    token = Digest::SHA1.hexdigest("reset@academian.se:#{ts}:#{ENV['SESSION_SECRET']}")
+    token = OpenSSL::HMAC.hexdigest("SHA256", ENV['SESSION_SECRET'], "reset@academian.se:#{ts}")
     get '/change-password', { email: "reset@academian.se", ts: ts, token: token }
     assert_equal 200, last_response.status
   end
@@ -67,7 +67,7 @@ class AuthControllerTest < ControllerTest
   def test_post_change_password_success
     m = create_member(email: "reset@academian.se")
     ts = Time.now.to_i.to_s
-    token = Digest::SHA1.hexdigest("reset@academian.se:#{ts}:#{ENV['SESSION_SECRET']}")
+    token = OpenSSL::HMAC.hexdigest("SHA256", ENV['SESSION_SECRET'], "reset@academian.se:#{ts}")
     post '/change-password', {
       email: "reset@academian.se",
       ts: ts,

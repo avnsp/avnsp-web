@@ -1,4 +1,5 @@
 %form{method: :post, action: "/party/#{party_id}/attend" }
+  != csrf_token_tag
   .checkbox
     %label
       %input{type: :checkbox, name: :vegitarian, value: 'true', checked: a.vegitarian }
@@ -36,5 +37,6 @@
       Jag kommer!
 -if a.id
   %form{method: :post, action: "/party/#{party_id}/attend/delete" }
+    != csrf_token_tag
     %input{type: :hidden, name: :_method, value: :delete}
     %button.btn.btn-danger Jag vill inte gå längre

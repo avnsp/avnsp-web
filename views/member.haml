@@ -6,7 +6,8 @@
         %button.new-nick.btn.btn-link Ändra smeknamn
 .row
   .col-sm-12.text-center
-    %img{src: @member.profile_picture_cdn, width: '100%', alt: 'Ingen profilbild uppladdad' }
+    - if @member.profile_picture_cdn
+      %img{src: @member.profile_picture_cdn, width: '100%', alt: 'Ingen profilbild uppladdad' }
 .row
   .col-sm-4
     .text-center
@@ -72,7 +73,7 @@
     var request = new XMLHttpRequest();
     request.open('PUT', #{@member.id} + '/nick', true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-    request.send("nick=" + nick);
+    request.send("nick=" + nick + "&authenticity_token=" + encodeURIComponent("#{csrf_token}"));
     request.onload = function() {
       var resp = request.responseText;
       document.querySelector('.full-name').innerHTML = resp;

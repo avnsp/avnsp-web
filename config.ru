@@ -27,13 +27,21 @@ use CloudFrontForwaredProtoFix
 use Rack::SslEnforcer, hsts: true if ENV['RACK_ENV'] == 'production'
 use Rack::Deflater
 
+session_secret = ENV['SESSION_SECRET']
+if ENV['RACK_ENV'] == 'production' && (session_secret.nil? || session_secret.empty?)
+  raise "SESSION_SECRET environment variable is required in production"
+end
+session_secret ||= 'dev-fallback-secret-not-for-production'
+
 use Rack::Session::Cookie, {
-  :secret => ENV['SESSION_SECRET'] || 'xKU9Ybq23jafjhh',
+  :secret => session_secret,
   :httponly => true,
   :secure => (ENV['RACK_ENV'] == 'production'),
   :expire_after => 24 * 3600 * 30,
+  :same_site => :lax,
 }
 
+use Rack::Protection::AuthenticityToken
 use Rack::Flash, sweep: true, helper: false
 use AuthController
 

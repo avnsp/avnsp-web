@@ -48,6 +48,7 @@
                     %li.divider
                     %li
                       %form.navbar-form{method: :post, action: "/logout"}
+                        != csrf_token_tag
                         %button.btn.btn-block.btn-default Logga ut
     .container
       .row
