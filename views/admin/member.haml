@@ -1,5 +1,6 @@
 %h1= [@m[:first_name], @m[:last_name]].join(' ') || 'Ny medlem'
 %form.form-horizontal{method: :post, enctype: "multipart/form-data" }
+  != csrf_token_tag
   .form-group
     %label.col-sm-2.control-label Förnamn
     .col-sm-10

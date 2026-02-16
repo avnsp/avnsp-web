@@ -1,5 +1,6 @@
 -@purchases.each do |n, q|
   %form.text-center.form-inline{method: :post}
+    != csrf_token_tag
     %fieldset
       %legend= n
       .form-group

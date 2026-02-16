@@ -1,4 +1,5 @@
 %form.print-hide{method: :post }
+  != csrf_token_tag
   %fieldset
     %legend Ny anmälan
     .form-group
@@ -64,6 +65,7 @@
         %td= a[:rf_name] && 'Ja'
         %td.print-hide
           %form{method: :post, action: url("/attendance/#{a[:id]}")}
+            != csrf_token_tag
             %input{type: :hidden, name: '_method', value: :delete}
             %button.btn.btn-small.btn-danger -
       - if a[:rf_name]

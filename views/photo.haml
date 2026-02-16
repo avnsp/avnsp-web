@@ -28,6 +28,7 @@
 .row
   .col-sm-12
     %form{method: :post, action: url("/#{@photo.id}/comment")}
+      != csrf_token_tag
       .form-group
         %input.form-control{type: :text, name: :comment, placeholder: "Kommentera här" }
       %button.btn.btn-default{type: :submit} Spara

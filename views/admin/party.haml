@@ -16,6 +16,7 @@
       %li
         %a{href: url("/#{@p[:id]}/snaps_lottery")} Snappslotteri
 %form.form-horizontal{method: :post, enctype: 'multipart/form-data'}
+  != csrf_token_tag
   .form-group
     %label.col-sm-2.control-label Namn
     .col-sm-10
@@ -84,6 +85,7 @@
 .hidden
   %h3.text-center Actions
   %form{method: :post, action: url("/#{@p[:id]}/send-invitations")}
+    != csrf_token_tag
     %button.btn.btn-default{type: :submit} Skicka inbjudningarna!
 :javascript
   function getMember(name) {

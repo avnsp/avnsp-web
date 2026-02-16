@@ -6,6 +6,7 @@
   -else
     Anmäl dig
 %form.uk-form.uk-form-horizontal{method: :post}
+  != csrf_token_tag
   .uk-form-row
     %label.uk-form-label Vegiterian?
     %input{type: :checkbox, name: :vegitarian, value: :true, checked: @attendance.vegitarian}
