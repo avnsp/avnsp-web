@@ -5,6 +5,7 @@
   %a.btn{href: url('/')} Tillbaks
 
 %form{method: :post, action: url("/parties_articles")}
+  != csrf_token_tag
   %fieldset
     %legend 1. Ange priser för festen
     %table.table-compact.table-prices
@@ -25,6 +26,7 @@
     %button.btn.btn-primary Spara
 
 %form.economy-section2{method: :post, action: url("/#{@party[:id]}/transactions")}
+  != csrf_token_tag
   %fieldset
     %legend 2. Fyll i vad alla drack utifrån strecklistorna
     .table-scroll

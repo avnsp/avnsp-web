@@ -45,6 +45,15 @@ class BaseController < Sinatra::Base
       "#{path}?v=#{mtime}"
     end
 
+    def csrf_token_tag
+      token = session[:csrf] || ''
+      %(<input type="hidden" name="authenticity_token" value="#{Rack::Utils.escape_html(token)}">)
+    end
+
+    def csrf_token
+      session[:csrf] || ''
+    end
+
     def subscribe qname, *topics, &blk
       TH.subscribe(qname, *topics, &blk)
     end

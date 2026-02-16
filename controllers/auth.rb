@@ -1,9 +1,10 @@
 require "./controllers/base"
+require 'openssl'
 
 class AuthController < BaseController
   before do
     unless session[:id] || request.path =~ %r{^/log(in|out)|auth|change-password|forgotten}
-      redirect "/login?return_url=#{request.url}"
+      redirect "/login?return_url=#{Rack::Utils.escape(request.path)}"
     end
   end
 
@@ -57,9 +58,11 @@ class AuthController < BaseController
         "Du har inte registrerat något lösenord, en länk har mailats till dig så du kan registrera ett lösenordet."
     elsif @member && @member.password_hash && @member.password == params[:password]
       session[:id] = @member.id
+      redirect safe_return_url(params[:return_url])
     else
+      flash[:error] = "Fel lösenord."
     end
-    redirect back
+    redirect "/login"
   end
 
   post "/logout" do
@@ -69,6 +72,15 @@ class AuthController < BaseController
   end
 
   helpers do
+    def safe_return_url(url)
+      return "/" if url.nil? || url.empty?
+      uri = URI.parse(url)
+      return "/" if uri.scheme || uri.host
+      uri.path.start_with?("/") ? uri.path : "/"
+    rescue URI::InvalidURIError
+      "/"
+    end
+
     def reset_password!(email)
       DB.transaction do
         member = Member[email:]
@@ -82,8 +94,8 @@ class AuthController < BaseController
     end
 
     def make_token(email, ts)
-      str = "#{email}:#{ts}:#{ENV['SESSION_SECRET'] || 'avnsp'}"
-      Digest::SHA1.hexdigest(str)
+      secret = ENV['SESSION_SECRET'] || 'avnsp'
+      OpenSSL::HMAC.hexdigest("SHA256", secret, "#{email}:#{ts}")
     end
 
     def token_valid?(token, email, ts)

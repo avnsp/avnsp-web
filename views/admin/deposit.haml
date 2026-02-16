@@ -6,6 +6,7 @@
         %li= e
 
 %form{method: :post}
+  != csrf_token_tag
   .form-group
     %label Medlem
     %select{name: :member_id}

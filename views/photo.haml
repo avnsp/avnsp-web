@@ -18,6 +18,7 @@
       %em= c.timestamp.strftime('%Y-%m-%d %H:%M')
   %hr
 %form{method: :post, action: url("/#{@photo.id}/comment")}
+  != csrf_token_tag
   .form-group
     %input{type: :text, name: :comment, placeholder: "Kommentera här"}
   %button.btn{type: :submit} Spara

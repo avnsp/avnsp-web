@@ -12,6 +12,8 @@
           = flash[key]
       %h4 Välkommen till Academian
       %form{method: :post}
+        != csrf_token_tag
+        %input{type: :hidden, name: :return_url, value: params[:return_url]}
         .form-group
           %label Email
           %input{type: :text, name: :email}

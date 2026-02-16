@@ -12,7 +12,7 @@ class HomeController < BaseController
       c = subscribe '', *topics do |key, data|
         begin
           out << "event: #{key}\ndata: #{data.to_json}\n\n"
-        rescue Exception
+        rescue StandardError
           cancel_consumer self
           raise "[ERROR] closed channel"
         end
@@ -21,7 +21,7 @@ class HomeController < BaseController
         begin
           out << ":\n"
           sleep 10
-        rescue Exception
+        rescue StandardError
           cancel_consumer c
           break
         end

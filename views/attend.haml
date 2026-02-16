@@ -6,6 +6,7 @@
   - else
     Anmäl dig
 %form{method: :post}
+  != csrf_token_tag
   .checkbox
     %label
       %input{type: :checkbox, name: :vegitarian, value: :true, checked: @attendance.vegitarian}
