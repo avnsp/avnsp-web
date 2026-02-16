@@ -24,7 +24,7 @@ class Member < Sequel::Model
 
   def parties(date = nil)
     ds = Party.join(:attendances, party_id: :id)
-      .where(Sequel[:attendances][:member_id] => self.id)
+      .where(Sequel[:attendances][:member_id] => id)
       .select_all(:parties)
       .order(Sequel[:parties][:date])
     ds = ds.where { Sequel[:parties][:date] < date } if date
@@ -32,7 +32,7 @@ class Member < Sequel::Model
   end
 
   def attendance(party_id)
-    attendances_dataset.where(party_id: party_id).first || Attendance.new
+    attendances_dataset.where(party_id:).first || Attendance.new
   end
 
   def s3
@@ -42,11 +42,13 @@ class Member < Sequel::Model
 
   def profile_picture_cdn
     return unless profile_picture
+
     s3.object(profile_picture).presigned_url(:get, expires_in: 3600)
   end
 
   def thumb_cdn
     return unless profile_picture
+
     s3.object("#{profile_picture}.thumb").presigned_url(:get, expires_in: 3600)
   end
 
@@ -127,9 +129,9 @@ class Photo < Sequel::Model
   end
 
   def surrounding_ids
-    pk = self.id
-    prev_id = Photo.where(Sequel.lit('id < ?', pk)).reverse_order(:id).get(:id)
-    next_id = Photo.where(Sequel.lit('id > ?', pk)).order(:id).get(:id)
+    pk = id
+    prev_id = Photo.exclude { id >= pk }.reverse_order(:id).get(:id)
+    next_id = Photo.exclude { id <= pk }.order(:id).get(:id)
     [prev_id, next_id].compact
   end
 end
