@@ -4,22 +4,15 @@
     %meta(charset="utf-8")
     %meta(name="viewport" content="width=device-width, initial-scale=1.0")
     %title Academian | Glömt lösenord
-    %link{href: "/css/bootstrap.css", rel: :stylesheet}
+    %link{href: asset_path("/css/site.css"), rel: :stylesheet}
   %body
-    .container
-      .row
-        .col-md-8.col-md-offset-2
-          -flash.keys.each do |key|
-            %div{class: "alert alert-#{key}", role: :alert}
-              = flash[key]
-      .row
-        .col-md-8.col-md-offset-2
-          %h1 Glömt lösenordet
-          %form{method: :post}
-            .form-group
-              %label.control-label E-mail:
-              %input.form-control{name: 'email', type: 'email', value: (params[:email] || '').strip.gsub(/ /, '+'), readonly: params[:email]}
-            .form-actions
-              %input.btn.btn-primary{type: 'submit', value: 'Submit'}
-
-
+    .container-narrow
+      - flash.keys.each do |key|
+        %div{class: "alert alert-#{key}", role: :alert}
+          = flash[key]
+      %h1 Glömt lösenordet
+      %form{method: :post}
+        .form-group
+          %label E-mail:
+          %input{name: 'email', type: 'email', value: (params[:email] || '').strip.gsub(/ /, '+'), readonly: params[:email]}
+        %input.btn.btn-primary{type: 'submit', value: 'Submit'}

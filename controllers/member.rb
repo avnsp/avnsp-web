@@ -2,8 +2,27 @@ require './controllers/base'
 
 class MemberController < BaseController
   get '/' do
-    @members = Member.all.sort_by(&:last_name)
-    haml :members
+    ds = Member.dataset
+    if params[:q] && !params[:q].empty?
+      q = "%#{params[:q]}%"
+      ds = ds.where(
+        Sequel.ilike(:first_name, q) |
+        Sequel.ilike(:last_name, q) |
+        Sequel.ilike(:nick, q) |
+        Sequel.ilike(:email, q) |
+        Sequel.ilike(:studied, q)
+      )
+    end
+    sort_col = %w[last_name first_name nick studied started email].include?(params[:sort]) ? params[:sort].to_sym : :last_name
+    sort_dir = params[:order] == 'desc' ? Sequel.desc(sort_col) : Sequel.asc(sort_col)
+    @members = ds.order(sort_dir).all
+    @sort = params[:sort] || 'last_name'
+    @order = params[:order] || 'asc'
+    if htmx?
+      haml :_members_table, layout: false
+    else
+      haml :members
+    end
   end
 
   get '/profile-edit' do
@@ -34,8 +53,8 @@ class MemberController < BaseController
   end
 
   put '/:id/nick' do |id|
-    nick = params[:nick]
-    nick = nil if nick.empty?
+    nick = params[:nick] || request.env['HTTP_HX_PROMPT']
+    nick = nil if nick.nil? || nick.empty?
     m = Member[id]
     m.update(nick: nick)
     content_type :text

@@ -4,23 +4,19 @@
     %meta(charset="utf-8")
     %meta(name="viewport" content="width=device-width, initial-scale=1.0")
     %title Academian | Login
-    %link{href: "/css/bootstrap.css", rel: :stylesheet}
+    %link{href: asset_path("/css/site.css"), rel: :stylesheet}
   %body
-    .container
-      .row
-        .col-md-8.col-md-offset-2
-          -flash.keys.each do |key|
-            %div{class: "alert alert-#{key}", role: :alert}
-              = flash[key]
-      .row
-        .col-md-8.col-md-offset-2
-          %h4 Välkommen till Academian
-          %form{method: :post}
-            .form-group
-              %label Email
-              %input.form-control{type: :text, name: :email}
-            .form-group
-              %label Lösenord
-              %input.form-control{type: :password, name: :password}
-            %input.btn.btn-default{type: :submit, value: 'Logga in'}
-            %a{href: '/forgotten'} Återställ lösenordet
+    .container-narrow
+      - flash.keys.each do |key|
+        %div{class: "alert alert-#{key}", role: :alert}
+          = flash[key]
+      %h4 Välkommen till Academian
+      %form{method: :post}
+        .form-group
+          %label Email
+          %input{type: :text, name: :email}
+        .form-group
+          %label Lösenord
+          %input{type: :password, name: :password}
+        %input.btn.btn-primary{type: :submit, value: 'Logga in'}
+        %a{href: '/forgotten'} Återställ lösenordet

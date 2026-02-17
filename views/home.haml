@@ -1,31 +1,25 @@
 .text-center
-  .row
-    %h1
-      %small  Academia Vestigia Nuda Sinistri Pedis
-    %p
-      Välkommen till Academians tillvistelse på nätet, hoppas du skall trivas! Har du några frågor eller funderingar kan du alltid kontakta mig, min högst metaforiska dörr står alltid öppen. Gäller det specifika frågor om hemsidan och dess skötsel går det bra att vända sig direkt till Chef des Ordinateurs
-      %a{href: 'mailto:ottowheino@gmail.com'} Otto Heino & Richard Johansson
-      \.
-    %p
-      Ta hand om din vänstra fot, så ses vi förhoppningsvis snart.
-    %p
-      Ex officio,
-      %br
-      Chef des Chefs Viktor Uvesten
-      %br
-      Sinistrum pedem ducit ad victoriam
-  .row
-    .col-sm-12
-      %h3 Kommande event
-  .row
-    .col-sm-offset-3.col-sm-6
-      .list-group
-      -@parties.each do |p|
-        .list-group-item
-          %h4.list-group-item-heading
-            %a{href: "/party/#{p.id}"}= p.description
-          .list-group-item-text
-            -if p.attending?(@user.id)
-              Du är anmäld!
-            -elsif DateTime.now < p.attendance_deadline
-              !=haml(:attend_form, layout: false, locals: { party_id: p.id, a: @user.attendance(p.id), party_type: p.type })
+  %h1
+    %small Academia Vestigia Nuda Sinistri Pedis
+  %p
+    Välkommen till Academians tillvistelse på nätet, hoppas du skall trivas! Har du några frågor eller funderingar kan du alltid kontakta mig, min högst metaforiska dörr står alltid öppen. Gäller det specifika frågor om hemsidan och dess skötsel går det bra att vända sig direkt till Chef des Ordinateurs
+    %a{href: 'mailto:ottowheino@gmail.com'} Otto Heino & Richard Johansson
+    \.
+  %p
+    Ta hand om din vänstra fot, så ses vi förhoppningsvis snart.
+  %p
+    Ex officio,
+    %br
+    Chef des Chefs Viktor Uvesten
+    %br
+    Sinistrum pedem ducit ad victoriam
+.container-narrow
+  %h3 Kommande event
+  - @parties.each do |p|
+    .event-item
+      %h4
+        %a{href: "/party/#{p.id}"}= p.description
+      - if p.attending?(@user.id)
+        Du är anmäld!
+      - elsif DateTime.now < p.attendance_deadline
+        != haml(:attend_form, layout: false, locals: { party_id: p.id, a: @user.attendance(p.id), party_type: p.type })

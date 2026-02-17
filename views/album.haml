@@ -1,12 +1,9 @@
-.row
-  .col-sm-offset-3.col-sm-6.text-center
-    %h1= @album.title
-.row
-  #grid{'data-columns': ''}
-    -@photos.each do |p|
-      %div
-        %a{href: url("/#{p.album_id}/#{p.id}")}
-          %img{src: p.original_temp, width: '300'}
-
+.container-narrow.text-center
+  %h1= @album.title
+#grid{'data-columns': ''}
+  - @photos.each do |p|
+    %div
+      %a{href: url("/#{p.album_id}/#{p.id}")}
+        %img{src: p.original_temp, width: '300'}
 != #haml(:photoswipe, layout: false)
-%script{type: 'text/javascript', src: "/js/salvattore.min.js"}
+%script{src: "/js/salvattore.min.js"}

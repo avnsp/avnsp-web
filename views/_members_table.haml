@@ -1,0 +1,10 @@
+- @members.each do |m|
+  %tr
+    %td
+      %a{href: url(m[:id])}= m.last_name
+    %td= m.first_name
+    %td= m.nick
+    %td= m.studied
+    %td= m.started
+    %td
+    %td= m.email

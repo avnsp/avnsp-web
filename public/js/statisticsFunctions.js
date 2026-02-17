@@ -1,12 +1,8 @@
-//* https://stackoverflow.com/questions/1484506/random-color-generator
-function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
+var CHART_COLORS = [
+  '#7cb5ec', '#434348', '#90ed7d', '#f7a35c',
+  '#8085e9', '#f15c80', '#e4d354', '#2b908f',
+  '#f45b5b', '#91e8e1'
+];
 class Program{
   constructor (name, validLabels){
     this.name = name
@@ -198,10 +194,10 @@ function addDataToChart(programs, ctx, type,args) {
   args = args || {}
   const labels = programs.map(a => a.name);
   const data = programs.map(a => a.quantity);
-  const backgroundColor = args.backgroundColor !== undefined 
-   ? args.backgroundColor 
-   : data.map(getRandomColor);
-  const datasetLabels = args.datasetLabels !== undefined 
+  const backgroundColor = args.backgroundColor !== undefined
+   ? args.backgroundColor
+   : data.map(function(_, i) { return CHART_COLORS[i % CHART_COLORS.length]; });
+  const datasetLabels = args.datasetLabels !== undefined
    ? args.datasetLabels
    : undefined
   new Chart(ctx, {
@@ -219,4 +215,23 @@ function addDataToChart(programs, ctx, type,args) {
     }
   });
 }
+
+function getContextFromId(id) {
+  return document.getElementById(id).getContext("2d");
+}
+
+function fetchAndDrawData(url, functionToDraw, context) {
+  fetch(url)
+    .then(function (a) { return a.json(); })
+    .then(function (data) { functionToDraw(context, data); });
+}
+
+function initStatistics() {
+  var studied = document.getElementById('studied-chart');
+  var started = document.getElementById('started-chart');
+  if (studied) fetchAndDrawData('/statistics/data/studied', drawStudied, studied.getContext('2d'));
+  if (started) fetchAndDrawData('/statistics/data/started', drawStarted, started.getContext('2d'));
+}
+
+initStatistics();
 

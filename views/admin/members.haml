@@ -1,11 +1,11 @@
 %form{method: :post, action: url('remind')}
   %h3
     Medlemmar
-    %small.pull-right
+    %small.float-right
       - if @members.any? { |m| m[:balance]&.negative? }
-        %input.btn.btn-default{type: :submit, value: 'Skicka Påminnelse'}
-      %a.btn.btn-default{href: url('new')} Ny medlem
-  %table.table
+        %input.btn{type: :submit, value: 'Skicka Påminnelse'}
+      %a.btn{href: url('new')} Ny medlem
+  %table
     %thead
       %tr
         %th Namn

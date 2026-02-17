@@ -1,6 +1,5 @@
-%h1.text-center
-  Kontohändelser
-%table.table
+%h1.text-center Kontohändelser
+%table
   %thead
     %tr
       %th Datum
@@ -9,7 +8,7 @@
       %th Saldo
   %tbody
     - balance = 0
-    -@transactions.each do |t|
+    - @transactions.each do |t|
       - balance += t.sum
       %tr
         %td= t.timestamp.strftime('%Y-%m-%d %H:%M')

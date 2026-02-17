@@ -1,13 +1,12 @@
-.row
-  .col-sm-12.text-center
-    %h1
-      = @party.name
-      %small
-        = @party.date
-    -if @party.date == Date.today
-      %a{href: url("/#{@party.id}/buy")} Till appen
-.row
-  .col-sm-6
+.text-center
+  %h1
+    = @party.name
+    %small
+      = @party.date
+  - if @party.date == Date.today
+    %a{href: url("/#{@party.id}/buy")} Till appen
+.grid.grid-2
+  %div
     %dl
       %dt När?
       %dd= @party.date
@@ -23,45 +22,44 @@
       %dt Arrangörer
       %dd
         %ul
-          -@organizers.each do |o|
+          - @organizers.each do |o|
             %li
               %a{href: "/member/#{o.member_id}"}= o.member.full_name
-  -if Date.today < @party.attendance_deadline
-    .col-sm-6
-      .panel.panel-default
-        .panel-heading
+  - if Date.today < @party.attendance_deadline
+    %div
+      .card
+        .card-header
           %h4
-            -if @party.attending?(@user.id)
+            - if @party.attending?(@user.id)
               Du är anmäld
-            -else
+            - else
               Anmäl dig nu!
-        .panel-body
-          !=haml(:attend_form, layout: false, locals: {party_id: @party.id, a: @user.attendance(@party.id), party_type: @party.type })
--unless @albums.empty?
+        .card-body
+          != haml(:attend_form, layout: false, locals: {party_id: @party.id, a: @user.attendance(@party.id), party_type: @party.type})
+- unless @albums.empty?
   %h4 Fotoalbum
   %ul
     - @albums.each do |a|
       %li
         %a{href: "/album/#{a.id}"}= a.name || a.timestamp
-.row
-  .text-center
-    %h3
-      Anmälda
-      %small
-        = @attendances.count
-  %table.table
-    %thead
+.text-center
+  %h3
+    Anmälda
+    %small
+      = @attendances.count
+%table
+  %thead
+    %tr
+      %th #
+      %th Namn
+      %th Program
+      %th
+  %tbody
+    - @attendances.each do |a|
       %tr
-        %th #
-        %th Namn
-        %th Program
-        %th
-    %tbody
-      - @attendances.each do |a|
-        %tr
-          %td= @prior_counts[a.member_id] || 0
-          %td
-            %a{href: "/member/#{a[:member_id]}"}= a.member_name
-            -if a.right_foot
-              (Högerfot: #{a.right_foot.name})
-          %td= a.member_studied_started
+        %td= @prior_counts[a.member_id] || 0
+        %td
+          %a{href: "/member/#{a[:member_id]}"}= a.member_name
+          - if a.right_foot
+            (Högerfot: #{a.right_foot.name})
+        %td= a.member_studied_started

@@ -1,24 +1,26 @@
 %h1
-  -if @attendance.id
+  - if @attendance.id
     Du anmälde dig
     %small
       != @attendance.timestamp.to_date
-  -else
+  - else
     Anmäl dig
-%form.uk-form.uk-form-horizontal{method: :post}
-  .uk-form-row
-    %label.uk-form-label Vegiterian?
-    %input{type: :checkbox, name: :vegitarian, value: :true, checked: @attendance.vegitarian}
-  .uk-form-row
-    %label.uk-form-label Alkoholfri?
-    %input{type: :checkbox, name: :non_alcoholic, value: :true, checked: @attendance.non_alcoholic}
-  .uk-form-row
-    %label.uk-form-label Allergier?
-    %textarea.uk-form-width-medium{type: :text, name: :allergies}
+%form{method: :post}
+  .checkbox
+    %label
+      %input{type: :checkbox, name: :vegitarian, value: :true, checked: @attendance.vegitarian}
+      Vegetariskt
+  .checkbox
+    %label
+      %input{type: :checkbox, name: :non_alcoholic, value: :true, checked: @attendance.non_alcoholic}
+      Alkoholfritt
+  .form-group
+    %label Allergier
+    %textarea{name: :allergies}
       != @attendance.allergies
-  .uk-form-row
-    -if @attendance.id
-      %input.uk-button.uk-button-success{type: :submit, value: 'Spara'}
-    -else
-      %input.uk-button.uk-button-success{type: :submit, value: 'Anmäl mig'}
+  .form-group
+    - if @attendance.id
+      %input.btn.btn-success{type: :submit, value: 'Spara'}
+    - else
+      %input.btn.btn-success{type: :submit, value: 'Anmäl mig'}
     %a{href: '/'} Avbryt
