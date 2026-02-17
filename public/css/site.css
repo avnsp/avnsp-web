@@ -331,6 +331,17 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 .table-compact td { padding: 0; border-top: none; font-size: 10pt; }
 .table-compact input[type="text"] { height: 22px; text-align: left; min-width: fit-content; width: auto; }
 
+/* === Stream chart === */
+.stream-page { font-family: 'Lato', sans-serif; margin: 1rem; background: #fff; color: #333; }
+.chart { display: flex; align-items: flex-end; gap: 2px; height: 600px; border-bottom: 2px solid #333; padding: 0 0.5rem; }
+.chart-group { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 0; }
+.chart-bars { display: flex; flex-direction: column-reverse; width: 100%; }
+.chart-bar { width: 100%; min-height: 0; transition: height 0.3s; }
+.chart-label { font-size: 0.65rem; writing-mode: vertical-rl; text-orientation: mixed; margin-top: 0.25rem; max-height: 80px; overflow: hidden; }
+.legend { display: flex; gap: 1rem; justify-content: center; margin: 1rem 0; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 0.25rem; font-size: 0.85rem; }
+.legend-swatch { width: 14px; height: 14px; border-radius: 2px; }
+
 /* === Print === */
 @media print { .print-hide { display: none; } }
 

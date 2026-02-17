@@ -57,7 +57,7 @@
           %input{type: :hidden, value: o[:id], name: 'organizers[]'}
           %input{type: :text, list: :members, value: "#{o[:first_name]} #{o[:last_name]}"}
           .input-group-btn
-            %button.btn.btn-danger{type: :button, onclick: 'removeOrganizer(this)'} ✕
+            %button.btn.btn-danger{type: :button, data: {action: 'remove'}} ✕
   .form-group
     %input.btn{type: 'submit', value: :Spara}
   %template#new-organizer
@@ -65,7 +65,7 @@
       %input{type: :hidden, name: 'organizers[]'}
       %input{type: :text, list: :members}
       .input-group-btn
-        %button.btn.btn-success{type: :button, onclick: 'addOrganizer(this)'} ✓
+        %button.btn.btn-success{type: :button, data: {action: 'add'}} ✓
   %datalist#members
     - @members.each do |m|
       %option{data: {id: m[:id], name: "#{m[:first_name]} #{m[:last_name]}"}} #{m[:first_name]} #{m[:last_name]}
@@ -74,41 +74,4 @@
   %h3.text-center Actions
   %form{method: :post, action: url("/#{@p[:id]}/send-invitations")}
     %button.btn{type: :submit} Skicka inbjudningarna!
-:javascript
-  function getMember(name) {
-    var selector = '#members option[data-name="' + name + '"]'
-    var member = document.querySelector(selector)
-    return member.dataset
-  }
-
-  function removeOrganizer(elem) {
-    elem.parentElement.parentElement.remove()
-  }
-
-  function addOrganizer(elem) {
-    var nodes = elem.parentElement.parentElement.children;
-    var id_node = nodes[0];
-    var name_node = nodes[1];
-    var member = getMember(name_node.value);
-    id_node.value = member.id
-    convertOrganizerInput(elem);
-
-    renderTemplate();
-  }
-
-  function convertOrganizerInput(elem) {
-    elem.classList.remove('btn-success')
-    elem.classList.add('btn-danger')
-    elem.textContent = '\u2715';
-    elem.onclick = function() {
-      removeOrganizer(this);
-    };
-  }
-
-  function renderTemplate() {
-    var list = document.querySelector('#organizers')
-    var t = document.querySelector('#new-organizer')
-    var clone = document.importNode(t.content, true);
-    list.appendChild(clone);
-  }
-  renderTemplate()
+%script{src: asset_path("/js/organizers.js")}

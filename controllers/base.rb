@@ -15,6 +15,16 @@ class BaseController < Sinatra::Base
 
   before do
     cache_control :public, :must_revalidate, max_age: 0
+    headers 'Content-Security-Policy' => \
+      "default-src 'self'; " \
+      "script-src 'self' cdn.jsdelivr.net; " \
+      "style-src 'self' 'unsafe-inline'; " \
+      "img-src 'self' data: *.s3.eu-west-1.amazonaws.com; " \
+      "connect-src 'self' wss://m21.cloudmqtt.com; " \
+      "font-src 'self'; " \
+      "frame-ancestors 'none'; " \
+      "base-uri 'self'; " \
+      "form-action 'self'"
     @user = Member[session[:id]]
   end
 
