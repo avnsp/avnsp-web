@@ -6,7 +6,8 @@ document.querySelector('input[type=file]').addEventListener('change', function (
   if (!file) return;
   var reader = new FileReader();
   reader.onloadend = function () {
-    cropper.replace(reader.result);
+    var cropperImage = cropper.getCropperImage();
+    if (cropperImage) cropperImage.src = reader.result;
   };
   reader.readAsDataURL(file);
 });
