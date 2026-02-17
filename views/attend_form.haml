@@ -1,7 +1,7 @@
-%form{method: :post, action: "/party/#{party_id}/attend" }
+%form{method: :post, action: "/party/#{party_id}/attend"}
   .checkbox
     %label
-      %input{type: :checkbox, name: :vegitarian, value: 'true', checked: a.vegitarian }
+      %input{type: :checkbox, name: :vegitarian, value: 'true', checked: a.vegitarian}
       Vegetariskt
   .checkbox
     %label
@@ -9,18 +9,18 @@
       Alkoholfritt
   .form-group
     %label Allergier
-    %input.form-control{type: :text, name: :allergies, value: a.allergies}
+    %input{type: :text, name: :allergies, value: a.allergies}
   .form-group
     %label Meddelande till arrangörerna
-    %textarea.form-control{name: :message}= a.message
-  -if party_type&.include?('fest')
+    %textarea{name: :message}= a.message
+  - if party_type&.include?('fest')
     %h4 Högerfot
     .form-group
       %label Namn
-      %input.form-control{type: :text, name: 'right_foot[name]', value: a.right_foot&.name}
+      %input{type: :text, name: 'right_foot[name]', value: a.right_foot&.name}
     .checkbox
       %label
-        %input{type: :checkbox, name: 'right_foot[vegitarian]', value: 'true', checked: a.right_foot&.vegitarian }
+        %input{type: :checkbox, name: 'right_foot[vegitarian]', value: 'true', checked: a.right_foot&.vegitarian}
         Vegetariskt
     .checkbox
       %label
@@ -28,13 +28,13 @@
         Alkoholfritt
     .form-group
       %label Allergier
-      %input.form-control{type: :text, name: 'right_foot[allergies]', value: a.right_foot&.allergies}
-  %button.btn.btn-default
-    -if a.id
+      %input{type: :text, name: 'right_foot[allergies]', value: a.right_foot&.allergies}
+  %button.btn
+    - if a.id
       Ändra
-    -else
+    - else
       Jag kommer!
--if a.id
-  %form{method: :post, action: "/party/#{party_id}/attend/delete" }
+- if a.id
+  %form{method: :post, action: "/party/#{party_id}/attend/delete"}
     %input{type: :hidden, name: :_method, value: :delete}
     %button.btn.btn-danger Jag vill inte gå längre

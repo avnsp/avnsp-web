@@ -17,66 +17,55 @@
         %a{href: url("/#{@p[:id]}/snaps_lottery")} Snappslotteri
 %form.form-horizontal{method: :post, enctype: 'multipart/form-data'}
   .form-group
-    %label.col-sm-2.control-label Namn
-    .col-sm-10
-      %input.form-control{type: 'text', name: :name, value: @p[:name]}
+    %label Namn
+    %input{type: 'text', name: :name, value: @p[:name]}
   .form-group
-    %label.col-sm-2.control-label Typ
-    .col-sm-10
-      %select.form-control{name: :type, required: true}
-        %option Välj...
-        - party_types.each do |type, party|
-          %option{value: type, selected: @p[:type] == party[:name] }= party[:name]
+    %label Typ
+    %select{name: :type, required: true}
+      %option Välj...
+      - party_types.each do |type, party|
+        %option{value: type, selected: @p[:type] == party[:name]}= party[:name]
   .form-group
-    %label.col-sm-2.control-label Tema
-    .col-sm-10
-      %input.form-control{type: 'text', name: :theme, value: @p[:theme]}
+    %label Tema
+    %input{type: 'text', name: :theme, value: @p[:theme]}
   .form-group
-    %label.col-sm-2.control-label Plats
-    .col-sm-10
-      %input.form-control{type: 'text', name: :location, value: @p[:location]}
+    %label Plats
+    %input{type: 'text', name: :location, value: @p[:location]}
   .form-group
-    %label.col-sm-2.control-label Datum
-    .col-sm-10
-      %input.form-control{type: 'date', name: :date, value: @p[:date], required: true}
+    %label Datum
+    %input{type: 'date', name: :date, value: @p[:date], required: true}
   .form-group
-    %label.col-sm-2.control-label Sista svarsdag
-    .col-sm-10
-      %input.form-control{type: 'date', name: :attendance_deadline, value: @p[:attendance_deadline], required: true}
+    %label Sista svarsdag
+    %input{type: 'date', name: :attendance_deadline, value: @p[:attendance_deadline], required: true}
   .form-group
-    %label.col-sm-2.control-label Pris
-    .col-sm-10
-      %input.form-control{type: 'number', name: :price, step: '0.5', value: @p[:price]}
+    %label Pris
+    %input{type: 'number', name: :price, step: '0.5', value: @p[:price]}
   .form-group
-    %label.col-sm-2.control-label Kommentar
-    .col-sm-10
-      %textarea.form-control{name: :comment}= @p[:comment].to_s.gsub('\n', "\n")
+    %label Kommentar
+    %textarea{name: :comment}= @p[:comment].to_s.gsub('\n', "\n")
   .form-group
-    %label.col-sm-2.control-label Inbjudan
-    .col-sm-10
+    %label Inbjudan
+    %div
       %input{type: :file, name: :invitation}
       - if @p[:invitation]
         %a{href: "/party/#{@p[:id]}/invitation"} Inbjudan
   .form-group
-    %label.col-sm-2.control-label Arrangörer
-    .col-sm-10#organizers
+    %label Arrangörer
+    #organizers
       - @organizers.each do |o|
         .input-group
           %input{type: :hidden, value: o[:id], name: 'organizers[]'}
-          %input.form-control{type: :text, list: :members, value: "#{o[:first_name]} #{o[:last_name]}"}
-          %span.input-group-btn
-            %button.btn.btn-danger{type: :button, onclick: 'removeOrganizer(this)'}
-              %i.glyphicon.glyphicon-remove
+          %input{type: :text, list: :members, value: "#{o[:first_name]} #{o[:last_name]}"}
+          .input-group-btn
+            %button.btn.btn-danger{type: :button, onclick: 'removeOrganizer(this)'} ✕
   .form-group
-    .col-sm-offset-2.col-sm-10
-      %input.btn.btn-default{type: 'submit', value: :Spara}
+    %input.btn{type: 'submit', value: :Spara}
   %template#new-organizer
     .input-group
       %input{type: :hidden, name: 'organizers[]'}
-      %input.form-control{type: :text, list: :members}
-      %span.input-group-btn
-        %button.btn.btn-success{type: :button, onclick: 'addOrganizer(this)'}
-          %i.glyphicon.glyphicon-ok
+      %input{type: :text, list: :members}
+      .input-group-btn
+        %button.btn.btn-success{type: :button, onclick: 'addOrganizer(this)'} ✓
   %datalist#members
     - @members.each do |m|
       %option{data: {id: m[:id], name: "#{m[:first_name]} #{m[:last_name]}"}} #{m[:first_name]} #{m[:last_name]}
@@ -84,7 +73,7 @@
 .hidden
   %h3.text-center Actions
   %form{method: :post, action: url("/#{@p[:id]}/send-invitations")}
-    %button.btn.btn-default{type: :submit} Skicka inbjudningarna!
+    %button.btn{type: :submit} Skicka inbjudningarna!
 :javascript
   function getMember(name) {
     var selector = '#members option[data-name="' + name + '"]'
@@ -110,9 +99,7 @@
   function convertOrganizerInput(elem) {
     elem.classList.remove('btn-success')
     elem.classList.add('btn-danger')
-    var lst = elem.children[0].classList;
-    lst.add('glyphicon-remove');
-    lst.remove('glyphicon-ok');
+    elem.textContent = '\u2715';
     elem.onclick = function() {
       removeOrganizer(this);
     };

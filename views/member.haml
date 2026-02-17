@@ -1,14 +1,12 @@
-.row
-  .col-sm-12.text-center
-    %h1.full-name= @member.full_name
-    -if @member.id != @user.id
-      %small.text-muted
-        %button.new-nick.btn.btn-link Ändra smeknamn
-.row
-  .col-sm-12.text-center
-    %img{src: @member.profile_picture_cdn, width: '100%', alt: 'Ingen profilbild uppladdad' }
-.row
-  .col-sm-4
+.text-center
+  %h1.full-name= @member.full_name
+  - if @member.id != @user.id
+    %small.text-muted
+      %button.btn-link{'hx-put': url("/#{@member.id}/nick"), 'hx-prompt': 'Nytt smeknamn', 'hx-target': '.full-name'} Ändra smeknamn
+.text-center
+  %img.img-fluid{src: @member.profile_picture_cdn, alt: 'Ingen profilbild uppladdad'}
+.grid.grid-3
+  %div
     .text-center
       %h4 Info
     %dl
@@ -28,54 +26,34 @@
       %dd
       %dt Saldo
       %dd= @member.balance
-  .col-sm-4
+  %div
     .text-center
       %h4
         Kontotransaktioner
         %small
           %a{href: url("/#{@member.id}/transactions")} (alla händelser)
     %dl
-      -@transactions.each do |t|
+      - @transactions.each do |t|
         %dt= t[:text]
         %dd= t[:sum]
-  .col-sm-4
+  %div
     .text-center
       %h4 Meriter
     %dl
-      -@merits.each do |m|
+      - @merits.each do |m|
         %dt= [m.start, m.end].join(' - ')
         %dd= m.appointment
-.row
-  .col-sm-12
-    %h2.text-center Besökta Fester
-    %table.table
-      %thead
-        %tr
-          %th Datum
-          %th Namn
-          %th Tema
-      %tbody
-        -@parties.each do |p|
-          %tr
-            %td
-              %a{href: "/party/#{p[:id]}"}= p[:date]
-            %td= p[:name]
-            %td= p[:theme]
-:javascript
-  var btn = document.querySelector(".new-nick");
-
-  btn.addEventListener('click', function(evt) {
-    var nick = window.prompt('Nytt smeknamn')
-    if (nick == null) {
-      return
-    }
-    var request = new XMLHttpRequest();
-    request.open('PUT', #{@member.id} + '/nick', true);
-    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-    request.send("nick=" + nick);
-    request.onload = function() {
-      var resp = request.responseText;
-      document.querySelector('.full-name').innerHTML = resp;
-    };
-    request.responseText;
-  });
+%h2.text-center Besökta Fester
+%table
+  %thead
+    %tr
+      %th Datum
+      %th Namn
+      %th Tema
+  %tbody
+    - @parties.each do |p|
+      %tr
+        %td
+          %a{href: "/party/#{p[:id]}"}= p[:date]
+        %td= p[:name]
+        %td= p[:theme]

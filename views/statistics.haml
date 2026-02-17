@@ -1,15 +1,15 @@
 .text-center
-  .row{style: "margin-top:50px"}
+  %div{style: "margin-top:50px"}
     %h3 Fördelningen över utbildningar
     %canvas{id: 'studied-chart'}
-    
-  .row{style: "margin-top:50px"}
+
+  %div{style: "margin-top:50px"}
     %h3 Fördelningen över inträdesår
     %canvas{id: 'started-chart'}
 
 %script{src: "https://cdn.jsdelivr.net/npm/chart.js@2.8.0"}
-%script{type: 'text/javascript', src: "https://d3js.org/d3.v5.js"}
-%script{type: 'text/javascript', src: "/js/statisticsFunctions.js"}
+%script{src: "https://d3js.org/d3.v5.js"}
+%script{src: "/js/statisticsFunctions.js"}
 :javascript
 
   function getContextFromId(id) {
@@ -26,6 +26,6 @@
         functionToDraw(context, data)
       })
   }
-      
+
   fetchAndDrawData('/statistics/data/studied', drawStudied, getContextFromId('studied-chart'))
   fetchAndDrawData('/statistics/data/started', drawStarted, getContextFromId('started-chart'))

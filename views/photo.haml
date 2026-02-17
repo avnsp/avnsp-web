@@ -1,33 +1,23 @@
-.row.text-center
+.text-center
   %h3= @photo.caption || "Tagen #{@photo.timestamp.to_date}"
-.row
-  .overlay
-    %a.pull-left{href: url("/#{@photo.album_id}/#{@prev_id}")}
-      %i.glyphicon.glyphicon-chevron-left
-    %a.pull-right{href: url("/#{@photo.album_id}/#{@next_id}")}
-      %i.glyphicon.glyphicon-chevron-right
-    %img.img-responsive{src: @photo.original_temp}
-.row
-  %h2.text-center
-    Kommentarer
--@comments.each do |c|
-  .row
-    .col-sm-12
-      %a{href: "/member/#{c.member_id}"}= c.member.full_name
-  .row
-    .col-xs-3.col-sm-2
-      %img.img-responsive{src: c.member.thumb_cdn, alt: "ingen profilbild"}
-    .col-xs-9.col-sm-10
+.overlay
+  %a.float-left{href: url("/#{@photo.album_id}/#{@prev_id}")} &#8592;
+  %a.float-right{href: url("/#{@photo.album_id}/#{@next_id}")} &#8594;
+  %img.img-fluid{src: @photo.original_temp}
+%h2.text-center Kommentarer
+- @comments.each do |c|
+  %div
+    %a{href: "/member/#{c.member_id}"}= c.member.full_name
+  .grid.grid-2
+    %div
+      %img.img-fluid{src: c.member.thumb_cdn, alt: "ingen profilbild", style: "max-width: 112px;"}
+    %div
       = c.comment
-  .row
-    .col-sm-12
-      %small.text-muted
-        %em= c.timestamp.strftime('%Y-%m-%d %H:%M')
-  .row
-    %hr
-.row
-  .col-sm-12
-    %form{method: :post, action: url("/#{@photo.id}/comment")}
-      .form-group
-        %input.form-control{type: :text, name: :comment, placeholder: "Kommentera här" }
-      %button.btn.btn-default{type: :submit} Spara
+  %div
+    %small.text-muted
+      %em= c.timestamp.strftime('%Y-%m-%d %H:%M')
+  %hr
+%form{method: :post, action: url("/#{@photo.id}/comment")}
+  .form-group
+    %input{type: :text, name: :comment, placeholder: "Kommentera här"}
+  %button.btn{type: :submit} Spara

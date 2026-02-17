@@ -6,61 +6,46 @@
     %title
       Academian
       != " | #{name.capitalize}"
-    %link{href: "/css/bootstrap.min.css", rel: :stylesheet}
     %link{href: "/css/site.css", rel: :stylesheet}
-    %script{type: 'text/javascript', src: "/js/jquery-2.0.3.min.js"}
-    %script{type: 'text/javascript', src: "/js/bootstrap.min.js"}
+    %script{src: "/js/htmx.min.js", defer: true}
   %body
-    %header.navbar-avnsp.navbar.navbar-default{role: :navigation}
-      .container{style: "padding-top: 20px; padding-bottom: 20px;"}
-        .navbar-header
-          %button.navbar-toggle.collapsed{type: 'button', data: { target: '.nav-collapse', toggle:'collapse' } }
-            %span.icon-bar
-            %span.icon-bar
-            %span.icon-bar
-          %a.navbar-brand{:href => "/"} Academian
-        .navbar-collapse.nav-collapse.collapse
-          %ul.nav.navbar-nav
-            %li{class: name == 'party' ? 'active' : ''}
-              %a{href: "/party"} Fester
-            %li{class: name == 'Album' ? 'active' : ''}
-              %a{href: "/album"} Album
-            %li{class: name == 'Matrikel' ? 'active' : ''}
-              %a{href: "/member"} Matrikel
+    %header.navbar
+      .container
+        %a.navbar-brand{href: "/"} Academian
+        %input#nav-toggle.nav-toggle{type: "checkbox"}
+        %label.nav-toggle-label{for: "nav-toggle"} &#9776;
+        %ul.nav-links
+          %li{class: name == 'party' ? 'active' : ''}
+            %a{href: "/party"} Fester
+          %li{class: name == 'Album' ? 'active' : ''}
+            %a{href: "/album"} Album
+          %li{class: name == 'Matrikel' ? 'active' : ''}
+            %a{href: "/member"} Matrikel
+          %li
+            %a{target: "_blank", rel: "noopener noreferrer", href: "https://drive.google.com/file/d/0B3QhyTTdcuW8SWJZaUVwdXBNUE0/view?fbclid=IwAR1hI1TiBtOS6DHvOuDWyaxUZDI9skIZL0w14ID_eLlXjYfDPz7HB3xlVq4"} Sångbok
+          - if @user&.admin
             %li
-              %a{target: "_blank", rel: "noopener noreferrer",href: "https://drive.google.com/file/d/0B3QhyTTdcuW8SWJZaUVwdXBNUE0/view?fbclid=IwAR1hI1TiBtOS6DHvOuDWyaxUZDI9skIZL0w14ID_eLlXjYfDPz7HB3xlVq4"} Sångbok
-            - if @user&.admin
+              %a{href: "/cheferiet"} Cheferiet
+        .nav-right
+          %span.dark-background Inloggad som
+          .dropdown
+            %button.dropdown-toggle{type: "button"}
+              = @user.full_name
+              &#9662;
+            %ul.dropdown-menu
               %li
-                %a{href: "/cheferiet"} Cheferiet
-          .navbar-right
-            %p.navbar-text.dark-background
-              Inloggad som
-              %ul.nav.navbar-nav
-                %li.dropdown
-                  %a.dropdown-toggle{'data-toggle': 'dropdown', href: '#', role: 'button'}
-                    = @user.full_name
-                    %span.caret
-                  %ul.dropdown-menu
-                    %li
-                      %a{href: "/member/#{@user.id}"} Profil
-                    %li
-                      %a{href: "/member/profile-edit"} Ändra
-                    %li.divider
-                    %li
-                      %form.navbar-form{method: :post, action: "/logout"}
-                        %button.btn.btn-block.btn-default Logga ut
+                %a{href: "/member/#{@user.id}"} Profil
+              %li
+                %a{href: "/member/profile-edit"} Ändra
+              %li.divider
+              %li
+                %form{method: :post, action: "/logout"}
+                  %button{type: :submit} Logga ut
     .container
-      .row
-        .col-sm-offset-1.col-sm-10.col-md-offset-1.col-md-10.content
-          .jumbotron.jumbotron-avnsp
-            .text-center
-              %img{src: '/img/avnsp-logo.png'}
-            !=yield
-    %footer.navbar-avnsp.navbar.navbar-default
-      .container-fluid
-        .row
-          .col-md-12.text-center
-            %h4
-              Betalning 
-            %p
-              PG 81 99 50-7
+      .hero
+        .text-center
+          %img{src: '/img/avnsp-logo.png'}
+        !=yield
+    %footer.footer
+      %h4 Betalning
+      %p PG 81 99 50-7

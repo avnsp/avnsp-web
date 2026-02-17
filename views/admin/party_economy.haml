@@ -14,12 +14,12 @@
 %h1
   = @party[:name]
   %small= @party[:date]
-  %a.btn.pull-right{type: :button, href: url('/')} Tillbaks
+  %a.btn.float-right{type: :button, href: url('/')} Tillbaks
 
-%form{method: :post, action: url("/parties_articles") }
+%form{method: :post, action: url("/parties_articles")}
   %fieldset
     %legend 1. Ange priser för festen
-    %table.table
+    %table
       %thead
         %tr
           %th Namn
@@ -33,12 +33,12 @@
               %input{type: :hidden, name: 'parties_articles[]party_id', value: @party[:id]}
               %input{type: :hidden, name: 'parties_articles[]article_id', value: a[:id]}
               - default_price = (a[:name] == 'Anm' ? @party[:price] : nil)
-              %input{type: :text, name: 'parties_articles[]price', value: (pa ? pa[:price] : default_price) }
+              %input{type: :text, name: 'parties_articles[]price', value: (pa ? pa[:price] : default_price), style: "width: auto;"}
     %button.btn Spara
-%form{method: :post, action: url("/#{@party[:id]}/transactions") }
+%form{method: :post, action: url("/#{@party[:id]}/transactions")}
   %fieldset
     %legend 2. Fyll i vad alla drack utifrån strecklistorna
-    %table.table
+    %table
       %thead
         %tr
           %th Namn
@@ -52,7 +52,7 @@
               %td
                 %input{type: :hidden, name: 'purchases[]member_id', value: m[:id]}
                 %input{type: :hidden, name: 'purchases[]article_id', value: a[:id]}
-                %input.col-xs-7{type: :text, name: "purchases[]quantity", value: m[:purchases][a[:id]]}
+                %input{type: :text, name: "purchases[]quantity", value: m[:purchases][a[:id]], style: "width: auto;"}
         - if @members.empty?
           %tr
             %td.text-center{colspan: @articles.count + 1}

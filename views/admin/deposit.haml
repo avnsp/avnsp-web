@@ -6,22 +6,17 @@
 
 %form{method: :post}
   .form-group
-    %label.col-sm-2.control-label Medlem
-    .col-sm-10
-      .input-group
-        %input.member_id{type: :hidden, name: :member_id}
-        %input.member.form-control{type: :text, list: :members, onchange: 'setMember(this)'}
+    %label Medlem
+    %input.member_id{type: :hidden, name: :member_id}
+    %input.member{type: :text, list: :members, onchange: 'setMember(this)'}
   .form-group
-    %label.col-sm-2.control-label Belopp
-    .col-sm-10
-      %input{type: :number, name: :sum, step: 0.01}
+    %label Belopp
+    %input{type: :number, name: :sum, step: 0.01}
   .form-group
-    %label.col-sm-2.control-label Datum
-    .col-sm-10
-      %input{type: :date, name: :date}
+    %label Datum
+    %input{type: :date, name: :date}
   .form-group
-    .col-sm-offset-2.col-sm-10
-      %input.btn.btn-default{type: 'submit', value: :Spara}
+    %input.btn{type: 'submit', value: :Spara}
 
   %datalist#members
     - @members.each do |m|

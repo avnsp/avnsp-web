@@ -59,6 +59,38 @@ class MemberControllerTest < ControllerTest
     assert_nil m.nick
   end
 
+  def test_get_members_sorted
+    m = create_member
+    login_as(m)
+    get '/member/', { sort: 'first_name', order: 'desc' }
+    assert_equal 200, last_response.status
+  end
+
+  def test_get_members_search
+    m = create_member(first_name: "Unique")
+    login_as(m)
+    get '/member/', { q: 'Unique' }
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, 'Unique'
+  end
+
+  def test_get_members_htmx_returns_partial
+    m = create_member
+    login_as(m)
+    get '/member/', {}, { 'HTTP_HX_REQUEST' => 'true' }
+    assert_equal 200, last_response.status
+    refute_includes last_response.body, '<html'
+  end
+
+  def test_put_nick_via_hx_prompt
+    m = create_member
+    login_as(m)
+    put "/member/#{m.id}/nick", {}, { 'HTTP_HX_PROMPT' => 'HtmxNick' }
+    assert_equal 200, last_response.status
+    m.reload
+    assert_equal "HtmxNick", m.nick
+  end
+
   def test_get_transactions
     m = create_member
     login_as(m)

@@ -1,46 +1,24 @@
-.row
-  .col-sm-12.text-center
-    %h1 Matrikel
-.row
-  .col-sm-12
-    %form
-      .form-group
-        %input.filter.form-control(type="text" placeholder="Filtrera på valfri kolumn, stora/små bokstäver är viktigt." onkeyup="filterTbl()")
-    %table.table.sortable
-      %thead
-        %tr
-          %th Efternamn
-          %th Förnamn
-          %th Smeknamn
-          %th Program
-          %th Inskrivningsår
-          %th Merit
-          %th Email
-      %tbody
-        -@members.each do |m|
-          %tr{'data-identifier': [m.last_name, m.first_name, m.nick, m.studied, m.started, m.email].join(' ')}
-            %td
-              %a{href: url(m[:id])}= m.last_name
-            %td= m.first_name
-            %td= m.nick
-            %td= m.studied
-            %td= m.started
-            %td
-            %td= m.email
-%script{type: 'text/javascript', src: "/js/moment.min.js"}
-%script{type: 'text/javascript', src: "/js/bootstrap-sortable.js"}
-:javascript
-  function filterTbl() {
-    var input = document.querySelector('input.filter');
-    if (input.value == '') {
-      return
-    }
-    var allRows = document.querySelectorAll('tr');
-    for(var i = 0; i < allRows.length; i++) {
-      allRows[i].hidden = true;
-    }
-    var rows = document.querySelectorAll('[data-identifier*="' + input.value +'"]');
-    for(var i = 0; i < rows.length; i++) {
-      rows[i].hidden = false;
-    }
-  }
+.text-center
+  %h1 Matrikel
+%form
+  .form-group
+    %input{type: "text", name: "q", placeholder: "Sök...", 'hx-get': url('/'), 'hx-trigger': 'keyup changed delay:300ms', 'hx-target': '#members-table', 'hx-include': 'this'}
+%table
+  %thead
+    %tr
+      - next_order = @order == 'asc' ? 'desc' : 'asc'
+      %th
+        %a.sort{href: "#", class: @sort == 'last_name' ? @order : '', 'hx-get': url("/?sort=last_name&order=#{@sort == 'last_name' ? next_order : 'asc'}"), 'hx-target': '#members-table'} Efternamn
+      %th
+        %a.sort{href: "#", class: @sort == 'first_name' ? @order : '', 'hx-get': url("/?sort=first_name&order=#{@sort == 'first_name' ? next_order : 'asc'}"), 'hx-target': '#members-table'} Förnamn
+      %th
+        %a.sort{href: "#", class: @sort == 'nick' ? @order : '', 'hx-get': url("/?sort=nick&order=#{@sort == 'nick' ? next_order : 'asc'}"), 'hx-target': '#members-table'} Smeknamn
+      %th
+        %a.sort{href: "#", class: @sort == 'studied' ? @order : '', 'hx-get': url("/?sort=studied&order=#{@sort == 'studied' ? next_order : 'asc'}"), 'hx-target': '#members-table'} Program
+      %th
+        %a.sort{href: "#", class: @sort == 'started' ? @order : '', 'hx-get': url("/?sort=started&order=#{@sort == 'started' ? next_order : 'asc'}"), 'hx-target': '#members-table'} Inskrivningsår
+      %th Merit
+      %th
+        %a.sort{href: "#", class: @sort == 'email' ? @order : '', 'hx-get': url("/?sort=email&order=#{@sort == 'email' ? next_order : 'asc'}"), 'hx-target': '#members-table'} Email
+  %tbody#members-table
+    != haml(:_members_table, layout: false)

@@ -1,75 +1,105 @@
-%script{type: 'text/javascript', src: "/js/jquery-2.0.3.min.js"}
-%script{src: '/js/mqttws31.js', type: "text/javascript"}
-%script{src: '/js/highcharts.js', type: "text/javascript"}
-%script{src: '/js/highcharts.light.js', type: "text/javascript"}
-#container
+!!!
+%html
+  %head
+    %meta(charset="utf-8")
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    %title= "#{@party.name} - Stream"
+    %style
+      :plain
+        body { font-family: 'Lato', sans-serif; margin: 1rem; background: #fff; color: #333; }
+        h1 { text-align: center; }
+        .chart { display: flex; align-items: flex-end; gap: 2px; height: 600px; border-bottom: 2px solid #333; padding: 0 0.5rem; }
+        .chart-group { display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 0; }
+        .chart-bars { display: flex; flex-direction: column-reverse; width: 100%; }
+        .chart-bar { width: 100%; min-height: 0; transition: height 0.3s; }
+        .chart-label { font-size: 0.65rem; writing-mode: vertical-rl; text-orientation: mixed; margin-top: 0.25rem; max-height: 80px; overflow: hidden; }
+        .legend { display: flex; gap: 1rem; justify-content: center; margin: 1rem 0; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 0.25rem; font-size: 0.85rem; }
+        .legend-swatch { width: 14px; height: 14px; border-radius: 2px; }
+  %body
+    %h1= @party.name
+    .legend#legend
+    .chart#chart
+    %script{src: '/js/mqttws31.js'}
+    :javascript
+      var COLORS = ['#7cb5ec','#434348','#90ed7d','#f7a35c','#8085e9','#f15c80','#e4d354','#2b908f','#f45b5b','#91e8e1'];
+      var attendees = #{@attendances.to_json};
+      var seriesData = #{@purchases.to_json};
 
-:javascript
-  // called when the client connects
-  function onConnect() {
-    // Once a connection has been made, make a subscription and send a message.
-    console.log("onConnect");
-    client.subscribe("mqtt-bridge/#{@party.id}");
-  }
+      function renderChart() {
+        var chart = document.getElementById('chart');
+        var legend = document.getElementById('legend');
+        chart.innerHTML = '';
+        legend.innerHTML = '';
 
-  // called when the client loses its connection
-  function onConnectionLost(responseObject) {
-    if (responseObject.errorCode !== 0) {
-      console.log("onConnectionLost:", responseObject.errorMessage);
-      setTimeout(function() { client.connect() }, 5000);
-    }
-  }
+        // Calculate max total per attendee for scaling
+        var maxTotal = 0;
+        for (var i = 0; i < attendees.length; i++) {
+          var total = 0;
+          for (var s = 0; s < seriesData.length; s++) {
+            total += (seriesData[s].data[i] || 0);
+          }
+          if (total > maxTotal) maxTotal = total;
+        }
+        if (maxTotal === 0) maxTotal = 1;
 
-  // called when a message arrives
-  function onMessageArrived(message) {
-    var purchases = JSON.parse(message.payloadString);
-    var chart = $('#container').highcharts();
-    chart.get('Öl');
-    for(var i = 0; i < purchases.length; i++) {
-      var ps = purchases[i]
-      var s = chart.get(ps.name);
-      s.setData(ps.data);
-    }
-  }
+        // Render legend
+        for (var s = 0; s < seriesData.length; s++) {
+          var item = document.createElement('div');
+          item.className = 'legend-item';
+          item.innerHTML = '<div class="legend-swatch" style="background:' + COLORS[s % COLORS.length] + '"></div>' + seriesData[s].name;
+          legend.appendChild(item);
+        }
 
-  // Create a client instance
-  var client = new Paho.MQTT.Client('m21.cloudmqtt.com', 33848, "avnsp-#{@party.id}");
+        // Render bars
+        for (var i = 0; i < attendees.length; i++) {
+          var group = document.createElement('div');
+          group.className = 'chart-group';
+          var bars = document.createElement('div');
+          bars.className = 'chart-bars';
+          for (var s = 0; s < seriesData.length; s++) {
+            var val = seriesData[s].data[i] || 0;
+            var bar = document.createElement('div');
+            bar.className = 'chart-bar';
+            bar.style.height = (val / maxTotal * 500) + 'px';
+            bar.style.background = COLORS[s % COLORS.length];
+            bar.title = seriesData[s].name + ': ' + val;
+            bars.appendChild(bar);
+          }
+          group.appendChild(bars);
+          var label = document.createElement('div');
+          label.className = 'chart-label';
+          label.textContent = attendees[i];
+          group.appendChild(label);
+          chart.appendChild(group);
+        }
+      }
 
-  // set callback handlers
-  client.onConnectionLost = onConnectionLost;
-  client.onMessageArrived = onMessageArrived;
+      renderChart();
 
-  // connect the client
-  client.connect({
-    useSSL: true,
-    userName: "#{@username}",
-    password: "#{@password}",
-    onSuccess: onConnect,
-  });
-  $(function () {
-    var chart = $('#container').highcharts({
-        chart: {
-            type: 'column',
-            height: 800,
-        },
-        title: {
-          text: '#{@party.name}',
-        },
-        xAxis: {
-          categories: #{@attendances.to_json},
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Antal'
-            },
-        },
-        plotOptions: {
-            column: {
-                stacking: 'normal',
-            }
-        },
-        series: #{@purchases.to_json}
-    });
+      // MQTT live updates
+      function onConnect() {
+        console.log("onConnect");
+        client.subscribe("mqtt-bridge/#{@party.id}");
+      }
+      function onConnectionLost(responseObject) {
+        if (responseObject.errorCode !== 0) {
+          console.log("onConnectionLost:", responseObject.errorMessage);
+          setTimeout(function() { client.connect(connectOptions); }, 5000);
+        }
+      }
+      function onMessageArrived(message) {
+        seriesData = JSON.parse(message.payloadString);
+        renderChart();
+      }
 
-  });
+      var client = new Paho.MQTT.Client('m21.cloudmqtt.com', 33848, "avnsp-#{@party.id}");
+      client.onConnectionLost = onConnectionLost;
+      client.onMessageArrived = onMessageArrived;
+      var connectOptions = {
+        useSSL: true,
+        userName: "#{@username}",
+        password: "#{@password}",
+        onSuccess: onConnect
+      };
+      client.connect(connectOptions);

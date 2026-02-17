@@ -1,28 +1,28 @@
-%form.print-hide{method: :post }
+%form.print-hide{method: :post}
   %fieldset
     %legend Ny anmälan
     .form-group
       %label Medlem
       %input#member_id{type: :hidden, name: 'member_id'}
-      %input.form-control{type: :text, list: :members, onchange: 'setMember(this)'}
+      %input{type: :text, list: :members, onchange: 'setMember(this)'}
     .checkbox
       %label
-        %input{type: :checkbox, name: :vegitarian, value: 'true' }
+        %input{type: :checkbox, name: :vegitarian, value: 'true'}
         Vegetariskt
     .checkbox
       %label
-        %input{type: :checkbox, name: :non_alcoholic, value: 'true' }
+        %input{type: :checkbox, name: :non_alcoholic, value: 'true'}
         Alkoholfritt
     .form-group
       %label Allergier
-      %input.form-control{type: :text, name: :allergies }
+      %input{type: :text, name: :allergies}
     .form-group
       %label Meddelande till arrangörerna
-      %textarea.form-control{name: :message}
+      %textarea{name: :message}
     %h4 Högerfot
     .form-group
       %label Namn
-      %input.form-control{type: :text, name: 'right_foot[name]'}
+      %input{type: :text, name: 'right_foot[name]'}
     .checkbox
       %label
         %input{type: :checkbox, name: 'right_foot[vegitarian]', value: 'true'}
@@ -33,9 +33,8 @@
         Alkoholfritt
     .form-group
       %label Allergier
-      %input.form-control{type: :text, name: 'right_foot[allergies]'}
-    %button.btn.btn-default
-      spara
+      %input{type: :text, name: 'right_foot[allergies]'}
+    %button.btn spara
   %datalist#members
     - @members.each do |m|
       %option{data: {id: m[:id], name: "#{m[:first_name]} #{m[:last_name]}"}} #{m[:first_name]} #{m[:last_name]}
@@ -43,7 +42,7 @@
   %hr
   %h3 Anmälningar
 
-%table.table
+%table
   %thead
     %tr
       %th Namn

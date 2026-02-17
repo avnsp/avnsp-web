@@ -23,6 +23,10 @@ class BaseController < Sinatra::Base
       env['x-rack.flash']
     end
 
+    def htmx?
+      request.env['HTTP_HX_REQUEST'] == 'true'
+    end
+
     def subscribe qname, *topics, &blk
       TH.subscribe(qname, *topics, &blk)
     end

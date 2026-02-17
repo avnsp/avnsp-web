@@ -1,12 +1,9 @@
-.row
-  .col-sm-offset-3.col-sm-6.text-center
-    %h1 Album
-.row
-  .col-sm-offset-3.col-sm-6.text-center
-    %dl
-      -@albums.each do |a|
-        %dt
-          %a{href: url("/#{a.id}")}= a.title
-        %dd.albums-list-spacing
-          Skapat av:
-          %a{href: "/member/#{a.created_by}"}=a.member.full_name
+.container-narrow.text-center
+  %h1 Album
+  %dl
+    - @albums.each do |a|
+      %dt
+        %a{href: url("/#{a.id}")}= a.title
+      %dd.albums-list-spacing
+        Skapat av:
+        %a{href: "/member/#{a.created_by}"}= a.member.full_name
