@@ -285,6 +285,7 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 .float-left { float: left; }
 .hidden { display: none; }
 .img-fluid { max-width: 100%; height: auto; }
+cropper-canvas { display: block; height: 400px; }
 .img-thumb { max-width: 112px; height: auto; }
 .dark-background { color: #aaa; }
 .mt-3 { margin-top: 3rem; }
