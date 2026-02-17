@@ -259,6 +259,7 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 
 /* Inline form */
 .form-inline { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.form-inline.form-inline-center { justify-content: center; }
 .form-inline .form-group { margin-bottom: 0; }
 
 /* === Alerts === */
@@ -268,7 +269,7 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 .alert-success { background: #dff0d8; color: #3c763d; }
 
 /* === Cards (panel replacement) === */
-.card { border: 1px solid #ddd; border-radius: 4px; background: #fff; margin-top: 1.5rem; }
+.card { border: 1px solid #ddd; border-radius: 4px; background: #fff; margin-top: 1.5rem; color: #333; }
 .card-header { padding: 0.75rem 1rem; background: #f5f5f5; border-bottom: 1px solid #ddd; }
 .card-body { padding: 1.5rem; }
 
@@ -284,7 +285,9 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 .float-left { float: left; }
 .hidden { display: none; }
 .img-fluid { max-width: 100%; height: auto; }
+.img-thumb { max-width: 112px; height: auto; }
 .dark-background { color: #aaa; }
+.mt-3 { margin-top: 3rem; }
 .wrapper { margin-top: 20px; margin-bottom: 20px; }
 
 /* === Album spacing === */
@@ -323,6 +326,10 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 }
 .overlay .float-left { left: 0.5rem; }
 .overlay .float-right { right: 0.5rem; }
+
+/* === Compact table (party economy) === */
+.table-compact td { padding: 0; border-top: none; font-size: 10pt; }
+.table-compact input[type="text"] { height: 22px; text-align: left; min-width: fit-content; width: auto; }
 
 /* === Print === */
 @media print { .print-hide { display: none; } }

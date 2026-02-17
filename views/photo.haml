@@ -10,7 +10,7 @@
     %a{href: "/member/#{c.member_id}"}= c.member.full_name
   .grid.grid-2
     %div
-      %img.img-fluid{src: c.member.thumb_cdn, alt: "ingen profilbild", style: "max-width: 112px;"}
+      %img.img-thumb{src: c.member.thumb_cdn, alt: "ingen profilbild"}
     %div
       = c.comment
   %div
