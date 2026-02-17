@@ -27,8 +27,10 @@ class BaseController < Sinatra::Base
       request.env['HTTP_HX_REQUEST'] == 'true'
     end
 
+    APP_PUBLIC = File.expand_path('../../public', __FILE__)
+
     def asset_path(path)
-      full = File.join(settings.public_folder, path)
+      full = File.join(APP_PUBLIC, path)
       mtime = File.exist?(full) ? File.mtime(full).to_i : 0
       "#{path}?v=#{mtime}"
     end

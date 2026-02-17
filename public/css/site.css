@@ -331,6 +331,7 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 .footer {
   background-color: rgba(100, 50, 50, 0.9);
   padding: 1rem;
+  margin-top: 2rem;
   text-align: center;
   color: #ccc;
 }
