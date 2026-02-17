@@ -27,6 +27,12 @@ class BaseController < Sinatra::Base
       request.env['HTTP_HX_REQUEST'] == 'true'
     end
 
+    def asset_path(path)
+      full = File.join(settings.public_folder, path)
+      mtime = File.exist?(full) ? File.mtime(full).to_i : 0
+      "#{path}?v=#{mtime}"
+    end
+
     def subscribe qname, *topics, &blk
       TH.subscribe(qname, *topics, &blk)
     end

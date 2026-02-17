@@ -6,8 +6,8 @@
     %title
       Academian
       != " | #{name.capitalize}"
-    %link{href: "/css/site.css", rel: :stylesheet}
-    %script{src: "/js/htmx.min.js", defer: true}
+    %link{href: asset_path("/css/site.css"), rel: :stylesheet}
+    %script{src: asset_path("/js/htmx.min.js"), defer: true}
   %body
     %header.navbar
       .container
