@@ -41,11 +41,12 @@ class MemberController < BaseController
     file = tempfile.read
     _, ending = f[:type].split('/')
     path = "photos/profile-pictures/#{@user.id}_#{Time.now.to_i}.#{ending}"
-    Member[@user.id].update(profile_picture: path)
     publish('photo.upload',
             file: Base64.encode64(file),
             size: size,
             content_type: f[:type],
+            member_id: @user.id,
+            profile_picture: path,
             versions: [
               { path: path, quality: 95, resample: 95},
               { path: "#{path}.thumb", quality: 95, resample: 95, resize: 112 }

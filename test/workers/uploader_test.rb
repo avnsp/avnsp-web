@@ -36,4 +36,22 @@ class UploaderTest < Minitest::Test
     })
     assert @worker.published.any? { |p| p[:topic] == "photo.uploaded" }
   end
+
+  def test_photo_upload_updates_member_profile_picture
+    member = create_member
+    file_data = File.read("test/fixtures/tiny.jpg", mode: "rb")
+    encoded = Base64.encode64(file_data)
+    path = "photos/profile-pictures/#{member.id}_123.jpeg"
+    @worker.simulate("photo.upload", {
+      file: encoded,
+      content_type: "image/jpeg",
+      member_id: member.id,
+      profile_picture: path,
+      versions: [
+        { path: path, quality: 95, resample: 95 },
+        { path: "#{path}.thumb", quality: 95, resample: 95, resize: 112 }
+      ]
+    })
+    assert_equal path, Member[member.id].profile_picture
+  end
 end

@@ -8,7 +8,7 @@ class Uploader
 
     subscribe 'photo.upload', 'photo.upload' do |rk, data|
       file = Base64.decode64(data[:file])
-      ct = data[:content_type]
+      content_type = data[:content_type]
 
       data[:versions].each do |version|
         body = if version[:quality] || version[:resample] || version[:resize]
@@ -22,11 +22,13 @@ class Uploader
                end
 
         @bucket.object(version[:path]).put(
-          body: body,
-          content_type: ct,
+          body:,
+          content_type:,
           cache_control: 'max-age=31536000'
         )
       end
+
+      Member[data[:member_id]].update(profile_picture: data[:profile_picture]) if data[:member_id]
 
       publish 'photo.uploaded', data
     end
