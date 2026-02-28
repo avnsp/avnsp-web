@@ -5,6 +5,7 @@
     %label Profilbild
     %input{type: :file, accept: 'image/*', name: :profile_picture}
     %img.profile.img-fluid{src: @user.profile_picture_cdn, alt: "Profile picture preview...", crossorigin: "anonymous"}
-  %button.btn Spara
+  %button.btn{type: :submit} Spara
+  #upload-status.alert.hidden
 %script{src: asset_path("/js/cropper.min.js")}
 %script{src: asset_path("/js/profile-picture.js")}
