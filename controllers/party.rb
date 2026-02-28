@@ -42,6 +42,7 @@ class PartyController < BaseController
     @user.purchases(id).each do |p|
       @purchases[p.name.to_sym] = p.quantity
     end
+    @buy_url = url("/#{id}/buy")
     haml :buy
   end
 
@@ -58,8 +59,8 @@ class PartyController < BaseController
   end
 
   post '/:id/buy' do |id|
-    party = Party[id]
-    unless party.attending?(@user.id)
+    @party = Party[id]
+    unless @party.attending?(@user.id)
       flash[:error] = 'Du måste vara anmäld till festen'
       redirect url("/#{id}")
     end
@@ -76,8 +77,17 @@ class PartyController < BaseController
                             article_id: a[:id],
                             quantity: q)
     end
-    publish("mqtt-bridge.#{id}", Party[id].purchases_highchart)
-    redirect url("/#{id}/buy")
+    publish("mqtt-bridge.#{id}", @party.purchases_highchart)
+    if request.env['HTTP_HX_REQUEST']
+      @purchases = { Öl: 0, Snaps: 0, Cider: 0, Bastuöl: 0, Sångbok: 0, Läsk: 0 }
+      @user.purchases(id).each do |p|
+        @purchases[p.name.to_sym] = p.quantity
+      end
+      @buy_url = url("/#{id}/buy")
+      haml :buy_items, layout: false
+    else
+      redirect url("/#{id}/buy")
+    end
   end
 
   get '/:id/invitation' do |id|
