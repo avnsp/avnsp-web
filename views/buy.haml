@@ -1,10 +1,12 @@
-- @purchases.each do |n, q|
-  %form.text-center.form-inline.form-inline-center{method: :post}
-    %fieldset
-      %legend= n
-      .form-group
-        %input{type: :hidden, name: :name, value: n}
-        %input.btn.btn-primary{type: :submit, value: '-1', name: :change, disabled: q == 0 || @party.date != Date.today}
-        %input{type: :hidden, name: :q, value: q}
-        %label= q
-        %input.btn.btn-primary{type: :submit, value: '+1', name: :change, disabled: @party.date != Date.today}
+.container-narrow
+  .card
+    .card-body
+      - @purchases.each do |n, q|
+        %form.buy-item{method: :post}
+          %input{type: :hidden, name: :name, value: n}
+          %input{type: :hidden, name: :q, value: q}
+          %span.buy-item-name= n
+          .buy-item-controls
+            %button.btn.btn-primary.buy-btn{type: :submit, name: :change, value: '-1', disabled: q == 0 || @party.date != Date.today} −
+            %span.buy-item-count= q
+            %button.btn.btn-primary.buy-btn{type: :submit, name: :change, value: '+1', disabled: @party.date != Date.today} +

@@ -1,12 +1,13 @@
-%h1
-  = @party[:name]
-  %small= @party[:date]
-  %a.btn.float-right{type: :button, href: url('/')} Tillbaks
+.economy-header
+  %h1
+    = @party[:name]
+    %small= @party[:date]
+  %a.btn{href: url('/')} Tillbaks
 
 %form{method: :post, action: url("/parties_articles")}
   %fieldset
     %legend 1. Ange priser för festen
-    %table.table-compact
+    %table.table-compact.table-prices
       %thead
         %tr
           %th Namn
@@ -21,27 +22,29 @@
               %input{type: :hidden, name: 'parties_articles[]article_id', value: a[:id]}
               - default_price = (a[:name] == 'Anm' ? @party[:price] : nil)
               %input{type: :text, name: 'parties_articles[]price', value: (pa ? pa[:price] : default_price)}
-    %button.btn Spara
-%form{method: :post, action: url("/#{@party[:id]}/transactions")}
+    %button.btn.btn-primary Spara
+
+%form.economy-section2{method: :post, action: url("/#{@party[:id]}/transactions")}
   %fieldset
     %legend 2. Fyll i vad alla drack utifrån strecklistorna
-    %table.table-compact
-      %thead
-        %tr
-          %th Namn
-          - @articles.each do |a|
-            %th= a[:name]
-      %tbody
-        - @members.each do |m|
+    .table-scroll
+      %table.table-compact
+        %thead
           %tr
-            %td= "#{m[:first_name]} #{m[:last_name]}"
+            %th.col-name Namn
             - @articles.each do |a|
-              %td
-                %input{type: :hidden, name: 'purchases[]member_id', value: m[:id]}
-                %input{type: :hidden, name: 'purchases[]article_id', value: a[:id]}
-                %input{type: :text, name: "purchases[]quantity", value: m[:purchases][a[:id]]}
-        - if @members.empty?
-          %tr
-            %td.text-center{colspan: @articles.count + 1}
-              %strong Inga medlemmar
-    %button.btn Spara
+              %th= a[:name]
+        %tbody
+          - @members.each do |m|
+            %tr
+              %td.col-name= "#{m[:first_name]} #{m[:last_name]}"
+              - @articles.each do |a|
+                %td
+                  %input{type: :hidden, name: 'purchases[]member_id', value: m[:id]}
+                  %input{type: :hidden, name: 'purchases[]article_id', value: a[:id]}
+                  %input{type: :text, name: "purchases[]quantity", value: m[:purchases][a[:id]]}
+          - if @members.empty?
+            %tr
+              %td.text-center{colspan: @articles.count + 1}
+                %strong Inga medlemmar
+    %button.btn.btn-primary Spara

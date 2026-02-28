@@ -329,8 +329,22 @@ cropper-canvas { display: block; height: 400px; }
 .overlay .float-right { right: 0.5rem; }
 
 /* === Compact table (party economy) === */
-.table-compact td { padding: 0; border-top: none; font-size: 10pt; }
-.table-compact input[type="text"] { height: 22px; text-align: left; min-width: fit-content; width: auto; }
+.table-compact { width: auto; }
+.table-compact th, .table-compact td { padding: 2px 4px; border-bottom: 1px solid #eee; font-size: 10pt; white-space: nowrap; }
+.table-compact input[type="text"] { height: 24px; width: 4rem; padding: 0 4px; }
+.table-prices input[type="text"] { width: 7rem; }
+
+/* === Party economy layout === */
+.economy-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.economy-header h1 { margin: 0; }
+.economy-section2 { margin-top: 2rem; }
+.table-scroll { overflow-x: auto; }
+.col-name { white-space: nowrap; padding-right: 1rem; }
 
 /* === Stream chart === */
 .stream-page { font-family: 'Lato', sans-serif; margin: 1rem; background: #fff; color: #333; }
@@ -342,6 +356,32 @@ cropper-canvas { display: block; height: 400px; }
 .legend { display: flex; gap: 1rem; justify-content: center; margin: 1rem 0; flex-wrap: wrap; }
 .legend-item { display: flex; align-items: center; gap: 0.25rem; font-size: 0.85rem; }
 .legend-swatch { width: 14px; height: 14px; border-radius: 2px; }
+
+/* === Buy view === */
+.buy-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #eee;
+  margin: 0;
+}
+.buy-item:last-child { border-bottom: none; }
+.buy-item-name { font-size: 1.1rem; font-weight: 600; }
+.buy-item-controls { display: flex; align-items: center; gap: 1rem; }
+.buy-item-count { min-width: 2rem; text-align: center; font-size: 1.25rem; font-weight: 700; }
+.buy-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.buy-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* === Print === */
 @media print { .print-hide { display: none; } }
