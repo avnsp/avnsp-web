@@ -382,6 +382,8 @@ cropper-canvas { display: block; height: 400px; }
   justify-content: center;
 }
 .buy-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.buy-item.htmx-request .buy-item-controls { opacity: 0.4; pointer-events: none; }
+.buy-item.htmx-request .buy-btn { cursor: wait; }
 
 /* === Print === */
 @media print { .print-hide { display: none; } }
