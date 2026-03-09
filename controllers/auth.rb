@@ -98,7 +98,8 @@ class AuthController < BaseController
     end
 
     def make_token(email, ts)
-      secret = ENV['SESSION_SECRET'] || 'avnsp'
+      secret = ENV["SESSION_SECRET"]
+      raise "SESSION_SECRET must be set to generate password reset tokens" if secret.nil? || secret.empty?
       OpenSSL::HMAC.hexdigest("SHA256", secret, "#{email}:#{ts}")
     end
 
