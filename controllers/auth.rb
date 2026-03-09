@@ -76,7 +76,11 @@ class AuthController < BaseController
       return "/" if url.nil? || url.empty?
       uri = URI.parse(url)
       return "/" if uri.scheme || uri.host
-      uri.path.start_with?("/") ? uri.path : "/"
+      path = uri.path.to_s
+      path = "/" unless path.start_with?("/")
+      query = uri.query ? "?#{uri.query}" : ""
+      fragment = uri.fragment ? "##{uri.fragment}" : ""
+      "#{path}#{query}#{fragment}"
     rescue URI::InvalidURIError
       "/"
     end
