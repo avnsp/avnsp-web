@@ -31,7 +31,7 @@ session_secret = ENV['SESSION_SECRET']
 if ENV['RACK_ENV'] == 'production' && (session_secret.nil? || session_secret.empty?)
   raise "SESSION_SECRET environment variable is required in production"
 end
-session_secret ||= 'dev-fallback-secret-not-for-production'
+session_secret ||= 'dev-fallback-secret-not-for-production-but-long-enough-to-satisfy-rack'
 
 use Rack::Session::Cookie, {
   :secret => session_secret,
