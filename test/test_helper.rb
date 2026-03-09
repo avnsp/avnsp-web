@@ -166,6 +166,7 @@ end
 def build_app
   Rack::Builder.new do
     use Rack::Session::Cookie, secret: ENV['SESSION_SECRET'], httponly: true, same_site: :lax
+    use Rack::Protection::AuthenticityToken
     use Rack::Flash, sweep: true, helper: false
     use AuthController
     map '/' do
@@ -212,7 +213,13 @@ class ControllerTest < Minitest::Test
   end
 
   def login_as(member)
-    env 'rack.session', { id: member.id }
+    existing_session = custom_env['rack.session'] || {}
+    env 'rack.session', existing_session.merge(id: member.id)
+  end
+
+  # Returns a valid masked CSRF token for the current test session.
+  def csrf_token
+    Rack::Protection::AuthenticityToken.token(custom_env['rack.session'] || {})
   end
 
   # Override env to accumulate settings
@@ -230,19 +237,22 @@ class ControllerTest < Minitest::Test
   end
 
   def post(uri, params = {}, env = {}, &block)
-    super(uri, params, custom_env.merge(env), &block)
+    super(uri, params.merge(authenticity_token: csrf_token), custom_env.merge(env), &block)
   end
 
   def put(uri, params = {}, env = {}, &block)
-    super(uri, params, custom_env.merge(env), &block)
+    super(uri, params.merge(authenticity_token: csrf_token), custom_env.merge(env), &block)
   end
 
   def delete(uri, params = {}, env = {}, &block)
-    super(uri, params, custom_env.merge(env), &block)
+    super(uri, params.merge(authenticity_token: csrf_token), custom_env.merge(env), &block)
   end
 
   def setup
     super
     @custom_env = {}
+    # Pre-seed the session with a CSRF token so Rack::Protection::AuthenticityToken
+    # passes for state-changing requests. Each test gets a fresh random token.
+    env 'rack.session', { csrf: SecureRandom.urlsafe_base64(32, padding: false) }
   end
 end
