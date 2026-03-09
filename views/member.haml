@@ -73,7 +73,7 @@
     var request = new XMLHttpRequest();
     request.open('PUT', #{@member.id} + '/nick', true);
     request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-    request.send("nick=" + nick + "&authenticity_token=" + encodeURIComponent("#{csrf_token}"));
+    request.send("nick=" + encodeURIComponent(nick) + "&authenticity_token=" + encodeURIComponent("#{csrf_token}"));
     request.onload = function() {
       var resp = request.responseText;
       document.querySelector('.full-name').innerHTML = resp;
