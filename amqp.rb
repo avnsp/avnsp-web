@@ -44,7 +44,7 @@ module Amqp
 
         blk.call delivery.routing_key, data, headers
         ch.acknowledge(delivery.delivery_tag, false)
-      rescue Exception => e
+      rescue StandardError => e
         puts "[ERROR] #{qname} failed to processing #{delivery.delivery_tag}: #{e.inspect}\n#{e.backtrace.join("\n")}"
         ch.reject(delivery.delivery_tag, true)
       end

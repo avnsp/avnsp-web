@@ -12,6 +12,7 @@
           = flash[key]
       %h1 Återställ lösenordet
       %form{method: :post}
+        != csrf_token_tag
         .form-group
           %label E-mail:
           %input{name: 'email', type: 'email', value: (params[:email] || '').strip.gsub(/ /, '+'), readonly: params[:email]}

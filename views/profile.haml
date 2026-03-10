@@ -1,6 +1,7 @@
 .text-center
   %h1 Ändra din profil
 %form{method: :post, enctype: 'multipart/form-data'}
+  != csrf_token_tag
   .form-group
     %label Förnamn
     %input{type: :text, required: true, name: :first_name, value: @user.first_name}
