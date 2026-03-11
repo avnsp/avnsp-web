@@ -166,6 +166,7 @@ end
 def build_app
   Rack::Builder.new do
     use Rack::Session::Cookie, secret: ENV['SESSION_SECRET'], httponly: true, same_site: :lax
+    use Rack::Protection::AuthenticityToken
     use Rack::Flash, sweep: true, helper: false
     use AuthController
     map '/' do
@@ -203,6 +204,9 @@ def build_app
   end
 end
 
+require 'rack/protection'
+CSRF_TOKEN = Rack::Protection::AuthenticityToken.random_token
+
 # --- Controller test base class ---
 class ControllerTest < Minitest::Test
   include Rack::Test::Methods
@@ -230,19 +234,30 @@ class ControllerTest < Minitest::Test
   end
 
   def post(uri, params = {}, env = {}, &block)
-    super(uri, params, custom_env.merge(env), &block)
+    super(uri, with_csrf(params), with_csrf_session(custom_env.merge(env)), &block)
   end
 
   def put(uri, params = {}, env = {}, &block)
-    super(uri, params, custom_env.merge(env), &block)
+    super(uri, with_csrf(params), with_csrf_session(custom_env.merge(env)), &block)
   end
 
   def delete(uri, params = {}, env = {}, &block)
-    super(uri, params, custom_env.merge(env), &block)
+    super(uri, with_csrf(params), with_csrf_session(custom_env.merge(env)), &block)
   end
 
   def setup
     super
     @custom_env = {}
+  end
+
+  private
+
+  def with_csrf(params)
+    params.is_a?(Hash) ? params.merge(authenticity_token: CSRF_TOKEN) : params
+  end
+
+  def with_csrf_session(env)
+    session = env.fetch('rack.session', {})
+    env.merge('rack.session' => session.merge(csrf: CSRF_TOKEN))
   end
 end
