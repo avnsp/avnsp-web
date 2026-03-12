@@ -2,7 +2,7 @@
   %h1.full-name= @member.full_name
   - if @member.id != @user.id
     %small.text-muted
-      %button.btn-link{'hx-put': url("/#{@member.id}/nick"), 'hx-prompt': 'Nytt smeknamn', 'hx-target': '.full-name', 'hx-headers': "{\"X-CSRF-Token\": \"#{csrf_token}\"}"} Ändra smeknamn
+      != haml :_nick_button, layout: false
 .text-center
   %img.img-fluid{src: @member.profile_picture_cdn, alt: 'Ingen profilbild uppladdad'}
 .grid.grid-3

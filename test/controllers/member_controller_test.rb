@@ -82,20 +82,20 @@ class MemberControllerTest < ControllerTest
     refute_includes last_response.body, '<html'
   end
 
-  def test_put_nick_via_hx_prompt
+  def test_put_nick_with_non_ascii
     m = create_member
     login_as(m)
-    put "/member/#{m.id}/nick", {}, { 'HTTP_HX_PROMPT' => 'HtmxNick' }
+    put "/member/#{m.id}/nick", { nick: 'Smörjan' }
     assert_equal 200, last_response.status
     m.reload
-    assert_equal "HtmxNick", m.nick
+    assert_equal 'Smörjan', m.nick
   end
 
   def test_put_nick_on_other_member
     actor = create_member
     target = create_member(nick: nil)
     login_as(actor)
-    put "/member/#{target.id}/nick", {}, { 'HTTP_HX_PROMPT' => 'NewNick' }
+    put "/member/#{target.id}/nick", { nick: 'NewNick' }
     assert_equal 200, last_response.status
     target.reload
     assert_equal "NewNick", target.nick

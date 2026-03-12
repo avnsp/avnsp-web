@@ -53,13 +53,23 @@ class MemberController < BaseController
             ])
   end
 
+  get '/:id/nick/edit' do |id|
+    @member = Member[id]
+    haml :_nick_edit, layout: false
+  end
+
+  get '/:id/nick/cancel' do |id|
+    @member = Member[id]
+    haml :_nick_button, layout: false
+  end
+
   put '/:id/nick' do |id|
-    nick = params[:nick] || request.env['HTTP_HX_PROMPT']
+    nick = params[:nick]
     nick = nil if nick.nil? || nick.empty?
     m = Member[id]
     m.update(nick: nick)
-    content_type :text
-    m.full_name
+    @member = m
+    haml :_nick_result, layout: false
   end
 
   post '/profile-edit' do

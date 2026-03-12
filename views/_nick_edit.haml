@@ -1,0 +1,5 @@
+%span#nick-edit
+  %form{style: 'display:inline-flex; width:100%; gap:0.5rem; align-items:center;', 'hx-put': url("/#{@member.id}/nick"), 'hx-target': '.full-name', 'hx-swap': 'innerHTML', 'hx-headers': "{\"X-CSRF-Token\": \"#{csrf_token}\"}"}
+    %input{type: 'text', name: 'nick', value: @member.nick.to_s, autofocus: true, placeholder: 'Smeknamn', style: 'flex: 1;'}
+    %button.btn.btn-primary{type: 'submit'} Spara
+    %button.btn{type: 'button', 'hx-get': url("/#{@member.id}/nick/cancel"), 'hx-target': '#nick-edit', 'hx-swap': 'outerHTML'} Avbryt
