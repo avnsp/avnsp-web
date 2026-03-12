@@ -91,6 +91,17 @@ class MemberControllerTest < ControllerTest
     assert_equal "HtmxNick", m.nick
   end
 
+  def test_put_nick_on_other_member
+    actor = create_member
+    target = create_member(nick: nil)
+    login_as(actor)
+    put "/member/#{target.id}/nick", {}, { 'HTTP_HX_PROMPT' => 'NewNick' }
+    assert_equal 200, last_response.status
+    target.reload
+    assert_equal "NewNick", target.nick
+    assert_includes last_response.body, "NewNick"
+  end
+
   def test_get_transactions
     m = create_member
     login_as(m)
