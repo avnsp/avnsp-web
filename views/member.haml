@@ -4,7 +4,10 @@
     %small.text-muted
       != haml :_nick_button, layout: false
 .text-center
-  %img.img-fluid{src: @member.profile_picture_cdn, alt: 'Ingen profilbild uppladdad'}
+  - if @member.profile_picture_cdn
+    %img.img-fluid{src: @member.profile_picture_cdn, alt: @member.full_name}
+  - else
+    %p.text-muted Ingen profilbild uppladdad
 .grid.grid-3
   %div
     .text-center
