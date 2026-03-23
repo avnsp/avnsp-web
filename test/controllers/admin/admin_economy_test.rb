@@ -60,4 +60,41 @@ class AdminEconomyTest < ControllerTest
     get "/cheferiet/economy/#{p.id}"
     assert_equal 200, last_response.status
   end
+
+  def test_party_economy_defaults_attendance_fee_quantity_to_one
+    admin = create_admin
+    login_as(admin)
+    party = create_party(price: 120)
+    member = create_member
+    anm = create_article(name: 'Anm')
+    create_attendance(member: member, party: party)
+
+    get "/cheferiet/economy/#{party.id}"
+
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, %Q(name="purchases[]quantity" value="1")
+    assert_nil DB[:purchases].where(member_id: member.id, party_id: party.id, article_id: anm.id).first
+  end
+
+  def test_party_transactions_charge_attendance_fee_once_via_purchase
+    admin = create_admin
+    login_as(admin)
+    party = create_party(price: 120)
+    member = create_member
+    anm = create_article(name: 'Anm')
+    create_attendance(member: member, party: party)
+    DB[:parties_articles].insert(article_id: anm.id, party_id: party.id, price: 120.0)
+
+    post "/cheferiet/economy/#{party.id}/transactions", {
+      purchases: [
+        { member_id: member.id.to_s, article_id: anm.id.to_s, quantity: '1' }
+      ]
+    }
+
+    assert_equal 302, last_response.status
+    transactions = DB[:transactions].where(member_id: member.id, party_id: party.id).all
+    assert_equal 1, transactions.length
+    assert_equal '1 Anm', transactions.first[:text]
+    assert_equal(-120.0, transactions.first[:sum])
+  end
 end
