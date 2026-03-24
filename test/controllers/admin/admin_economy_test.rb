@@ -97,4 +97,26 @@ class AdminEconomyTest < ControllerTest
     assert_equal '1 Anm', transactions.first[:text]
     assert_equal(-120.0, transactions.first[:sum])
   end
+
+  def test_party_economy_page_shows_financial_overview_and_totals
+    admin = create_admin
+    login_as(admin)
+    party = create_party(price: 120)
+    member = create_member
+    anm = create_article(name: 'Anm')
+    beer = create_article(name: 'Öl')
+    create_attendance(member: member, party: party)
+    DB[:parties_articles].insert(article_id: beer.id, party_id: party.id, price: 30.0)
+    DB[:purchases].insert(member_id: member.id, article_id: beer.id, party_id: party.id, quantity: 2)
+
+    get "/cheferiet/economy/#{party.id}"
+
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, 'Total försäljning'
+    assert_includes last_response.body, 'Aktiva artiklar'
+    assert_includes last_response.body, 'Att betala'
+    assert_includes last_response.body, 'Totalt sålt'
+    assert_includes last_response.body, '180 kr'
+    assert_includes last_response.body, '/js/party-economy.js'
+  end
 end
