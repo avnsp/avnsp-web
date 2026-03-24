@@ -1,0 +1,53 @@
+services:
+  db:
+    image: docker.io/library/postgres:17-alpine
+    environment:
+      POSTGRES_DB: avnsp
+      POSTGRES_USER: avnsp
+      POSTGRES_PASSWORD: avnsp
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U avnsp"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  lavinmq:
+    image: docker.io/cloudamqp/lavinmq:latest
+    volumes:
+      - lavinmq_data:/var/lib/lavinmq
+    healthcheck:
+      test: ["CMD", "lavinmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    ports:
+      - "9393:9393"
+    environment:
+      RACK_ENV: development
+      PORT: "9393"
+      ELEPHANTSQL_URL: postgres://avnsp:avnsp@db/avnsp
+      CLOUDAMQP_URL: amqp://guest:guest@lavinmq/
+      SESSION_SECRET: my_64_bytes_secret_key_that_is_at_least_64_bytes_long_for_security_purposes
+      AWS_ACCESS_KEY_ID: dev
+      AWS_SECRET_ACCESS_KEY: dev
+    depends_on:
+      db:
+        condition: service_healthy
+      lavinmq:
+        condition: service_healthy
+    command:
+      - sh
+      - -c
+      - |
+        bundle exec sequel -m migrations/ postgres://avnsp:avnsp@db/avnsp
+        bundle exec ruby seed.rb
+        exec bundle exec puma -q -p 9393 -e development
+
+volumes:
+  postgres_data:
+  lavinmq_data:

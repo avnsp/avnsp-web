@@ -29,14 +29,34 @@ bundle install
 foreman start
 ```
 
+### Local development with Docker Compose
+
+The easiest way to get a local environment running is with Docker Compose, which starts the app together with PostgreSQL and LavinMQ:
+
+```
+docker compose up --build
+```
+
+On first start, a default admin user is created and its credentials are printed to the console. The default password can be overridden with the `ADMIN_PASSWORD` environment variable.
+
+### Docker
+
+Build the image:
+```
+docker build -t avnsp-web .
+```
+
+Run the container:
+```
+docker run -p 9393:9393 \
+  -e ELEPHANTSQL_URL=postgres://user:pass@host/avnsp \
+  -e CLOUDAMQP_URL=amqp://user:pass@host/avnsp \
+  -e SESSION_SECRET=<at_least_64_byte_secret> \
+  -e AWS_ACCESS_KEY_ID=<key> \
+  -e AWS_SECRET_ACCESS_KEY=<secret> \
+  avnsp-web
+```
+
 ### deploy
 
-Install Heroku Cli, guide: https://devcenter.heroku.com/articles/heroku-cli#install-the-heroku-cli
-Then link the local repositry with the remote Heroku repository with:
-```
-heroku git:remote -a avnsp
-```
-Then deploy to Heroku with:
-```
-git push heroku master
-```
+Deployment is handled automatically via the GitHub → Heroku integration. Merging to `main` triggers a deploy.
