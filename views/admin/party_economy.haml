@@ -1,52 +1,156 @@
-.economy-header
-  %h1
-    = @party[:name]
-    %small= @party[:date]
-  %a.btn{href: url('/')} Tillbaks
+:ruby
+  format_currency = lambda do |amount|
+    value = format('%.2f', amount.to_f).sub(/\.00$/, '').sub(/(\.\d)0$/, '\1').tr('.', ',')
+    "#{value} kr"
+  end
 
-%form{method: :post, action: url("/parties_articles")}
-  != csrf_token_tag
-  %fieldset
-    %legend 1. Ange priser för festen
-    %table.table-compact.table-prices
-      %thead
-        %tr
-          %th Namn
-          %th Pris
-      %tbody
-        - @articles.each do |a|
-          %tr
-            %td= a[:name]
-            %td
-              - pa = @parties_articles.select { |pa| pa[:article_id] == a[:id] }.first
-              %input{type: :hidden, name: 'parties_articles[]party_id', value: @party[:id]}
-              %input{type: :hidden, name: 'parties_articles[]article_id', value: a[:id]}
-              - default_price = (a[:name] == 'Anm' ? @party[:price] : nil)
-              %input{type: :text, name: 'parties_articles[]price', value: (pa ? pa[:price] : default_price)}
-    %button.btn.btn-primary Spara
+  format_input = lambda do |amount|
+    if amount.nil?
+      ''
+    else
+      format('%.2f', amount.to_f).sub(/\.00$/, '').sub(/(\.\d)0$/, '\1')
+    end
+  end
 
-%form.economy-section2{method: :post, action: url("/#{@party[:id]}/transactions")}
-  != csrf_token_tag
-  %fieldset
-    %legend 2. Fyll i vad alla drack utifrån strecklistorna
-    .table-scroll
-      %table.table-compact
+  prices_by_article_id = {}
+  @articles.each do |article|
+    party_article = @parties_articles.find { |row| row[:article_id] == article[:id] }
+    fallback_price = article[:name] == 'Anm' ? @party[:price].to_f : nil
+    prices_by_article_id[article[:id]] = party_article ? party_article[:price].to_f : fallback_price
+  end
+
+  article_summaries = {}
+  @articles.each do |article|
+    quantity = @members.sum { |member| member[:purchases][article[:id]].to_i }
+    price = prices_by_article_id[article[:id]]
+    valid_price = !price.nil? && price.positive?
+    article_summaries[article[:id]] = {
+      quantity: quantity,
+      revenue: valid_price ? quantity * price : nil,
+      missing_price: quantity.positive? && !valid_price,
+      visible: valid_price || quantity.positive?
+    }
+  end
+
+  member_summaries = {}
+  @members.each do |member|
+    total = 0.0
+    missing_items = []
+
+    @articles.each do |article|
+      quantity = member[:purchases][article[:id]].to_i
+      next if quantity.zero?
+
+      price = prices_by_article_id[article[:id]]
+      if price && price.positive?
+        total += quantity * price
+      else
+        missing_items << article[:name]
+      end
+    end
+
+    member_summaries[member[:id]] = {
+      total: missing_items.empty? ? total : nil,
+      missing_items: missing_items
+    }
+  end
+
+  missing_price_articles = @articles.select { |article| article_summaries[article[:id]][:missing_price] }
+  total_sales = article_summaries.values.sum { |summary| summary[:revenue].to_f }
+  sales_ready = missing_price_articles.empty?
+
+.party-economy-page{data: {party_economy: true}}
+  .economy-toolbar
+    .economy-heading
+      %h1= @party[:name]
+      %span.economy-date= @party[:date]
+    .economy-toolbar-actions
+      .economy-stat
+        %span.economy-stat-label Deltagare
+        %strong.economy-stat-value{data: {role: 'overview-participants'}}= @members.count
+      .economy-stat
+        %span.economy-stat-label Försäljning
+        %strong.economy-stat-value{data: {role: 'overview-total-sales'}}= sales_ready ? format_currency.call(total_sales) : 'Pris saknas'
+      %a.btn.btn-secondary{href: url('/')} Tillbaka
+
+  .economy-layout
+    %form.economy-card.economy-card-prices{method: :post, action: url("/parties_articles")}
+      != csrf_token_tag
+      .section-head
+        %h2 Priser
+        %button.btn.btn-primary{type: :submit} Spara priser
+      %table.table-prices
         %thead
           %tr
-            %th.col-name Namn
-            - @articles.each do |a|
-              %th= a[:name]
+            %th Vara
+            %th.price-column Pris (kr)
         %tbody
-          - @members.each do |m|
+          - @articles.each do |article|
+            - party_article = @parties_articles.find { |row| row[:article_id] == article[:id] }
+            - fallback_price = article[:name] == 'Anm' ? @party[:price] : nil
             %tr
-              %td.col-name= "#{m[:first_name]} #{m[:last_name]}"
-              - @articles.each do |a|
-                %td
-                  %input{type: :hidden, name: 'purchases[]member_id', value: m[:id]}
-                  %input{type: :hidden, name: 'purchases[]article_id', value: a[:id]}
-                  %input{type: :text, name: "purchases[]quantity", value: m[:purchases][a[:id]]}
-          - if @members.empty?
+              %td= article[:name]
+              %td.price-column
+                %input{type: :hidden, name: 'parties_articles[]party_id', value: @party[:id]}
+                %input{type: :hidden, name: 'parties_articles[]article_id', value: article[:id]}
+                %input.price-input{type: :text, name: 'parties_articles[]price', value: format_input.call(party_article ? party_article[:price] : fallback_price), placeholder: '0', inputmode: 'decimal', autocomplete: 'off', spellcheck: 'false', 'aria-label': "Pris för #{article[:name]} i kronor", data: {role: 'price-input', article_id: article[:id], article_name: article[:name]}}
+
+    %form.economy-card.economy-card-consumption{method: :post, action: url("/#{@party[:id]}/transactions")}
+      != csrf_token_tag
+      .section-head
+        .section-heading-group
+          %h2 Konsumtion
+          .economy-inline-meta
+            %span.meta-chip
+              %strong Tom
+              = '= ej ifylld'
+            %span.meta-chip
+              %strong 0
+              = '= ingen konsumtion'
+            - if missing_price_articles.any?
+              %span.meta-chip.meta-chip-warning{data: {role: 'issues-banner'}}= "Pris saknas: #{missing_price_articles.map { |article| article[:name] }.join(', ')}"
+            - else
+              %span.meta-chip{data: {role: 'issues-banner'}} Alla priser klara
+            %span.meta-chip{data: {role: 'pending-summary'}} Tomma rutor kvar
+        %button.btn.btn-primary{type: :submit} Spara konsumtion
+
+      .table-wrap
+        %table.table-consumption
+          %thead
             %tr
-              %td.text-center{colspan: @articles.count + 1}
-                %strong Inga medlemmar
-    %button.btn.btn-primary Spara
+              %th.col-name Namn
+              - @articles.each do |article|
+                - summary = article_summaries[article[:id]]
+                %th.col-article{class: [summary[:missing_price] ? 'has-warning' : nil, summary[:visible] ? nil : 'is-hidden-column'], data: {role: 'article-header', article_id: article[:id]}}= article[:name]
+              %th.col-total Att betala
+          %tbody
+            - @members.each do |member|
+              - member_summary = member_summaries[member[:id]]
+              %tr{data: {member_id: member[:id]}}
+                %td.col-name= "#{member[:first_name]} #{member[:last_name]}"
+                - @articles.each do |article|
+                  - summary = article_summaries[article[:id]]
+                  %td.col-quantity{class: summary[:visible] ? nil : 'is-hidden-column', data: {role: 'article-cell', article_id: article[:id]}}
+                    %input{type: :hidden, name: 'purchases[]member_id', value: member[:id]}
+                    %input{type: :hidden, name: 'purchases[]article_id', value: article[:id]}
+                    %input.quantity-input{type: :text, name: "purchases[]quantity", value: member[:purchases][article[:id]], placeholder: '', inputmode: 'numeric', autocomplete: 'off', spellcheck: 'false', 'aria-label': "Antal #{article[:name]} för #{member[:first_name]} #{member[:last_name]}", data: {role: 'quantity-input', member_id: member[:id], article_id: article[:id], article_name: article[:name]}}
+                %td.col-total{class: member_summary[:total].nil? ? 'has-warning' : nil, data: {role: 'member-total-cell', member_id: member[:id]}}
+                  %span.summary-main{data: {role: 'member-total-main', member_id: member[:id]}}= member_summary[:total].nil? ? 'Pris saknas' : format_currency.call(member_summary[:total])
+                  %span.summary-sub{data: {role: 'member-total-sub', member_id: member[:id]}}= member_summary[:missing_items].any? ? member_summary[:missing_items].join(', ') : nil
+            - if @members.empty?
+              %tr
+                %td.text-center{colspan: @articles.count + 2}
+                  %strong Inga deltagare
+          %tfoot
+            %tr
+              %td.col-name Summa
+              - @articles.each do |article|
+                - summary = article_summaries[article[:id]]
+                %td.col-summary{class: [summary[:missing_price] ? 'has-warning' : nil, summary[:visible] ? nil : 'is-hidden-column'], data: {role: 'article-summary-cell', article_id: article[:id]}}
+                  %span.summary-main{data: {role: 'article-quantity', article_id: article[:id]}}= "#{summary[:quantity]} st"
+                  %span.summary-sub{data: {role: 'article-revenue', article_id: article[:id]}}= summary[:missing_price] ? 'Pris saknas' : format_currency.call(summary[:revenue].to_f)
+              %td.col-total{class: sales_ready ? nil : 'has-warning', data: {role: 'overall-total-cell'}}
+                %span.summary-main{data: {role: 'overall-total-main'}}= sales_ready ? format_currency.call(total_sales) : 'Pris saknas'
+                %span.summary-sub{data: {role: 'overall-total-sub'}}= 'Total försäljning'
+
+%script{src: asset_path("/js/party-economy.js"), defer: true}

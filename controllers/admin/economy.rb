@@ -34,6 +34,7 @@ class AdminEconomyController < AdminBaseController
     @party = DB[:parties].where(id: party_id).first
     purchases = DB[:purchases].where(party_id: @party[:id]).all
     @articles = DB[:articles].order(:name).all
+    attendance_article = @articles.find { |a| a[:name] == 'Anm' }
     @parties_articles = DB[:parties_articles].where(party_id: @party[:id]).map do |pa|
       a = @articles.find { |ar| ar[:id] == pa[:article_id] }
       pa.merge(article_name: a[:name],
@@ -48,6 +49,9 @@ class AdminEconomyController < AdminBaseController
         pa = @articles.find { |a| a[:id] == p[:article_id] }
         next unless pa
         ps[p[:article_id]] = p[:quantity]
+      end
+      if attendance_article && @party[:price].to_f.positive?
+        ps[attendance_article[:id]] = 1 unless ps.key?(attendance_article[:id])
       end
       m.merge(purchases: ps)
     end
@@ -111,19 +115,6 @@ class AdminEconomyController < AdminBaseController
           sum: sum,
           text: "#{p[:quantity]} #{a[:name]}"
         )
-      end
-
-      # Automatically deduct attendance fee for all attendees
-      if party[:price] && party[:price] > 0
-        DB[:attendances].where(party_id: id).each do |a|
-          DB[:transactions].insert(
-            party_id: id,
-            member_id: a[:member_id],
-            booking_account_number: party[:booking_account_number],
-            sum: -1.0 * party[:price].to_f,
-            text: "Anm"
-          )
-        end
       end
     end
     redirect back

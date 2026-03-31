@@ -17,7 +17,7 @@
 body, h1, h2, h3, h4, p, dl, dd, ul, ol, figure { margin: 0; }
 body {
   font-family: 'Lato', 'Droid sans', 'Lucida Grande', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  background: transparent url('/img/tweed.png') repeat 0 0;
+  background: url('/img/tweed.png') repeat 0 0;
   color: #fff;
   line-height: 1.5;
   padding-bottom: 10em;
@@ -35,8 +35,13 @@ dd { margin-left: 0; margin-bottom: 0.25rem; }
 hr { border: 0; border-top: 1px solid #ddd; margin: 1rem 0; }
 
 /* === Layout === */
-.container { max-width: 960px; margin: 0 auto; padding: 0 1rem; }
-.container-narrow { max-width: 600px; margin: 0 auto; padding: 0 1rem; }
+.container,
+.container-narrow {
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+.container { max-width: 960px; }
+.container-narrow { max-width: 600px; }
 .grid { display: grid; gap: 1rem; }
 .grid-2 { grid-template-columns: 1fr 1fr; }
 .grid-3 { grid-template-columns: repeat(3, 1fr); }
@@ -205,14 +210,11 @@ hr { border: 0; border-top: 1px solid #ddd; margin: 1rem 0; }
   font: inherit;
 }
 .btn-link:hover { color: #23527c; }
-.btn-dark { color: #ccc; background: #333; border-color: #444; }
-.btn-dark:hover { background: #444; }
 .btn-small { padding: 0.2rem 0.4rem; font-size: 0.85rem; }
 
 /* === Tables === */
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid #ddd; }
-th { font-weight: bold; }
 tr.danger { background: #f2dede; }
 .table-bordered th, .table-bordered td { border: 1px solid #ddd; }
 
@@ -234,7 +236,6 @@ select, textarea {
   border-radius: 4px;
   font-size: inherit;
   font-family: inherit;
-  box-sizing: border-box;
 }
 input[type="checkbox"] { margin-right: 0.25rem; }
 .checkbox { margin-bottom: 0.5rem; }
@@ -257,11 +258,6 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 .input-group .input-group-btn { display: flex; }
 .input-group .input-group-btn .btn { border-radius: 0 4px 4px 0; }
 
-/* Inline form */
-.form-inline { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-.form-inline.form-inline-center { justify-content: center; }
-.form-inline .form-group { margin-bottom: 0; }
-
 /* === Alerts === */
 .alert { padding: 0.75rem 1rem; margin-bottom: 1rem; border-radius: 4px; }
 .alert-info { background: #d9edf7; color: #31708f; }
@@ -274,7 +270,6 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 .card-body { padding: 1.5rem; }
 
 /* === Event list (home.haml) === */
-.event-list { list-style: none; padding: 0; margin: 0; }
 .event-item { padding: 1rem; margin-bottom: 0.5rem; background: inherit; }
 .event-item h4 { margin: 0 0 0.5rem; }
 
@@ -289,7 +284,6 @@ cropper-canvas { display: block; height: 400px; }
 .img-thumb { max-width: 112px; height: auto; }
 .dark-background { color: #aaa; }
 .mt-3 { margin-top: 3rem; }
-.wrapper { margin-top: 20px; margin-bottom: 20px; }
 
 /* === Album spacing === */
 .albums-list-spacing {
@@ -328,25 +322,325 @@ cropper-canvas { display: block; height: 400px; }
 .overlay .float-left { left: 0.5rem; }
 .overlay .float-right { right: 0.5rem; }
 
-/* === Compact table (party economy) === */
-.table-compact { width: auto; }
-.table-compact th, .table-compact td { padding: 2px 4px; border-bottom: 1px solid #eee; font-size: 10pt; white-space: nowrap; }
-.table-compact input[type="text"] { height: 24px; width: 4rem; padding: 0 4px; }
-.table-prices input[type="text"] { width: 7rem; }
-
 /* === Party economy layout === */
-.economy-header {
+.party-economy-page { color: #27333d; }
+.economy-toolbar {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1.5rem;
 }
-.economy-header h1 { margin: 0; }
-.economy-section2 { margin-top: 2rem; }
-.economy-section2 fieldset { min-width: 0; }
-.economy-section2 .table-compact { width: 100%; }
-.table-scroll { overflow-x: auto; }
-.col-name { white-space: nowrap; padding-right: 1rem; }
+.economy-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.economy-heading h1 {
+  margin: 0;
+  font-size: 1.9rem;
+  line-height: 1.1;
+}
+.economy-date {
+  color: #6f7a84;
+  font-size: 0.95rem;
+}
+.economy-toolbar-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.economy-stat {
+  min-width: 7.5rem;
+  padding: 0.6rem 0.8rem;
+  background: #f6f8fa;
+  border: 1px solid #dde4ea;
+  border-radius: 10px;
+}
+.economy-stat-label {
+  display: block;
+  margin-bottom: 0.1rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #73808b;
+}
+.economy-stat-value {
+  font-size: 1.1rem;
+  line-height: 1.2;
+  color: #1f2a33;
+}
+.btn-secondary {
+  border-color: #cfd7df;
+  background: #fff;
+}
+.economy-layout {
+  display: grid;
+  gap: 1rem;
+}
+.economy-card {
+  background: #fff;
+  border: 1px solid #dde4ea;
+  border-radius: 14px;
+  padding: 1rem;
+  box-shadow: 0 6px 18px rgba(21, 31, 38, 0.05);
+}
+.economy-card-consumption {
+  overflow: visible;
+  text-align: center;
+}
+.economy-card-prices {
+  max-width: 32rem;
+}
+.section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+}
+.section-head h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+.section-heading-group {
+  display: grid;
+  gap: 0.55rem;
+}
+.economy-inline-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  background: #f3f6f8;
+  border: 1px solid #dde4ea;
+  color: #53606a;
+  font-size: 0.82rem;
+  line-height: 1.2;
+}
+.meta-chip strong {
+  color: #22303a;
+  font-weight: 700;
+}
+.meta-chip-warning {
+  background: #fff5e8;
+  border-color: #e9c98e;
+  color: #8b5f11;
+}
+.table-prices {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e1e7ec;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.table-prices th,
+.table-prices td {
+  padding: 0.7rem 0.8rem;
+  border-bottom: 1px solid #edf1f4;
+  font-size: 0.95rem;
+}
+.table-prices th {
+  background: #f6f8fa;
+  color: #51606b;
+}
+.table-prices tbody tr:last-child td {
+  border-bottom: none;
+}
+.price-column {
+  width: 8.5rem;
+  text-align: right;
+}
+.table-wrap {
+  display: inline-block;
+  overflow: auto;
+  width: fit-content;
+  max-width: calc(100vw - 8rem);
+  max-height: min(70vh, 46rem);
+  border: 1px solid #dde4ea;
+  border-radius: 12px;
+  margin: 0 auto;
+  text-align: left;
+  vertical-align: top;
+}
+.table-consumption {
+  width: max-content;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+.table-consumption th,
+.table-consumption td {
+  padding: 0.2rem 0.24rem;
+  border-bottom: 1px solid #e8edf1;
+  border-right: 1px solid #edf2f5;
+  background: #fff;
+  vertical-align: middle;
+}
+.table-consumption thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #f6f8fa;
+  color: #50606b;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.table-consumption tbody tr:nth-child(even) td {
+  background: #fbfcfd;
+}
+.table-consumption .col-name {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  min-width: 5.2rem;
+  max-width: 5.8rem;
+  background: inherit;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: #24313b;
+  box-shadow: 1px 0 0 #dde4ea;
+}
+.table-consumption thead .col-name {
+  z-index: 5;
+}
+.table-consumption .col-article,
+.table-consumption .col-quantity,
+.table-consumption .col-summary {
+  min-width: 2.55rem;
+  text-align: right;
+}
+.table-consumption .col-total {
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  min-width: 4.55rem;
+  text-align: right;
+  background: inherit;
+  box-shadow: inset 1px 0 0 #dde4ea;
+}
+.table-consumption thead .col-total {
+  z-index: 4;
+}
+.table-consumption tfoot td {
+  background: #f6f8fa;
+  border-top: 2px solid #dbe3e9;
+  border-bottom: none;
+}
+.table-consumption .is-hidden-column {
+  display: none;
+}
+.table-consumption .has-warning {
+  background: #fff7ea;
+  color: #8a6116;
+}
+.summary-main,
+.summary-sub {
+  display: block;
+}
+.summary-main {
+  font-weight: 700;
+  color: #1f2b35;
+  font-size: 0.78rem;
+}
+.summary-sub {
+  margin-top: 0.08rem;
+  font-size: 0.6rem;
+  line-height: 1.2;
+  color: #67737e;
+}
+.table-prices .price-input,
+.table-consumption .quantity-input {
+  width: 100%;
+  min-width: 0;
+  height: 1.45rem;
+  padding: 0.05rem 0.18rem;
+  border: 1px solid #ccd5dd;
+  border-radius: 4px;
+  background: #fff;
+  color: #21303a;
+  font-variant-numeric: tabular-nums;
+}
+.table-prices .price-input {
+  text-align: right;
+  max-width: 5rem;
+  margin-left: auto;
+  font-size: 0.82rem;
+}
+.table-consumption .quantity-input {
+  width: 2.6rem;
+  text-align: right;
+  font-size: 0.82rem;
+  height: 1.5rem;
+  padding: 0.06rem 0.18rem;
+}
+.table-prices .price-input::placeholder,
+.table-consumption .quantity-input::placeholder {
+  color: #97a3ad;
+}
+.table-prices .price-input:focus,
+.table-consumption .quantity-input:focus {
+  outline: none;
+  border-color: #2f79b3;
+  box-shadow: 0 0 0 3px rgba(47, 121, 179, 0.18);
+}
+.table-consumption .quantity-input.is-empty {
+  background: #fffdf7;
+  border-color: #d6c48b;
+}
+.table-consumption .quantity-input.is-zero {
+  color: #66727d;
+}
+.table-prices .price-input.is-active-value,
+.table-consumption .quantity-input.is-active-value {
+  background: #f7fbff;
+}
+.col-quantity.is-pending {
+  background: #fffdf7;
+}
+
+@media (max-width: 768px) {
+  .economy-toolbar {
+    flex-direction: column;
+  }
+  .economy-toolbar-actions {
+    width: 100%;
+  }
+  .economy-stat {
+    flex: 1 1 9rem;
+  }
+  .section-head {
+    align-items: stretch;
+  }
+  .section-head .btn {
+    width: 100%;
+  }
+  .economy-card-prices {
+    max-width: none;
+  }
+  .table-consumption .col-name {
+    min-width: 4.7rem;
+    max-width: 5.2rem;
+  }
+  .table-consumption .col-total {
+    min-width: 4.2rem;
+  }
+  .table-wrap {
+    max-width: calc(100vw - 4rem);
+  }
+}
 
 /* === Stream chart === */
 .stream-page { font-family: 'Lato', sans-serif; margin: 1rem; background: #fff; color: #333; }
