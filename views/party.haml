@@ -25,7 +25,7 @@
           - @organizers.each do |o|
             %li
               %a{href: "/member/#{o.member_id}"}= o.member.full_name
-  - if Date.today < @party.attendance_deadline
+  - if @party.attendance_open?
     %div
       .card
         .card-header

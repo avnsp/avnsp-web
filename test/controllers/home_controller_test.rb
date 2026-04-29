@@ -18,4 +18,14 @@ class HomeControllerTest < ControllerTest
     assert_equal 200, last_response.status
     assert_includes last_response.body, "Framtid"
   end
+
+  def test_get_home_shows_signup_on_attendance_deadline
+    m = create_member
+    login_as(m)
+    party = create_party(name: "Deadline idag", date: Date.today + 7, attendance_deadline: Date.today)
+    get '/'
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, "Deadline idag"
+    assert_includes last_response.body, "/party/#{party.id}/attend"
+  end
 end

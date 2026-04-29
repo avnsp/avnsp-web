@@ -70,10 +70,19 @@
   %datalist#members
     - @members.each do |m|
       %option{data: {id: m[:id], name: "#{m[:first_name]} #{m[:last_name]}"}} #{m[:first_name]} #{m[:last_name]}
-%hr
-.hidden
-  %h3.text-center Actions
-  %form{method: :post, action: url("/#{@p[:id]}/send-invitations")}
-    != csrf_token_tag
-    %button.btn{type: :submit} Skicka inbjudningarna!
+- if @p[:id]
+  %hr
+  .text-center
+    %h3 Actions
+    %button.btn{type: :button, data: {action: 'open-invitation-confirmation'}} Skicka inbjudningarna!
+    %dialog.confirm-dialog#invitation-confirmation
+      .confirm-dialog-body
+        %h4 Skicka inbjudningar?
+        %p Detta skickar inbjudningarna till alla medlemmar med e-postadress. Detta går inte att ångra.
+        .confirm-dialog-actions
+          %button.btn{type: :button, data: {action: 'close-invitation-confirmation'}} Avbryt
+          %form{method: :post, action: url("/#{@p[:id]}/send-invitations")}
+            != csrf_token_tag
+            %button.btn.btn-danger{type: :submit} Ja, skicka inbjudningarna
 %script{src: asset_path("/js/organizers.js")}
+%script{src: asset_path("/js/admin-invitations.js")}
