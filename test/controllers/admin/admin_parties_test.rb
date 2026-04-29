@@ -33,6 +33,28 @@ class AdminPartiesTest < ControllerTest
     assert_includes last_response.body, 'Höstfest'
   end
 
+  def test_show_party_shows_send_invitations_with_confirmation
+    admin = create_admin
+    login_as(admin)
+    p = create_party(name: "Höstfest")
+    get "/cheferiet/parties/#{p.id}"
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, "/cheferiet/parties/#{p.id}/send-invitations"
+    assert_includes last_response.body, "Skicka inbjudningarna!"
+    assert_includes last_response.body, "invitation-confirmation"
+    assert_includes last_response.body, "/js/admin-invitations.js"
+    assert_includes last_response.body, "Ja, skicka inbjudningarna"
+  end
+
+  def test_new_party_form_does_not_show_send_invitations
+    admin = create_admin
+    login_as(admin)
+    get '/cheferiet/parties/new'
+    assert_equal 200, last_response.status
+    refute_includes last_response.body, "send-invitations"
+    refute_includes last_response.body, "Skicka inbjudningarna!"
+  end
+
   def test_attendance_page
     admin = create_admin
     login_as(admin)

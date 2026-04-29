@@ -82,6 +82,10 @@ class Party < Sequel::Model
     attendances.any? { |a| a.member_id == member_id }
   end
 
+  def attendance_open?(today = Date.today)
+    attendance_deadline && today <= attendance_deadline
+  end
+
   def purchases_highchart
     # Build lookup: {[article_name, member_id] => quantity}
     purchase_map = {}

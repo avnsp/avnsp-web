@@ -17,12 +17,49 @@ class PartyControllerTest < ControllerTest
     assert_equal 200, last_response.status
   end
 
+  def test_get_party_show_allows_signup_on_attendance_deadline
+    m = create_member
+    login_as(m)
+    p = create_party(attendance_deadline: Date.today)
+    get "/party/#{p.id}"
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, "Anmäl dig nu!"
+    assert_includes last_response.body, "/party/#{p.id}/attend"
+  end
+
+  def test_get_party_show_hides_signup_after_attendance_deadline
+    m = create_member
+    login_as(m)
+    p = create_party(attendance_deadline: Date.today - 1)
+    get "/party/#{p.id}"
+    assert_equal 200, last_response.status
+    refute_includes last_response.body, "Anmäl dig nu!"
+    refute_includes last_response.body, "/party/#{p.id}/attend"
+  end
+
   def test_get_attend_form
     m = create_member
     login_as(m)
     p = create_party
     get "/party/#{p.id}/attend"
     assert_equal 200, last_response.status
+  end
+
+  def test_get_attend_form_allows_signup_on_attendance_deadline
+    m = create_member
+    login_as(m)
+    p = create_party(attendance_deadline: Date.today)
+    get "/party/#{p.id}/attend"
+    assert_equal 200, last_response.status
+  end
+
+  def test_get_attend_form_redirects_after_attendance_deadline
+    m = create_member
+    login_as(m)
+    p = create_party(attendance_deadline: Date.today - 1)
+    get "/party/#{p.id}/attend"
+    assert_equal 302, last_response.status
+    assert_match %r{/party/#{p.id}$}, last_response.location
   end
 
   def test_post_attend_creates_attendance
@@ -38,6 +75,30 @@ class PartyControllerTest < ControllerTest
     a = Attendance[member_id: m.id, party_id: p.id]
     assert a
     assert_equal 'Ser fram emot det!', a.message
+  end
+
+  def test_post_attend_creates_attendance_on_attendance_deadline
+    m = create_member
+    login_as(m)
+    p = create_party(attendance_deadline: Date.today)
+    post "/party/#{p.id}/attend", {
+      vegitarian: 'false',
+      non_alcoholic: 'false'
+    }
+    assert_equal 302, last_response.status
+    assert Attendance[member_id: m.id, party_id: p.id]
+  end
+
+  def test_post_attend_does_not_create_attendance_after_deadline
+    m = create_member
+    login_as(m)
+    p = create_party(attendance_deadline: Date.today - 1)
+    post "/party/#{p.id}/attend", {
+      vegitarian: 'false',
+      non_alcoholic: 'false'
+    }
+    assert_equal 302, last_response.status
+    assert_nil Attendance[member_id: m.id, party_id: p.id]
   end
 
   def test_post_attend_updates_existing

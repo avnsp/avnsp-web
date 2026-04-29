@@ -21,5 +21,5 @@
         %a{href: "/party/#{p.id}"}= p.description
       - if p.attending?(@user.id)
         Du är anmäld!
-      - elsif DateTime.now < p.attendance_deadline
+      - elsif p.attendance_open?
         != haml(:attend_form, layout: false, locals: { party_id: p.id, a: @user.attendance(p.id), party_type: p.type })

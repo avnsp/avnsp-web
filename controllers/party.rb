@@ -107,10 +107,20 @@ class PartyController < BaseController
     @attendance = @user.attendances.select { |a| a.party_id == id.to_i }.first
     @attendance ||= Attendance.new
     @party = Party[id]
+    unless @party.attendance_open?
+      flash[:error] = 'Sista svarsdag har passerat'
+      redirect url("/#{id}")
+    end
     haml :attend_form, locals: { party_id: id, a: @attendance, party_type: @party.type }
   end
 
   post '/:id/attend' do |id|
+    party = Party[id]
+    unless party.attendance_open?
+      flash[:error] = 'Sista svarsdag har passerat'
+      redirect url(id)
+    end
+
     rk = if attendance = Attendance[member_id: @user.id, party_id: id]
       attendance.update(vegitarian: params[:vegitarian] == 'true',
                         non_alcoholic: params[:non_alcoholic] == 'true',

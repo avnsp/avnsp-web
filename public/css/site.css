@@ -212,6 +212,33 @@ hr { border: 0; border-top: 1px solid #ddd; margin: 1rem 0; }
 .btn-link:hover { color: #23527c; }
 .btn-small { padding: 0.2rem 0.4rem; font-size: 0.85rem; }
 
+/* === Confirmation dialog === */
+.confirm-dialog {
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  color: #333;
+  max-width: 420px;
+  padding: 0;
+  width: calc(100% - 2rem);
+}
+.confirm-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+.confirm-dialog-body {
+  padding: 1rem;
+}
+.confirm-dialog-body p {
+  margin-bottom: 1rem;
+}
+.confirm-dialog-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+.confirm-dialog-actions form {
+  margin: 0;
+}
+
 /* === Tables === */
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid #ddd; }
