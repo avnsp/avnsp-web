@@ -54,4 +54,21 @@ class UploaderTest < Minitest::Test
     })
     assert_equal path, Member[member.id].profile_picture
   end
+
+  def test_file_upload_stores_pdf
+    file_data = "%PDF-1.4\nfake pdf\n"
+    encoded = Base64.encode64(file_data)
+    path = "photos/invitations/1.pdf"
+
+    @worker.simulate("file.upload", {
+      file: encoded,
+      content_type: "application/pdf",
+      path: path
+    })
+
+    object = @worker.instance_variable_get(:@bucket).object(path)
+    assert_equal file_data, object.body
+    assert_equal "application/pdf", object.content_type
+    assert @worker.published.any? { |p| p[:topic] == "file.uploaded" }
+  end
 end

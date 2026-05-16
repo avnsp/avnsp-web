@@ -32,6 +32,18 @@ class Uploader
 
       publish 'photo.uploaded', data
     end
+
+    subscribe 'file.upload', 'file.upload' do |_, data|
+      file = Base64.decode64(data[:file])
+
+      @bucket.object(data[:path]).put(
+        body: file,
+        content_type: data[:content_type],
+        cache_control: 'max-age=31536000'
+      )
+
+      publish 'file.uploaded', data
+    end
   end
 
   def stop
