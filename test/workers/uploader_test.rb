@@ -66,9 +66,12 @@ class UploaderTest < Minitest::Test
       path: path
     })
 
-    object = @worker.instance_variable_get(:@bucket).object(path)
-    assert_equal file_data, object.body
-    assert_equal "application/pdf", object.content_type
+    put_request = @worker.instance_variable_get(:@s3).client.api_requests.find do |req|
+      req[:operation_name] == :put_object && req[:params][:key] == path
+    end
+    refute_nil put_request
+    assert_equal file_data, put_request[:params][:body]
+    assert_equal "application/pdf", put_request[:params][:content_type]
     assert @worker.published.any? { |p| p[:topic] == "file.uploaded" }
   end
 end
