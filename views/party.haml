@@ -41,7 +41,7 @@
   %ul
     - @albums.each do |a|
       %li
-        %a{href: "/album/#{a.id}"}= a.name || a.timestamp
+        %a{href: "/album/#{a.id}"}= a.title
 .text-center
   %h3
     Anmälda

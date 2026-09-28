@@ -37,6 +37,29 @@ class UploaderTest < Minitest::Test
     assert @worker.published.any? { |p| p[:topic] == "photo.uploaded" }
   end
 
+  def test_photo_upload_converts_format
+    file_data = File.read("test/fixtures/tiny.jpg", mode: "rb")
+    @worker.simulate("photo.upload", {
+      file: Base64.encode64(file_data),
+      content_type: "image/jpeg",
+      versions: [
+        { path: "photos/albums/1/a.jpg", resize: "1600x1600>", quality: 80, format: "jpeg" },
+        { path: "photos/albums/1/a.orig.jpg" }
+      ]
+    })
+    assert @worker.published.any? { |p| p[:topic] == "photo.uploaded" }
+  end
+
+  def test_file_delete_removes_objects
+    bucket = @worker.instance_variable_get(:@bucket)
+    bucket.client.stub_responses(:delete_objects, {})
+    @worker.simulate("file.delete", { keys: ["photos/albums/1/a.jpg", "photos/albums/1/a.thumb.jpg"] })
+    req = bucket.client.api_requests.find { |r| r[:operation_name] == :delete_objects }
+    assert req
+    assert_equal ["photos/albums/1/a.jpg", "photos/albums/1/a.thumb.jpg"],
+                 req[:params][:delete][:objects].map { |o| o[:key] }
+  end
+
   def test_photo_upload_updates_member_profile_picture
     member = create_member
     file_data = File.read("test/fixtures/tiny.jpg", mode: "rb")

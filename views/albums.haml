@@ -1,5 +1,11 @@
+- if admin?
+  .page-actions
+    %a.btn.btn-primary{href: url('/new')} Skapa nytt album
 .container-narrow.text-center
   %h1 Album
+  - flash.keys.each do |key|
+    %div{class: "alert alert-#{key}", role: :alert}
+      = flash[key]
   %dl
     - @albums.each do |a|
       %dt

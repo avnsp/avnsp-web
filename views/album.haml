@@ -1,9 +1,38 @@
+.page-back
+  %a.btn{href: url('/')} &#8592; Gå tillbaka
+- if admin?
+  .page-actions
+    %form{method: :post, action: url("/#{@album.id}/delete"), data: {confirm: "Ta bort albumet #{@album.title} och alla #{@photos.size} bilder i det? Det går inte att ångra."}}
+      != csrf_token_tag
+      %button.btn.btn-danger{type: :submit} Ta bort album
 .container-narrow.text-center
   %h1= @album.title
+  - if @album.party
+    %p
+      Från festen
+      %a{href: "/party/#{@album.party_id}"}= @album.party.name
+  - unless @album.description.to_s.empty?
+    %p= @album.description
+  - flash.keys.each do |key|
+    %div{class: "alert alert-#{key}", role: :alert}
+      = flash[key]
+  %details.album-new
+    %summary Ladda upp bilder
+    %form#photo-upload.text-left{method: :post, action: url("/#{@album.id}/photos"), enctype: 'multipart/form-data'}
+      != csrf_token_tag
+      .form-group
+        %label{for: 'photo-files'} Bilder (högst 10 MB styck)
+        %input#photo-files{type: :file, name: 'files[]', accept: 'image/*', multiple: true, required: true}
+      #photo-captions
+      %button.btn.btn-primary{type: :submit} Ladda upp
+      #upload-status.alert.hidden{role: :status}
+- if @photos.empty?
+  %p.text-center.text-muted Inga bilder ännu.
 #grid{'data-columns': ''}
   - @photos.each do |p|
     %div
       %a{href: url("/#{p.album_id}/#{p.id}")}
-        %img{src: p.original_temp, width: '300'}
-!= #haml(:photoswipe, layout: false)
+        %img{src: p.grid_url, width: '300', loading: 'lazy', alt: p.caption || p.name}
 %script{src: "/js/salvattore.min.js"}
+%script{src: asset_path("/js/album-upload.js")}
+%script{src: asset_path("/js/confirm.js")}

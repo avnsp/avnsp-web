@@ -36,6 +36,20 @@ class PhotoTest < Minitest::Test
     assert_match(/X-Amz-Expires=3600/, url)
   end
 
+  def test_web_and_grid_url_use_resized_versions_for_album_uploads
+    photo = create_photo(attrs: { path: "photos/albums/1/abc.jpg",
+                                  thumb_path: "photos/albums/1/abc.thumb.jpg",
+                                  original_path: "photos/albums/1/abc.orig.jpg" })
+    assert_match %r{/photos/albums/1/abc\.jpg\?}, photo.web_url
+    assert_match %r{/photos/albums/1/abc\.thumb\.jpg\?}, photo.grid_url
+  end
+
+  def test_web_and_grid_url_fall_back_to_original_for_older_photos
+    photo = create_photo(attrs: { path: "photos/abc.jpg", original_path: "photos/abc.orig.jpg" })
+    assert_match %r{/photos/abc\.orig\.jpg\?}, photo.web_url
+    assert_match %r{/photos/abc\.orig\.jpg\?}, photo.grid_url
+  end
+
   def test_surrounding_ids_middle
     album = create_album
     p1 = create_photo(album: album)

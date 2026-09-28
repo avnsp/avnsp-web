@@ -1,0 +1,26 @@
+.page-back
+  %a.btn{href: url('/')} &#8592; Gå tillbaka
+.container-narrow
+  %h1.text-center Skapa nytt album
+  - flash.keys.each do |key|
+    %div{class: "alert alert-#{key}", role: :alert}
+      = flash[key]
+  %form{method: :post, action: url('/new')}
+    != csrf_token_tag
+    .form-group
+      %label{for: 'album-name'} Namn
+      %input#album-name{type: :text, name: :name, placeholder: 'Lämna tomt för att använda festens namn'}
+    .form-group
+      %label{for: 'album-party'} Fest (albumet länkas från festens sida)
+      %select#album-party{name: :party_id}
+        %option{value: ''} Ingen fest
+        - @parties.each do |p|
+          %option{value: p.id}= "#{p.name} (#{p.date})"
+    .form-group
+      %label{for: 'album-date'} Datum
+      %input#album-date{type: :date, name: :date}
+    .form-group
+      %label{for: 'album-text'} Beskrivning
+      %textarea#album-text{name: :text, rows: 3}
+    %button.btn.btn-primary{type: :submit} Skapa album
+    %a.btn{href: url('/')} Avbryt

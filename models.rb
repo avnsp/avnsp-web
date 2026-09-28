@@ -107,6 +107,7 @@ end
 
 class Photo < Sequel::Model
   many_to_one :member
+  many_to_one :album
   one_to_many :comments, order_by: :timestamp, class: :PhotoComment
 
   def s3_path=(path)
@@ -130,6 +131,33 @@ class Photo < Sequel::Model
 
   def original_temp
     s3.object(original_path).presigned_url(:get, expires_in: 3600)
+  end
+
+  # Photos uploaded from the album page (photos/albums/...) have resized web and
+  # thumbnail versions. Older photos keep showing their original, as before.
+  def resized?
+    path.to_s.start_with?("photos/albums/")
+  end
+
+  def web_url
+    resized? ? s3.object(path).presigned_url(:get, expires_in: 3600) : original_temp
+  end
+
+  def grid_url
+    resized? ? s3.object(thumb_path).presigned_url(:get, expires_in: 3600) : original_temp
+  end
+
+  def s3_keys
+    [path, thumb_path, original_path].compact
+  end
+
+  # Removes the photo and its comments. The caller is responsible for
+  # deleting s3_keys from S3 afterwards.
+  def delete_with_comments
+    db.transaction do
+      comments_dataset.delete
+      delete
+    end
   end
 
   def surrounding_ids
@@ -197,8 +225,12 @@ class Album < Sequel::Model
     party&.date
   end
 
+  def display_date
+    date || party_date || timestamp.to_date
+  end
+
   def title
-    [name || party_name, date || party_date || timestamp.to_date].join(" - ")
+    [name || party_name, display_date].join(" - ")
   end
 
   def description

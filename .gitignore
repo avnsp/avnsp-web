@@ -3,3 +3,6 @@
 scripts
 dbbak
 csvs
+
+# Local copies of the production database (contain personal data)
+*.dump

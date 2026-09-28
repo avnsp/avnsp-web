@@ -1,9 +1,17 @@
+.page-back
+  %a.btn{href: url("/#{@photo.album_id}")} &#8592; Gå tillbaka till albumet
 .text-center
   %h3= @photo.caption || "Tagen #{@photo.timestamp.to_date}"
 .overlay
   %a.float-left{href: url("/#{@photo.album_id}/#{@prev_id}")} &#8592;
   %a.float-right{href: url("/#{@photo.album_id}/#{@next_id}")} &#8594;
-  %img.img-fluid{src: @photo.original_temp}
+  %img.img-fluid{src: @photo.web_url, alt: @photo.caption || @photo.name}
+.text-center
+  %a{href: @photo.original_temp, target: '_blank', rel: 'noopener'} Visa original
+  - if admin?
+    %form{method: :post, action: url("/#{@photo.album_id}/#{@photo.id}/delete"), data: {confirm: "Ta bort den här bilden och dess kommentarer? Det går inte att ångra."}}
+      != csrf_token_tag
+      %button.btn.btn-danger.btn-small{type: :submit} Ta bort bild
 %h2.text-center Kommentarer
 - @comments.each do |c|
   %div
@@ -22,3 +30,4 @@
   .form-group
     %input{type: :text, name: :comment, placeholder: "Kommentera här"}
   %button.btn{type: :submit} Spara
+%script{src: asset_path("/js/confirm.js")}

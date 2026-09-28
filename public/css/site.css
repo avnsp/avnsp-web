@@ -312,6 +312,20 @@ cropper-canvas { display: block; height: 400px; }
 .dark-background { color: #aaa; }
 .mt-3 { margin-top: 3rem; }
 
+/* === Album create / upload forms === */
+.album-new { margin: 1rem 0 1.5rem; }
+.album-new summary { cursor: pointer; font-weight: 700; margin-bottom: 1rem; }
+.text-left { text-align: left; }
+
+/* Page-level action in the top-right corner of the content box (albums.haml) */
+.hero { position: relative; }
+.page-actions { position: absolute; top: 1rem; right: 1rem; }
+.page-back { position: absolute; top: 1rem; left: 1rem; }
+@media (max-width: 600px) {
+  .page-actions, .page-back { position: static; display: flex; margin-bottom: 1rem; }
+  .page-actions { justify-content: flex-end; }
+}
+
 /* === Album spacing === */
 .albums-list-spacing {
   margin-bottom: 5px;
