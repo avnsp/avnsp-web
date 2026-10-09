@@ -1,6 +1,19 @@
 require_relative '../test_helper'
 
 class HomeControllerTest < ControllerTest
+  def test_user_menu_works_without_focus_and_has_phone_links
+    m = create_member
+    login_as(m)
+    get '/'
+    body = last_response.body
+    assert_match %r{<details class=['"]dropdown['"]>}, body
+    links = body[%r{<ul class=['"]nav-user-links['"]>.*?</ul>}m]
+    assert links, "phone menu links missing"
+    assert_match %r{href=['"]/member/#{m.id}['"]>Profil<}, links
+    assert_match %r{href=['"]/member/profile-edit['"]>Ändra<}, links
+    assert_includes links, "Logga ut"
+  end
+
   def test_get_home_authenticated
     m = create_member
     login_as(m)
