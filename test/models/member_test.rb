@@ -11,6 +11,11 @@ class MemberTest < Minitest::Test
     assert_equal 'Erik "Sigansen" Svensson', m.full_name
   end
 
+  def test_full_name_with_empty_nick
+    m = create_member(first_name: "Erik", last_name: "Svensson", nick: "")
+    assert_equal 'Erik Svensson', m.full_name
+  end
+
   def test_parties_returns_sorted_by_date
     m = create_member
     p1 = create_party(name: "Fest 1", date: Date.today + 10, attendance_deadline: Date.today + 8)

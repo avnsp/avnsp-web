@@ -353,6 +353,12 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 }
 /* "← Tillbaka till ..." link at the top of a sub-page */
 .back-link { display: inline-block; margin-bottom: 1rem; }
+/* On wide screens the party page's back link sits in the top-left corner,
+   beside the logo; narrower screens keep it below the logo */
+.hero { position: relative; }
+@media (min-width: 769px) {
+  .corner-back { position: absolute; top: 1rem; left: 1.25rem; }
+}
 /* File input with a link to the current file beside it */
 .file-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; padding-top: 0.3rem; }
 /* Centred row of links instead of a bulleted list */

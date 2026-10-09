@@ -5,7 +5,7 @@ class AdminMembersController < AdminBaseController
     @data = {
       first_name: params[:first_name]&.strip,
       last_name: params[:last_name]&.strip,
-      nick: params[:nick]&.strip,
+      nick: (params[:nick]&.strip).then { |n| n.nil? || n.empty? ? nil : n },
       studied: params[:studied],
       started: params[:started],
       email: params[:email]&.strip,
@@ -28,8 +28,9 @@ class AdminMembersController < AdminBaseController
 
   post '/remind' do
     members_with_negative_balance.each do |member|
-      nick = member[:nick] || ''
-      full_name = "#{member[:first_name]} #{nick} #{member[:last_name]}"
+      # Nickname without quotes in emails; skipped when the member has none
+      full_name = [member[:first_name], member[:nick], member[:last_name]]
+        .map { |part| part.to_s.strip }.reject(&:empty?).join(' ')
       msg = {
         email: member[:email],
         name: full_name,
@@ -52,6 +53,7 @@ class AdminMembersController < AdminBaseController
 
   get '/:id' do |id|
     @m = DB[:members].where(id: id).first
+    halt 404, 'Medlemmen finns inte' unless @m
     haml :member
   end
 

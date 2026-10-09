@@ -18,6 +18,7 @@ class AdminPartiesController < AdminBaseController
 
   get '/:id' do |id|
     @p = DB[:parties].where(id: id).first
+    halt 404, 'Festen finns inte' unless @p
     @members = DB[:members].order(:first_name, :last_name).all
     organizers = DB[:organizers].where(party_id: id).all
     @organizers = @members.select { |m| organizers.any? { |o| o[:member_id] == m[:id] } }
@@ -123,7 +124,7 @@ class AdminPartiesController < AdminBaseController
         party_name: party[:name],
         party_last_att_date: last_str,
         party_id: id,
-        nick: m[:nick] || m[:first_name],
+        nick: m[:nick].to_s.strip.empty? ? m[:first_name] : m[:nick],
         balance: m[:balance],
         balance_after: m[:balance] - party[:price],
         street: m[:street],

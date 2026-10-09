@@ -49,6 +49,36 @@ class AdminMembersTest < ControllerTest
     assert_includes last_response.body, 'Kalle'
   end
 
+  def test_member_page_links_back_to_member_list
+    admin = create_admin
+    login_as(admin)
+    m = create_member
+    get "/cheferiet/members/#{m.id}"
+    assert_equal 200, last_response.status
+    assert_match %r{href='[^']*/cheferiet/members/'>← Tillbaka till alla medlemmar}, last_response.body
+  end
+
+  def test_new_member_page_shows_heading
+    admin = create_admin
+    login_as(admin)
+    get "/cheferiet/members/new"
+    assert_includes last_response.body, "Ny medlem"
+  end
+
+  def test_update_member_with_blank_nick_saves_no_nick
+    admin = create_admin
+    login_as(admin)
+    m = create_member(nick: "Gammalt")
+    post "/cheferiet/members/#{m.id}", { first_name: 'Erik', last_name: 'Svensson', nick: '  ' }
+    assert_nil DB[:members].where(id: m.id).get(:nick)
+  end
+
+  def test_missing_member_returns_404
+    login_as(create_admin)
+    get "/cheferiet/members/999999"
+    assert_equal 404, last_response.status
+  end
+
   def test_update_member
     admin = create_admin
     login_as(admin)

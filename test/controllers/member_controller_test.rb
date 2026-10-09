@@ -43,7 +43,7 @@ class MemberControllerTest < ControllerTest
 
   def test_put_nick
     m = create_member
-    login_as(m)
+    login_as(create_member)
     put "/member/#{m.id}/nick", { nick: "Sigansen" }
     assert_equal 200, last_response.status
     m.reload
@@ -52,11 +52,61 @@ class MemberControllerTest < ControllerTest
 
   def test_put_nick_empty_clears
     m = create_member(nick: "OldNick")
-    login_as(m)
+    login_as(create_member)
     put "/member/#{m.id}/nick", { nick: "" }
     assert_equal 200, last_response.status
     m.reload
     assert_nil m.nick
+  end
+
+  def test_put_nick_only_spaces_clears
+    m = create_member(nick: "OldNick")
+    login_as(create_member)
+    put "/member/#{m.id}/nick", { nick: "   " }
+    m.reload
+    assert_nil m.nick
+  end
+
+  def test_put_own_nick_forbidden
+    m = create_member(nick: "Givet")
+    login_as(m)
+    put "/member/#{m.id}/nick", { nick: "Självvalt" }
+    assert_equal 403, last_response.status
+    m.reload
+    assert_equal "Givet", m.nick
+  end
+
+  def test_get_own_nick_edit_forbidden
+    m = create_member
+    login_as(m)
+    get "/member/#{m.id}/nick/edit"
+    assert_equal 403, last_response.status
+  end
+
+  def test_own_page_has_no_nick_button
+    m = create_member
+    login_as(m)
+    get "/member/#{m.id}"
+    refute_includes last_response.body, "Ändra smeknamn"
+  end
+
+  def test_other_members_page_has_nick_button
+    m = create_member
+    login_as(create_member)
+    get "/member/#{m.id}"
+    assert_includes last_response.body, "Ändra smeknamn"
+  end
+
+  def test_get_missing_member_returns_404
+    login_as(create_member)
+    get "/member/999999"
+    assert_equal 404, last_response.status
+  end
+
+  def test_put_nick_on_missing_member_returns_404
+    login_as(create_member)
+    put "/member/999999/nick", { nick: "X" }
+    assert_equal 404, last_response.status
   end
 
   def test_get_members_sorted
@@ -84,7 +134,7 @@ class MemberControllerTest < ControllerTest
 
   def test_put_nick_with_non_ascii
     m = create_member
-    login_as(m)
+    login_as(create_member)
     put "/member/#{m.id}/nick", { nick: 'Smörjan' }
     assert_equal 200, last_response.status
     m.reload

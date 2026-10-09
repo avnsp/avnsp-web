@@ -1,4 +1,6 @@
-%h1= [@m[:first_name], @m[:last_name]].join(' ') || 'Ny medlem'
+%a.back-link{href: url('/')} ← Tillbaka till alla medlemmar
+- name = [@m[:first_name], @m[:last_name]].compact.join(' ').strip
+%h1= name.empty? ? 'Ny medlem' : name
 %form.form-horizontal{method: :post, enctype: "multipart/form-data"}
   != csrf_token_tag
   .form-group

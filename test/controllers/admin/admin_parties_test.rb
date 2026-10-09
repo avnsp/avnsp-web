@@ -46,6 +46,21 @@ class AdminPartiesTest < ControllerTest
     assert_includes last_response.body, "Ja, skicka inbjudningarna"
   end
 
+  def test_invitation_greets_by_nick_or_first_name
+    login_as(create_admin)
+    p = create_party(price: 600)
+    with_nick = create_member(first_name: "Therese", nick: "Teto", email: "teto@academian.se")
+    empty_nick = create_member(first_name: "Alessandra", nick: "", email: "ale@academian.se")
+    no_nick = create_member(first_name: "Erik", nick: nil, email: "erik@academian.se")
+    [with_nick, empty_nick, no_nick].each { |m| create_transaction(member: m, sum: 100) }
+    post "/cheferiet/parties/#{p.id}/send-invitations"
+    greetings = TH.published.select { |x| x[:routing_key] == 'send-invitations' }
+                  .to_h { |x| [x[:data][:email], x[:data][:nick]] }
+    assert_equal "Teto", greetings["teto@academian.se"]
+    assert_equal "Alessandra", greetings["ale@academian.se"]
+    assert_equal "Erik", greetings["erik@academian.se"]
+  end
+
   def test_new_party_form_does_not_show_send_invitations
     admin = create_admin
     login_as(admin)
@@ -129,6 +144,12 @@ class AdminPartiesTest < ControllerTest
     get "/cheferiet/parties/#{p.id}/snaps_lottery"
     assert_includes last_response.body, "Anna Berg"
     refute_includes last_response.body, '""'
+  end
+
+  def test_admin_missing_party_returns_404
+    login_as(create_admin)
+    get "/cheferiet/parties/999999"
+    assert_equal 404, last_response.status
   end
 
   def test_party_page_for_missing_party_returns_404
