@@ -36,7 +36,6 @@
     - else
       Jag kommer!
 - if a.id
-  %form{method: :post, action: "/party/#{party_id}/attend/delete"}
+  %form{method: :post, action: "/party/#{party_id}/attend/delete", data: {confirm: "Vill du avanmäla dig? Det du fyllt i (allergier, högerfot m.m.) försvinner."}}
     != csrf_token_tag
-    %input{type: :hidden, name: :_method, value: :delete}
     %button.btn.btn-danger Jag vill inte gå längre

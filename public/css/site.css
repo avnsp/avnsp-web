@@ -279,6 +279,41 @@ table { width: 100%; border-collapse: collapse; }
 th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid #ddd; }
 tr.danger { background: #f2dede; }
 .table-bordered th, .table-bordered td { border: 1px solid #ddd; }
+/* Long email addresses wrap (preferably at the <wbr> before @, see email_breakable)
+   instead of pushing the table out of the box */
+.col-email { overflow-wrap: anywhere; min-width: 11rem; }
+/* Wide tables scroll sideways inside the white box on small screens */
+@media screen { .table-scroll { overflow-x: auto; } }
+
+/* Lists shown as tables on computers become one card per row on phones.
+   Cells with data-label get that label in front of them; empty cells are hidden.
+   screen-only, so printed lists keep their table layout. */
+@media screen and (max-width: 600px) {
+  .table-stack thead { display: none; }
+  .table-stack tr { display: block; padding: 0.5rem 0; border-bottom: 1px solid #ddd; }
+  .table-stack td { display: block; padding: 0.1rem 0; border: 0; }
+  .table-stack td:first-child { font-weight: 700; }
+  .table-stack td[data-label] { display: grid; grid-template-columns: 7.5rem 1fr; gap: 0.5rem; }
+  .table-stack td[data-label]::before { content: attr(data-label); color: #777; font-weight: 400; }
+  .table-stack tr.sub-row { border-top: 0; padding-left: 1rem; }
+  .table-stack td:empty { display: none; }
+  /* Sortable lists keep their sort links, as a row of buttons above the cards */
+  .table-stack-sortable thead { display: block; }
+  .table-stack-sortable thead tr { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; }
+  .table-stack-sortable thead th { padding: 0; border: 0; font-size: 0.9rem; }
+  .table-stack-sortable thead th:not(:has(a)) { display: none; }
+}
+
+/* Heading with buttons on the right; buttons drop below the heading on phones */
+.page-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; }
+.page-header h3 { margin: 0; }
+.page-header-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+/* Snapslotteri: 3 names per row on computers and on paper, fewer on phones */
+.lottery-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #ddd; border-left: 1px solid #ddd; }
+.lottery-cell { padding: 0.5rem; border-right: 1px solid #ddd; border-bottom: 1px solid #ddd; break-inside: avoid; }
+@media screen and (max-width: 768px) { .lottery-grid { grid-template-columns: repeat(2, 1fr); } }
+@media screen and (max-width: 420px) { .lottery-grid { grid-template-columns: 1fr; } }
 
 /* === Sort indicators === */
 th a.sort { text-decoration: none; color: inherit; }
@@ -309,10 +344,19 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 /* Horizontal form layout */
 .form-horizontal .form-group { display: grid; grid-template-columns: 150px 1fr; gap: 0.5rem; align-items: start; }
 .form-horizontal .form-group label { text-align: right; padding-top: 0.4rem; }
+/* Submit button lines up with the fields, not the labels */
+.form-horizontal .form-actions > * { grid-column: 2; justify-self: start; }
 @media (max-width: 768px) {
   .form-horizontal .form-group { grid-template-columns: 1fr; }
   .form-horizontal .form-group label { text-align: left; }
+  .form-horizontal .form-actions > * { grid-column: auto; }
 }
+/* "← Tillbaka till ..." link at the top of a sub-page */
+.back-link { display: inline-block; margin-bottom: 1rem; }
+/* File input with a link to the current file beside it */
+.file-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; padding-top: 0.3rem; }
+/* Centred row of links instead of a bulleted list */
+.link-list { list-style: none; padding: 0; margin: 0 0 1.5rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.5rem; }
 
 /* Input group (organizer rows, etc.) */
 .input-group { display: flex; gap: 0; margin-bottom: 0.5rem; }
@@ -330,6 +374,7 @@ legend { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
 .card { border: 1px solid #ddd; border-radius: 4px; background: #fff; margin-top: 1.5rem; color: #333; }
 .card-header { padding: 0.75rem 1rem; background: #f5f5f5; border-bottom: 1px solid #ddd; }
 .card-body { padding: 1.5rem; }
+@media (max-width: 600px) { .card-body { padding: 1rem; } }
 
 /* === Event list (home.haml) === */
 .event-item { padding: 1rem; margin-bottom: 0.5rem; background: inherit; }

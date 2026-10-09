@@ -2,9 +2,9 @@
   %tr
     %td
       %a{href: url(m[:id])}= m.last_name
-    %td= m.first_name
-    %td= m.nick
-    %td= m.studied
-    %td= m.started
+    %td{data: {label: 'Förnamn'}}= m.first_name
+    %td{data: {label: 'Smeknamn'}}= m.nick
+    %td{data: {label: 'Program'}}= m.studied
+    %td{data: {label: 'Inskrivningsår'}}= m.started
     %td
-    %td= m.email
+    %td.col-email{data: {label: 'Email'}}!= email_breakable(m.email)

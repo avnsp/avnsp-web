@@ -26,6 +26,8 @@ class AdminPartiesController < AdminBaseController
 
   get '/:id/:page' do |id, page|
     halt 403, 'Invalid page' unless PARTY_PAGES.include?(page)
+    @party = DB[:parties].where(id: id).first
+    halt 404, 'Festen finns inte' unless @party
 
     @members = DB[:members].order(:first_name, :last_name).all
     @attendances = DB[:attendances]
@@ -160,10 +162,10 @@ class AdminPartiesController < AdminBaseController
     end
   end
 
-  delete '/attendance/:id' do |id|
+  post '/attendance/:id/delete' do |id|
     DB[:right_feet].where(attendance_id: id).delete
     DB[:attendances].where(id: id).delete
-    redirect back
+    redirect(back || url('/'))
   end
 
   helpers do

@@ -1,3 +1,4 @@
+!= haml :_party_back, layout: false
 %form.print-hide{method: :post}
   != csrf_token_tag
   %fieldset
@@ -42,7 +43,7 @@
   %hr
   %h3 Anmälningar
 
-%table
+%table.table-stack
   %thead
     %tr
       %th Namn
@@ -56,19 +57,19 @@
     - @attendances.each do |a|
       %tr
         %td= "#{a[:first_name]} #{a[:last_name]}"
-        %td= a[:allergies]
-        %td= a[:non_alcoholic] ? 'Ja' : 'Nej'
-        %td= a[:vegitarian] ? 'Ja' : 'Nej'
-        %td= a[:message]
-        %td= a[:rf_name] && 'Ja'
+        %td{data: {label: 'Allergier'}}= a[:allergies]
+        %td{data: {label: 'Alkoholfritt'}}= a[:non_alcoholic] ? 'Ja' : 'Nej'
+        %td{data: {label: 'Vegetariskt'}}= a[:vegitarian] ? 'Ja' : 'Nej'
+        %td{data: {label: 'Meddelande'}}= a[:message]
+        %td{data: {label: 'Högerfot'}}= a[:rf_name] && 'Ja'
         %td.print-hide
-          %form{method: :post, action: url("/attendance/#{a[:id]}")}
+          %form{method: :post, action: url("/attendance/#{a[:id]}/delete"), data: {confirm: "Ta bort #{a[:first_name]} #{a[:last_name]}? Anmälan och uppgifterna i den (allergier, högerfot m.m.) raderas och går inte att ångra."}}
             != csrf_token_tag
-            %input{type: :hidden, name: '_method', value: :delete}
             %button.btn.btn-small.btn-danger -
       - if a[:rf_name]
-        %tr
-          %td= "#{a[:rf_name]}"
-          %td= a[:rf_allergies]
-          %td= a[:rf_non_alcoholic] ? 'Ja' : 'Nej'
-          %td{colspan: 4}= a[:rf_vegitarian] ? 'Ja' : 'Nej'
+        %tr.sub-row
+          %td{data: {label: 'Högerfot'}}= "#{a[:rf_name]}"
+          %td{data: {label: 'Allergier'}}= a[:rf_allergies]
+          %td{data: {label: 'Alkoholfritt'}}= a[:rf_non_alcoholic] ? 'Ja' : 'Nej'
+          %td{colspan: 4, data: {label: 'Vegetariskt'}}= a[:rf_vegitarian] ? 'Ja' : 'Nej'
+%script{src: asset_path("/js/confirm.js")}

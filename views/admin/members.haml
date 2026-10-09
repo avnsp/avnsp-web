@@ -1,12 +1,12 @@
 %form{method: :post, action: url('remind')}
   != csrf_token_tag
-  %h3
-    Medlemmar
-    %small.float-right
+  .page-header
+    %h3 Medlemmar
+    .page-header-actions
       - if @members.any? { |m| m[:balance]&.negative? }
         %input.btn{type: :submit, value: 'Skicka Påminnelse'}
       %a.btn{href: url('new')} Ny medlem
-  %table
+  %table.table-stack
     %thead
       %tr
         %th Namn
@@ -18,6 +18,6 @@
         %tr{class: m[:balance]&.negative? ? 'danger' : nil}
           %td
             %a{href: url(m[:id])}= [m[:last_name], m[:first_name]].join(', ')
-          %td= m[:email]
-          %td= m[:studied]
-          %td= m[:balance]
+          %td.col-email{data: {label: 'Email'}}!= email_breakable(m[:email])
+          %td{data: {label: 'Sektion'}}= m[:studied]
+          %td{data: {label: 'Saldo'}}= m[:balance]

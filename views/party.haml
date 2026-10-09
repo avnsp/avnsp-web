@@ -1,3 +1,4 @@
+%a.back-link{href: '/party'} ← Tillbaka till alla fester
 .text-center
   %h1
     = @party.name
@@ -63,3 +64,9 @@
           - if a.right_foot
             (Högerfot: #{a.right_foot.name})
         %td= a.member_studied_started
+        %td
+          - if @user.admin
+            %form{method: :post, action: "/cheferiet/parties/attendance/#{a.id}/delete", data: {confirm: "Ta bort #{a.member_name} från #{@party.name || @party.type}? Anmälan och uppgifterna i den (allergier, högerfot m.m.) raderas och går inte att ångra."}}
+              != csrf_token_tag
+              %button.btn.btn-small.btn-danger Ta bort
+%script{src: asset_path("/js/confirm.js")}
