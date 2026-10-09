@@ -8,6 +8,7 @@
       != " | #{name.capitalize}"
     %link{href: asset_path("/css/site.css"), rel: :stylesheet}
     %script{src: asset_path("/js/htmx.min.js"), defer: true}
+    %script{src: asset_path("/js/dropdown.js"), defer: true}
   %body
     %header.navbar
       .container
@@ -27,9 +28,22 @@
             %li
               %a{href: "/cheferiet"} Cheferiet
         .nav-right
-          %span.dark-background Inloggad som
-          .dropdown
-            %button.dropdown-toggle{type: "button"}
+          %span.dark-background
+            Inloggad som
+            %span.nav-user-name= @user.full_name
+          %ul.nav-user-links
+            %li
+              %a{href: "/member/#{@user.id}"} Profil
+            %li
+              %a{href: "/member/profile-edit"} Ändra
+            %li
+              %form{method: :post, action: "/logout"}
+                != csrf_token_tag
+                %button{type: :submit} Logga ut
+          -# <details> opens on tap in every browser; the old :focus-within
+          -# menu never opened on iPhone, where tapping doesn't focus a button.
+          %details.dropdown
+            %summary.dropdown-toggle
               = @user.full_name
               &#9662;
             %ul.dropdown-menu

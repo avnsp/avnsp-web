@@ -116,7 +116,11 @@ hr { border: 0; border-top: 1px solid #ddd; margin: 1rem 0; }
   }
   .nav-toggle:checked ~ .nav-links,
   .nav-toggle:checked ~ .nav-right { display: flex; }
-  .nav-right { align-items: flex-start; }
+  .nav-right {
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin-top: 0.5rem;
+  }
 }
 
 /* === Dropdown (user menu) === */
@@ -143,7 +147,38 @@ hr { border: 0; border-top: 1px solid #ddd; margin: 1rem 0; }
   min-width: 160px;
   z-index: 1000;
 }
-.dropdown:focus-within .dropdown-menu { display: block; }
+.dropdown[open] .dropdown-menu { display: block; }
+.dropdown-toggle { list-style: none; }
+.dropdown-toggle::-webkit-details-marker { display: none; }
+/* On phones the user's links are listed directly in the hamburger menu
+   (.nav-user-links) instead of in a second menu to open. */
+.nav-user-name, .nav-user-links { display: none; }
+@media (max-width: 768px) {
+  .dropdown { display: none; }
+  .nav-user-name { display: inline; color: #ccc; }
+  /* Same look and spacing as the page links above (.nav-links) */
+  .nav-user-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .nav-user-links a, .nav-user-links button {
+    color: #aaa;
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    background: none;
+    border: none;
+    font: inherit;
+    line-height: inherit;
+    cursor: pointer;
+  }
+  .nav-user-links a:hover, .nav-user-links button:hover { color: #eee; }
+  .nav-user-links form { margin: 0; }
+}
 .dropdown-menu a {
   display: block;
   padding: 0.25rem 1rem;
