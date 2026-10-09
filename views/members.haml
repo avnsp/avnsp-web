@@ -3,7 +3,7 @@
 %form
   .form-group
     %input{type: "text", name: "q", placeholder: "Sök...", 'hx-get': url('/'), 'hx-trigger': 'keyup changed delay:300ms', 'hx-target': '#members-table', 'hx-include': 'this'}
-%table
+%table.table-stack.table-stack-sortable
   %thead
     %tr
       - next_order = @order == 'asc' ? 'desc' : 'asc'

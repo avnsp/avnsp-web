@@ -45,6 +45,11 @@ class BaseController < Sinatra::Base
       "#{path}?v=#{mtime}"
     end
 
+    # Email address that a narrow table column may wrap before the @
+    def email_breakable(email)
+      Rack::Utils.escape_html(email.to_s).sub('@', '<wbr>@')
+    end
+
     def csrf_token_tag
       token = session[:csrf] || ''
       %(<input type="hidden" name="authenticity_token" value="#{Rack::Utils.escape_html(token)}">)

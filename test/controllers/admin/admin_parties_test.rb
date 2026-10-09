@@ -100,6 +100,44 @@ class AdminPartiesTest < ControllerTest
     assert_equal 403, last_response.status
   end
 
+  def test_party_pages_link_back_to_party
+    admin = create_admin
+    login_as(admin)
+    p = create_party(name: "Vårfest")
+    %w[attendance emails member_article_list snaps_lottery].each do |page|
+      get "/cheferiet/parties/#{p.id}/#{page}"
+      assert_equal 200, last_response.status, page
+      assert_match %r{href='[^']*/cheferiet/parties/#{p.id}'}, last_response.body, page
+      assert_includes last_response.body, "Tillbaka till Vårfest", page
+    end
+  end
+
+  def test_party_page_links_back_to_party_list
+    admin = create_admin
+    login_as(admin)
+    p = create_party
+    get "/cheferiet/parties/#{p.id}"
+    assert_equal 200, last_response.status
+    assert_match %r{href='[^']*/cheferiet/parties/'>← Tillbaka till alla fester}, last_response.body
+  end
+
+  def test_snaps_lottery_hides_empty_nick
+    admin = create_admin
+    login_as(admin)
+    p = create_party
+    create_attendance(member: create_member(first_name: "Anna", last_name: "Berg", nick: ""), party: p)
+    get "/cheferiet/parties/#{p.id}/snaps_lottery"
+    assert_includes last_response.body, "Anna Berg"
+    refute_includes last_response.body, '""'
+  end
+
+  def test_party_page_for_missing_party_returns_404
+    admin = create_admin
+    login_as(admin)
+    get "/cheferiet/parties/999999/attendance"
+    assert_equal 404, last_response.status
+  end
+
   def test_post_attendance
     admin = create_admin
     login_as(admin)
@@ -129,9 +167,38 @@ class AdminPartiesTest < ControllerTest
     p = create_party
     m = create_member
     a = create_attendance(member: m, party: p)
-    delete "/cheferiet/parties/attendance/#{a.id}"
+    post "/cheferiet/parties/attendance/#{a.id}/delete"
     assert_equal 302, last_response.status
     assert_nil DB[:attendances].where(id: a.id).first
+  end
+
+  def test_delete_attendance_removes_right_foot
+    admin = create_admin
+    login_as(admin)
+    a = create_attendance
+    a.add_right_foot('name' => 'Högerfot')
+    post "/cheferiet/parties/attendance/#{a.id}/delete"
+    assert_equal 302, last_response.status
+    assert_nil DB[:attendances].where(id: a.id).first
+    assert_nil DB[:right_feet].where(attendance_id: a.id).first
+  end
+
+  def test_delete_attendance_without_referer_redirects_to_party_list
+    admin = create_admin
+    login_as(admin)
+    a = create_attendance
+    post "/cheferiet/parties/attendance/#{a.id}/delete"
+    assert_equal 302, last_response.status
+    assert_match %r{/cheferiet/parties/$}, last_response.location
+  end
+
+  def test_delete_attendance_forbidden_for_non_admin
+    m = create_member
+    login_as(m)
+    a = create_attendance
+    post "/cheferiet/parties/attendance/#{a.id}/delete"
+    assert_equal 403, last_response.status
+    assert DB[:attendances].where(id: a.id).first
   end
 
   def test_update_party

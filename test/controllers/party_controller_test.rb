@@ -17,6 +17,14 @@ class PartyControllerTest < ControllerTest
     assert_equal 200, last_response.status
   end
 
+  def test_get_party_show_links_back_to_party_list
+    m = create_member
+    login_as(m)
+    p = create_party
+    get "/party/#{p.id}"
+    assert_includes last_response.body, "<a class='back-link' href='/party'>← Tillbaka till alla fester</a>"
+  end
+
   def test_get_party_show_allows_signup_on_attendance_deadline
     m = create_member
     login_as(m)
@@ -125,6 +133,47 @@ class PartyControllerTest < ControllerTest
     post "/party/#{p.id}/attend/delete"
     assert_equal 302, last_response.status
     assert_nil Attendance[member_id: m.id, party_id: p.id]
+  end
+
+  def test_post_attend_delete_keeps_other_attendances
+    m = create_member
+    other = create_member
+    login_as(m)
+    p = create_party
+    create_attendance(member: m, party: p)
+    create_attendance(member: other, party: p)
+    post "/party/#{p.id}/attend/delete"
+    assert_nil Attendance[member_id: m.id, party_id: p.id]
+    assert Attendance[member_id: other.id, party_id: p.id]
+  end
+
+  def test_get_party_show_has_withdraw_button_for_attendee
+    m = create_member
+    login_as(m)
+    p = create_party
+    create_attendance(member: m, party: p)
+    get "/party/#{p.id}"
+    assert_includes last_response.body, "/party/#{p.id}/attend/delete"
+  end
+
+  def test_get_party_show_admin_can_remove_attendees
+    admin = create_admin
+    login_as(admin)
+    p = create_party
+    a = create_attendance(party: p)
+    get "/party/#{p.id}"
+    assert_includes last_response.body, "/cheferiet/parties/attendance/#{a.id}/delete"
+    assert_includes last_response.body, "data-confirm='Ta bort"
+    assert_includes last_response.body, '/js/confirm.js'
+  end
+
+  def test_get_party_show_member_cannot_remove_attendees
+    m = create_member
+    login_as(m)
+    p = create_party
+    a = create_attendance(party: p)
+    get "/party/#{p.id}"
+    refute_includes last_response.body, "/cheferiet/parties/attendance/#{a.id}/delete"
   end
 
   def test_get_buy

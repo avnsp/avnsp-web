@@ -1,3 +1,4 @@
+%a.back-link.print-hide{href: url('/')} ← Tillbaka till alla fester
 %h1.text-center
   - if @p[:id]
     = @p[:name] || @p[:type]
@@ -6,7 +7,7 @@
 - if @p[:id]
   .text-center
     %h3 Dokument
-    %ul
+    %ul.link-list
       %li
         %a{href: url("/#{@p[:id]}/emails")} Emailadresser
       %li
@@ -43,10 +44,10 @@
     %input{type: 'number', name: :price, step: '0.5', value: @p[:price]}
   .form-group
     %label Kommentar
-    %textarea{name: :comment}= @p[:comment].to_s.gsub('\n', "\n")
+    %textarea{name: :comment, rows: 6}= @p[:comment].to_s.gsub('\n', "\n")
   .form-group
     %label Inbjudan
-    %div
+    .file-row
       %input{type: :file, name: :invitation}
       - if @p[:invitation]
         %a{href: "/party/#{@p[:id]}/invitation"} Inbjudan
@@ -59,7 +60,7 @@
           %input{type: :text, list: :members, value: "#{o[:first_name]} #{o[:last_name]}"}
           .input-group-btn
             %button.btn.btn-danger{type: :button, data: {action: 'remove'}} ✕
-  .form-group
+  .form-group.form-actions
     %input.btn{type: 'submit', value: :Spara}
   %template#new-organizer
     .input-group
