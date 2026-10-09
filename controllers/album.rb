@@ -7,7 +7,7 @@ class AlbumController < BaseController
   MAX_PHOTO_BYTES = 10 * 1024 * 1024
 
   get '/' do
-    @albums = Album.eager(:member, :party).all.sort_by(&:display_date).reverse
+    @albums = Album.active.eager(:member, :party).all.sort_by(&:display_date).reverse
     haml :albums
   end
 
@@ -33,38 +33,78 @@ class AlbumController < BaseController
     redirect url("/#{album.id}")
   end
 
+  # The trash (Papperskorg). Opening it also clears out anything that has
+  # been there longer than Trash::DAYS.
+  get '/trash' do
+    halt 403 unless admin?
+    delete_files(Trash.purge_expired!)
+    @albums = Album.trashed.eager(:party).order(Sequel.desc(:deleted_at)).all
+    # Photos in a trashed album are listed with the album, not on their own.
+    @photos = Photo.trashed.eager(:album).order(Sequel.desc(:deleted_at)).all
+                   .reject { |p| p.album&.trashed? }
+    haml :album_trash
+  end
+
+  post '/trash/albums/:id/restore' do |id|
+    halt 403 unless admin?
+    album = Album[id]
+    halt 404 unless album&.trashed?
+    album.update(deleted_at: nil)
+    flash[:info] = "Albumet #{album.title} har återställts."
+    redirect url('/trash')
+  end
+
+  post '/trash/albums/:id/purge' do |id|
+    halt 403 unless admin?
+    album = Album[id]
+    halt 404 unless album&.trashed?
+    title = album.title
+    delete_files(album.destroy_permanently)
+    flash[:info] = "Albumet #{title} har raderats permanent."
+    redirect url('/trash')
+  end
+
+  post '/trash/photos/:id/restore' do |id|
+    halt 403 unless admin?
+    photo = Photo[id]
+    halt 404 unless photo&.trashed?
+    photo.update(deleted_at: nil)
+    flash[:info] = "Bilden har återställts."
+    redirect url('/trash')
+  end
+
+  post '/trash/photos/:id/purge' do |id|
+    halt 403 unless admin?
+    photo = Photo[id]
+    halt 404 unless photo&.trashed?
+    delete_files(photo.destroy_permanently)
+    flash[:info] = "Bilden har raderats permanent."
+    redirect url('/trash')
+  end
+
   get '/:album_id/:id' do |album_id, id|
     @photo = Photo[id]
-    halt 404 unless @photo
+    halt 404 if @photo.nil? || @photo.hidden?
     @prev_id, @next_id = @photo.surrounding_ids
     @comments = @photo.comments_dataset.eager(:member).all
     haml :photo
   end
 
   post '/:album_id/:id/delete' do |album_id, id|
-    photo = Photo[id]
-    halt 404 unless photo && photo.album_id == album_id.to_i
     halt 403 unless admin?
-    keys = photo.s3_keys
-    photo.delete_with_comments
-    publish('file.delete', keys: keys)
-    flash[:info] = "Bilden har tagits bort."
+    photo = Photo[id]
+    halt 404 unless photo && photo.album_id == album_id.to_i && !photo.trashed?
+    photo.update(deleted_at: Time.now)
+    flash[:info] = "Bilden har flyttats till papperskorgen."
     redirect url("/#{album_id}")
   end
 
   post '/:id/delete' do |id|
-    album = Album[id]
-    halt 404 unless album
     halt 403 unless admin?
-    photos = album.photos
-    keys = photos.flat_map(&:s3_keys)
-    title = album.title
-    DB.transaction do
-      photos.each(&:delete_with_comments)
-      album.delete
-    end
-    publish('file.delete', keys: keys) unless keys.empty?
-    flash[:info] = "Albumet #{title} har tagits bort."
+    album = Album[id]
+    halt 404 unless album && !album.trashed?
+    album.update(deleted_at: Time.now)
+    flash[:info] = "Albumet #{album.title} har flyttats till papperskorgen."
     redirect url('/')
   end
 
@@ -77,7 +117,7 @@ class AlbumController < BaseController
 
   post '/:id/photos' do |id|
     album = Album[id]
-    halt 404 unless album
+    halt 404 unless album && !album.trashed?
     files = Array(params[:files]).select { |f| f.is_a?(Hash) && f[:tempfile] }
     captions = Array(params[:captions])
     upload_error(album, 400, "Välj minst en bild.") if files.empty?
@@ -114,8 +154,8 @@ class AlbumController < BaseController
 
   get '/:id' do |id|
     @album = Album[id]
-    halt 404 unless @album
-    @photos = @album.photos
+    halt 404 if @album.nil? || @album.trashed?
+    @photos = @album.visible_photos
     haml :album
   end
 
@@ -133,6 +173,10 @@ class AlbumController < BaseController
       Date.parse(value.to_s)
     rescue Date::Error
       nil
+    end
+
+    def delete_files(keys)
+      publish('file.delete', keys: keys) unless keys.empty?
     end
 
     def upload_error(album, status, message)

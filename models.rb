@@ -147,6 +147,29 @@ class Photo < Sequel::Model
     resized? ? s3.object(thumb_path).presigned_url(:get, expires_in: 3600) : original_temp
   end
 
+  dataset_module do
+    def active
+      where(deleted_at: nil)
+    end
+
+    def trashed
+      exclude(deleted_at: nil)
+    end
+  end
+
+  def trashed?
+    !deleted_at.nil?
+  end
+
+  # Hidden from members: the photo itself or its whole album is in the trash.
+  def hidden?
+    trashed? || !!album&.trashed?
+  end
+
+  def purge_date
+    deleted_at.to_date + Trash::DAYS
+  end
+
   def s3_keys
     [path, thumb_path, original_path].compact
   end
@@ -160,10 +183,17 @@ class Photo < Sequel::Model
     end
   end
 
+  # Deletes the photo for good and returns the S3 keys to remove.
+  def destroy_permanently
+    keys = s3_keys
+    delete_with_comments
+    keys
+  end
+
   def surrounding_ids
     pk = id
-    prev_id = Photo.exclude { id >= pk }.reverse_order(:id).get(:id)
-    next_id = Photo.exclude { id <= pk }.order(:id).get(:id)
+    prev_id = Photo.active.exclude { id >= pk }.reverse_order(:id).get(:id)
+    next_id = Photo.active.exclude { id <= pk }.order(:id).get(:id)
     [prev_id, next_id].compact
   end
 end
@@ -217,6 +247,41 @@ class Album < Sequel::Model
   many_to_one :member, key: :created_by
   one_to_many :photos
 
+  dataset_module do
+    def active
+      where(deleted_at: nil)
+    end
+
+    def trashed
+      exclude(deleted_at: nil)
+    end
+  end
+
+  def trashed?
+    !deleted_at.nil?
+  end
+
+  def purge_date
+    deleted_at.to_date + Trash::DAYS
+  end
+
+  # Photos members can see. photos (the association) also includes the
+  # ones moved to the trash individually.
+  def visible_photos
+    photos_dataset.active.order(:id).all
+  end
+
+  # Deletes the album, all its photos and their comments for good, and
+  # returns the S3 keys to remove.
+  def destroy_permanently
+    keys = []
+    db.transaction do
+      photos.each { |p| keys.concat(p.destroy_permanently) }
+      delete
+    end
+    keys
+  end
+
   def party_name
     party&.name
   end
@@ -242,6 +307,22 @@ class Transaction < Sequel::Model
 end
 
 class Merit < Sequel::Model
+end
+
+# Deleted albums and photos stay in the trash for DAYS days so a mistake can
+# be undone. After that they are removed for good, files included.
+module Trash
+  DAYS = 30
+
+  # Permanently removes everything that has been in the trash longer than
+  # DAYS. Returns the S3 keys to delete.
+  def self.purge_expired!(now = Time.now)
+    cutoff = now - DAYS * 24 * 3600
+    keys = []
+    Album.where(Sequel[:deleted_at] < cutoff).all.each { |a| keys.concat(a.destroy_permanently) }
+    Photo.where(Sequel[:deleted_at] < cutoff).all.each { |p| keys.concat(p.destroy_permanently) }
+    keys
+  end
 end
 
 class PhotoComment < Sequel::Model

@@ -187,19 +187,94 @@ class AlbumControllerTest < ControllerTest
     assert_equal 404, last_response.status
   end
 
-  def test_admin_deletes_album_with_photos_and_comments
+  def test_deleting_album_moves_it_to_trash
     admin = create_admin
     login_as(admin)
-    album = create_album
+    album = create_album(attrs: { name: "Raderat album" })
     photo = create_photo(album: album)
     PhotoComment.insert(member_id: admin.id, photo_id: photo.id, comment: "Snygg")
     post "/album/#{album.id}/delete"
     assert_equal 302, last_response.status
+    assert Album[album.id].trashed?
+    assert Photo[photo.id]
+    assert_equal 1, PhotoComment.where(photo_id: photo.id).count
+    assert_empty TH.published
+
+    follow_redirect!
+    assert_includes last_response.body, "har flyttats till papperskorgen"
+    refute_match %r{/album/#{album.id}['"]}, last_response.body
+    get "/album/#{album.id}"
+    assert_equal 404, last_response.status
+    get "/album/#{album.id}/#{photo.id}"
+    assert_equal 404, last_response.status
+    get "/party/#{album.party_id}"
+    refute_includes last_response.body, "Raderat album"
+  end
+
+  def test_trash_lists_and_restores_album
+    login_as(create_admin)
+    album = create_album(attrs: { name: "Raderat album", deleted_at: Time.now })
+    get '/album/trash'
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, "Raderat album"
+    post "/album/trash/albums/#{album.id}/restore"
+    refute Album[album.id].trashed?
+    get "/album/#{album.id}"
+    assert_equal 200, last_response.status
+  end
+
+  def test_trash_purges_album_permanently
+    admin = create_admin
+    login_as(admin)
+    album = create_album(attrs: { deleted_at: Time.now })
+    photo = create_photo(album: album)
+    PhotoComment.insert(member_id: admin.id, photo_id: photo.id, comment: "Snygg")
+    post "/album/trash/albums/#{album.id}/purge"
     assert_nil Album[album.id]
     assert_nil Photo[photo.id]
     assert_equal 0, PhotoComment.where(photo_id: photo.id).count
     msg = TH.published.find { |p| p[:routing_key] == 'file.delete' }
     assert_equal photo.s3_keys, msg[:data][:keys]
+  end
+
+  def test_cannot_purge_album_that_is_not_in_trash
+    login_as(create_admin)
+    album = create_album
+    post "/album/trash/albums/#{album.id}/purge"
+    assert_equal 404, last_response.status
+    assert Album[album.id]
+  end
+
+  def test_opening_trash_purges_items_older_than_30_days
+    login_as(create_admin)
+    old_album = create_album(attrs: { deleted_at: Time.now - 31 * 24 * 3600 })
+    old_photo = create_photo(album: create_album, attrs: { deleted_at: Time.now - 31 * 24 * 3600 })
+    recent = create_album(attrs: { deleted_at: Time.now - 29 * 24 * 3600 })
+    get '/album/trash'
+    assert_nil Album[old_album.id]
+    assert_nil Photo[old_photo.id]
+    assert Album[recent.id]
+    msg = TH.published.find { |p| p[:routing_key] == 'file.delete' }
+    assert_includes msg[:data][:keys], old_photo.path
+  end
+
+  def test_members_cannot_use_trash
+    login_as(create_member)
+    album = create_album(attrs: { deleted_at: Time.now })
+    get '/album/trash'
+    assert_equal 403, last_response.status
+    post "/album/trash/albums/#{album.id}/restore"
+    assert_equal 403, last_response.status
+    post "/album/trash/albums/#{album.id}/purge"
+    assert_equal 403, last_response.status
+    assert Album[album.id].trashed?
+  end
+
+  def test_cannot_upload_to_trashed_album
+    login_as(create_member)
+    album = create_album(attrs: { deleted_at: Time.now })
+    post "/album/#{album.id}/photos", { files: [photo_file] }
+    assert_equal 404, last_response.status
   end
 
   def test_member_cannot_delete_album_even_their_own
@@ -212,18 +287,36 @@ class AlbumControllerTest < ControllerTest
     assert_empty TH.published
   end
 
-  def test_admin_deletes_photo
+  def test_deleting_photo_moves_it_to_trash
     login_as(create_admin)
     album = create_album
-    photo = create_photo(album: album)
+    photo = create_photo(album: album, attrs: { caption: "Raderad bild" })
     other = create_photo(album: album)
     post "/album/#{album.id}/#{photo.id}/delete"
     assert_equal 302, last_response.status
     assert_match %r{/album/#{album.id}$}, last_response.location
-    assert_nil Photo[photo.id]
-    assert Photo[other.id]
+    assert Photo[photo.id].trashed?
+    refute Photo[other.id].trashed?
+    assert_empty TH.published
+    get "/album/#{album.id}/#{photo.id}"
+    assert_equal 404, last_response.status
+    get "/album/#{album.id}"
+    refute_includes last_response.body, "Raderad bild"
+    get '/album/trash'
+    assert_includes last_response.body, "Raderad bild"
+  end
+
+  def test_trash_restores_and_purges_photo
+    login_as(create_admin)
+    album = create_album
+    restored = create_photo(album: album, attrs: { deleted_at: Time.now })
+    purged = create_photo(album: album, attrs: { deleted_at: Time.now })
+    post "/album/trash/photos/#{restored.id}/restore"
+    refute Photo[restored.id].trashed?
+    post "/album/trash/photos/#{purged.id}/purge"
+    assert_nil Photo[purged.id]
     msg = TH.published.find { |p| p[:routing_key] == 'file.delete' }
-    assert_equal photo.s3_keys, msg[:data][:keys]
+    assert_equal purged.s3_keys, msg[:data][:keys]
   end
 
   def test_member_cannot_delete_photo
@@ -244,7 +337,11 @@ class AlbumControllerTest < ControllerTest
     assert_includes last_response.body, "Ladda upp bilder"
     get "/album/#{album.id}/#{photo.id}"
     refute_includes last_response.body, "Ta bort bild"
+    get '/album/'
+    refute_includes last_response.body, "Papperskorg"
     login_as(create_admin)
+    get '/album/'
+    assert_includes last_response.body, "Papperskorg"
     get "/album/#{album.id}"
     assert_includes last_response.body, "Ta bort album"
     get "/album/#{album.id}/#{photo.id}"

@@ -2,7 +2,7 @@
   %a.btn{href: url('/')} &#8592; Gå tillbaka
 - if admin?
   .page-actions
-    %form{method: :post, action: url("/#{@album.id}/delete"), data: {confirm: "Ta bort albumet #{@album.title} och alla #{@photos.size} bilder i det? Det går inte att ångra."}}
+    %form{method: :post, action: url("/#{@album.id}/delete"), data: {confirm: "Flytta albumet #{@album.title} och dess #{@photos.size} bilder till papperskorgen? Det kan återställas i #{Trash::DAYS} dagar."}}
       != csrf_token_tag
       %button.btn.btn-danger{type: :submit} Ta bort album
 .container-narrow.text-center

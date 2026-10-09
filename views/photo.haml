@@ -9,7 +9,7 @@
 .text-center
   %a{href: @photo.original_temp, target: '_blank', rel: 'noopener'} Visa original
   - if admin?
-    %form{method: :post, action: url("/#{@photo.album_id}/#{@photo.id}/delete"), data: {confirm: "Ta bort den här bilden och dess kommentarer? Det går inte att ångra."}}
+    %form{method: :post, action: url("/#{@photo.album_id}/#{@photo.id}/delete"), data: {confirm: "Flytta bilden till papperskorgen? Den kan återställas i #{Trash::DAYS} dagar."}}
       != csrf_token_tag
       %button.btn.btn-danger.btn-small{type: :submit} Ta bort bild
 %h2.text-center Kommentarer

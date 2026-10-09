@@ -9,7 +9,7 @@ class PartyController < BaseController
   get '/:id' do |id|
     @party = Party[id]
     @attendances = @party.attendances_dataset.eager(:member, :right_feet).all
-    @albums = Album.where(party_id: id).all
+    @albums = Album.active.where(party_id: id).all
     @organizers = @party.organizers_dataset.eager(:member).all
 
     # Batch-compute prior attendance counts in one query

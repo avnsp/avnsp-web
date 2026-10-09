@@ -1,0 +1,61 @@
+.page-back
+  %a.btn{href: url('/')} &#8592; Gå tillbaka
+.container-narrow
+  %h1.text-center Papperskorg
+  %p.text-center.text-muted
+    Borttagna album och bilder kan återställas i #{Trash::DAYS} dagar.
+    Därefter raderas de permanent, även filerna.
+  - flash.keys.each do |key|
+    %div{class: "alert alert-#{key}", role: :alert}
+      = flash[key]
+  %h3 Album
+  - if @albums.empty?
+    %p.text-muted Inga borttagna album.
+  - else
+    %table
+      %thead
+        %tr
+          %th Album
+          %th Bilder
+          %th Raderas
+          %th
+      %tbody
+        - @albums.each do |a|
+          %tr
+            %td= a.title
+            %td= a.photos_dataset.count
+            %td= a.purge_date
+            %td
+              .trash-actions
+                %form{method: :post, action: url("/trash/albums/#{a.id}/restore")}
+                  != csrf_token_tag
+                  %button.btn.btn-small{type: :submit} Återställ
+                %form{method: :post, action: url("/trash/albums/#{a.id}/purge"), data: {confirm: "Radera albumet #{a.title} och alla bilder i det permanent? Det går inte att ångra."}}
+                  != csrf_token_tag
+                  %button.btn.btn-danger.btn-small{type: :submit} Radera permanent
+  %h3 Bilder
+  - if @photos.empty?
+    %p.text-muted Inga borttagna bilder.
+  - else
+    %table
+      %thead
+        %tr
+          %th Bild
+          %th Album
+          %th Raderas
+          %th
+      %tbody
+        - @photos.each do |p|
+          %tr
+            %td= p.caption || p.name
+            %td= p.album&.title
+            %td= p.purge_date
+            %td
+              .trash-actions
+                %form{method: :post, action: url("/trash/photos/#{p.id}/restore")}
+                  != csrf_token_tag
+                  %button.btn.btn-small{type: :submit} Återställ
+                %form{method: :post, action: url("/trash/photos/#{p.id}/purge"), data: {confirm: "Radera bilden permanent? Det går inte att ångra."}}
+                  != csrf_token_tag
+                  %button.btn.btn-danger.btn-small{type: :submit} Radera permanent
+%script{src: asset_path("/js/confirm.js")}

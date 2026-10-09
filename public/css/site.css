@@ -319,7 +319,8 @@ cropper-canvas { display: block; height: 400px; }
 
 /* Page-level action in the top-right corner of the content box (albums.haml) */
 .hero { position: relative; }
-.page-actions { position: absolute; top: 1rem; right: 1rem; }
+.page-actions { position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.5rem; }
+.trash-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .page-back { position: absolute; top: 1rem; left: 1rem; }
 @media (max-width: 600px) {
   .page-actions, .page-back { position: static; display: flex; margin-bottom: 1rem; }
@@ -343,6 +344,10 @@ cropper-canvas { display: block; height: 400px; }
 @media screen and (min-width: 769px) {
   #grid[data-columns]::before { content: '3 .column.size-1of3'; }
 }
+/* flow-root makes the grid contain its floated columns, so the white box
+   and footer sit below the photos instead of overlapping them */
+#grid { display: flow-root; }
+#grid img { max-width: 100%; height: auto; }
 .column { float: left; }
 .size-1of1 { width: 100%; }
 .size-1of2 { width: 50%; }
