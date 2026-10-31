@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'rack-flash'
 require 'haml'
 require 'tilt/haml'
+require 'openssl'
 
 class BaseController < Sinatra::Base
   set :views, "./views"
@@ -57,6 +58,23 @@ class BaseController < Sinatra::Base
 
     def csrf_token
       session[:csrf] || ''
+    end
+
+    # Emails a link for choosing a new password. The current password keeps
+    # working until the link is used.
+    def reset_password!(member)
+      ts = Time.now.to_i
+      hostname = ENV["RACK_ENV"] == "production" ? FQDN : "localhost:9292"
+      token = make_token(member, ts)
+      msg = { email: member.email, ts:, hostname:, token: }
+      publish("member.reset-password", msg)
+    end
+
+    # Signs the password hash too, so a link stops working once it has been used
+    def make_token(member, ts)
+      secret = ENV["SESSION_SECRET"]
+      raise "SESSION_SECRET must be set to generate password reset tokens" if secret.nil? || secret.empty?
+      OpenSSL::HMAC.hexdigest("SHA256", secret, [member.email, ts, member.password_hash].compact.join(":"))
     end
 
     def subscribe qname, *topics, &blk

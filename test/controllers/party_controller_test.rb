@@ -22,7 +22,7 @@ class PartyControllerTest < ControllerTest
     login_as(m)
     p = create_party
     get "/party/#{p.id}"
-    assert_includes last_response.body, "<a class='back-link' href='/party'>← Tillbaka till alla fester</a>"
+    assert_includes last_response.body, "<a class='back-link corner-back' href='/party'>← Tillbaka till alla fester</a>"
   end
 
   def test_get_party_show_allows_signup_on_attendance_deadline
@@ -133,6 +133,31 @@ class PartyControllerTest < ControllerTest
     post "/party/#{p.id}/attend/delete"
     assert_equal 302, last_response.status
     assert_nil Attendance[member_id: m.id, party_id: p.id]
+  end
+
+  def test_post_attend_delete_after_deadline_keeps_attendance
+    m = create_member
+    login_as(m)
+    p = create_party(attendance_deadline: Date.today - 1)
+    create_attendance(member: m, party: p)
+    post "/party/#{p.id}/attend/delete"
+    assert_equal 302, last_response.status
+    assert Attendance[member_id: m.id, party_id: p.id]
+  end
+
+  def test_post_attend_delete_on_deadline_day
+    m = create_member
+    login_as(m)
+    p = create_party(attendance_deadline: Date.today)
+    create_attendance(member: m, party: p)
+    post "/party/#{p.id}/attend/delete"
+    assert_nil Attendance[member_id: m.id, party_id: p.id]
+  end
+
+  def test_get_missing_party_returns_404
+    login_as(create_member)
+    get "/party/999999"
+    assert_equal 404, last_response.status
   end
 
   def test_post_attend_delete_keeps_other_attendances

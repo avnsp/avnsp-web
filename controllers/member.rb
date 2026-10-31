@@ -53,22 +53,21 @@ class MemberController < BaseController
             ])
   end
 
+  # Nicknames are given by others: any member can change anyone's but their own.
   get '/:id/nick/edit' do |id|
-    @member = Member[id]
+    @member = nick_target(id)
     haml :_nick_edit, layout: false
   end
 
   get '/:id/nick/cancel' do |id|
-    @member = Member[id]
+    @member = nick_target(id)
     haml :_nick_button, layout: false
   end
 
   put '/:id/nick' do |id|
-    nick = params[:nick]
-    nick = nil if nick.nil? || nick.empty?
-    m = Member[id]
-    m.update(nick: nick)
-    @member = m
+    @member = nick_target(id)
+    nick = params[:nick].to_s.strip
+    @member.update(nick: nick.empty? ? nil : nick)
     haml :_nick_result, layout: false
   end
 
@@ -88,8 +87,15 @@ class MemberController < BaseController
     redirect back
   end
 
+  post '/send-password-reset' do
+    reset_password!(@user)
+    flash[:info] = "En länk för att byta lösenord har skickats till #{@user.email}."
+    redirect url('/profile-edit')
+  end
+
   get '/:id' do |id|
     @member = Member[id]
+    halt 404, 'Medlemmen finns inte' unless @member
     @parties = @member.parties(Date.today)
     @transactions = @member.transactions_dataset.reverse_order(:timestamp).take(10)
     @merits = @member.merits
@@ -103,6 +109,13 @@ class MemberController < BaseController
   end
 
   helpers do
+    def nick_target(id)
+      member = Member[id]
+      halt 404, 'Medlemmen finns inte' unless member
+      halt 403, 'Du kan inte ändra ditt eget smeknamn' if member.id == @user.id
+      member
+    end
+
     def name
       "Matrikel"
     end

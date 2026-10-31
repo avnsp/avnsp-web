@@ -8,6 +8,7 @@ class PartyController < BaseController
 
   get '/:id' do |id|
     @party = Party[id]
+    halt 404, 'Festen finns inte' unless @party
     @attendances = @party.attendances_dataset.eager(:member, :right_feet).all
     @albums = Album.where(party_id: id).all
     @organizers = @party.organizers_dataset.eager(:member).all
@@ -142,6 +143,12 @@ class PartyController < BaseController
   end
 
   post '/:id/attend/delete' do |id|
+    party = Party[id]
+    halt 404, 'Festen finns inte' unless party
+    unless party.attendance_open?
+      flash[:error] = 'Sista svarsdag har passerat, kontakta Cheferiet för att avanmäla dig'
+      redirect url(id)
+    end
     DB[:attendances].where(member_id: @user.id, party_id: id).delete
     redirect url(id)
   end

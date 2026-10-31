@@ -1,3 +1,6 @@
+- flash.keys.each do |key|
+  %div{class: "alert alert-#{key}", role: :alert}
+    = flash[key]
 .text-center
   %h1 Ändra din profil
 %form{method: :post, enctype: 'multipart/form-data'}
@@ -34,3 +37,8 @@
   .form-group
     %a{href: url('/profile-picture')} Byt profilbild här
   %button.btn Spara
+%form{method: :post, action: url('/send-password-reset')}
+  != csrf_token_tag
+  .form-group
+    %label Lösenord
+    %button.btn Mejla mig en länk för att byta lösenord

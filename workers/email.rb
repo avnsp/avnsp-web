@@ -60,6 +60,8 @@ class EmailWorker
 
       https://#{msg[:hostname]}/change-password?token=#{msg[:token]}&ts=#{msg[:ts]}&email=#{msg[:email]}
 
+      Länken gäller i en timme och kan bara användas en gång. Om du inte väntade dig det här mailet kan du ignorera det, ditt nuvarande lösenord fortsätter att fungera.
+
       /CdO
       EMAIL_BODY
       send_email(msg[:email], "Ändra lösenord", "text/plain; charset=UTF-8", body.gsub(/^ */, ""))
