@@ -826,3 +826,12 @@ cropper-canvas { display: block; height: 400px; }
 .merit-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem; }
 .merit-form label { display: block; }
 .merit-form input { display: block; }
+@media screen and (max-width: 600px) {
+  .merit-row, .merit-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+  .merit-row .merit-form { display: contents; }
+  .merit-form label { min-width: 0; }
+  .merit-form label:first-of-type { grid-column: 1 / -1; }
+  .merit-form input[type="date"] { min-width: 0; min-height: 2.5rem; }
+  .merit-row .btn, .merit-form > .btn { width: 100%; }
+  .merits > .merit-form > .btn { grid-column: 1 / -1; }
+}
