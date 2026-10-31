@@ -19,7 +19,8 @@ class Member < Sequel::Model
   end
 
   def full_name
-    [first_name, nick && "\"#{nick}\"", last_name].compact.join " "
+    shown_nick = nick.to_s.strip
+    [first_name, (shown_nick.empty? ? nil : "\"#{shown_nick}\""), last_name].compact.join " "
   end
 
   def parties(date = nil)
@@ -150,7 +151,7 @@ class Attendance < Sequel::Model
   end
 
   def nick
-    member.nick || member.first_name
+    member.nick.to_s.strip.empty? ? member.first_name : member.nick
   end
 
   def member_name

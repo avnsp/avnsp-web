@@ -1,7 +1,8 @@
 require "./controllers/base"
-require 'openssl'
 
 class AuthController < BaseController
+  RESET_LINK_TTL = 3600
+
   before do
     unless session[:id] || request.path =~ %r{^/log(in|out)|auth|change-password|forgotten}
       redirect "/login?return_url=#{Rack::Utils.escape(request.path)}"
@@ -20,31 +21,32 @@ class AuthController < BaseController
 
   post "/forgotten" do
     email = params[:email]&.strip&.downcase
-    reset_password!(email) if Member[email:]
+    member = Member[email:]
+    reset_password!(member) if member
     flash[:info] = "Ett email har skickats"
     redirect back
   end
 
   get "/change-password" do
     cache_control :public, :must_revalidate, max_age: 0
-    ts = params[:ts]
-    email = params[:email].strip.tr(" ", "+").downcase
-    token = params[:token]
-    @error = :token if token != make_token(email, ts)
-    @error = :timestamp if Time.at(ts.to_i) < (Time.now - (24 * 3600))
+    @link_valid = token_valid?(params[:token], Member[email: link_email], params[:ts])
     haml :reset_password, layout: false
   end
 
   post "/change-password" do
     cache_control :public, :must_revalidate, max_age: 0
-    email = params[:email].strip.tr(" ", "+").downcase
-    if (m = Member[email:]) && token_valid?(params[:token], email, params[:ts])
-      m.update(password: params[:password])
-      session[:id] = m.id
-    else
-      flash[:error] =
-        "Ngt blev fel prova att kopiera länken manuellt från emailen om inte det funkar maila cdo@academian.se"
+    email = link_email
+    m = Member[email:]
+    unless token_valid?(params[:token], m, params[:ts])
+      flash[:error] = "Länken är för gammal eller har redan använts. Begär en ny länk här."
+      redirect "/forgotten"
     end
+    if params[:password].to_s.empty? || params[:password] != params[:password2]
+      flash[:error] = "Lösenorden stämmer inte överens. Försök igen."
+      redirect "/change-password?#{Rack::Utils.build_query(token: params[:token], ts: params[:ts], email:)}"
+    end
+    m.update(password: params[:password])
+    session[:id] = m.id
     redirect "/"
   end
 
@@ -53,7 +55,7 @@ class AuthController < BaseController
     if @member.nil?
       flash[:info] = "Den emailen finns inte registrerad."
     elsif @member && @member.password_hash.nil?
-      reset_password!(@member.email)
+      reset_password!(@member)
       flash[:info] =
         "Du har inte registrerat något lösenord, en länk har mailats till dig så du kan registrera ett lösenordet."
     elsif @member && @member.password_hash && @member.password == params[:password]
@@ -85,26 +87,14 @@ class AuthController < BaseController
       "/"
     end
 
-    def reset_password!(email)
-      DB.transaction do
-        member = Member[email:]
-        member.update(password_hash: nil)
-        ts = Time.now.to_i
-        hostname = ENV["RACK_ENV"] == "production" ? FQDN : "localhost:9292"
-        token = make_token(member.email, ts)
-        msg = { email: member.email, ts:, hostname:, token: }
-        publish("member.reset-password", msg)
-      end
+    def link_email
+      params[:email].to_s.strip.tr(" ", "+").downcase
     end
 
-    def make_token(email, ts)
-      secret = ENV["SESSION_SECRET"]
-      raise "SESSION_SECRET must be set to generate password reset tokens" if secret.nil? || secret.empty?
-      OpenSSL::HMAC.hexdigest("SHA256", secret, "#{email}:#{ts}")
-    end
-
-    def token_valid?(token, email, ts)
-      (Time.now - 1800) < Time.at(ts.to_i) && token == make_token(email, ts)
+    def token_valid?(token, member, ts)
+      return false unless member
+      (Time.now - RESET_LINK_TTL) < Time.at(ts.to_i) &&
+        Rack::Utils.secure_compare(token.to_s, make_token(member, ts))
     end
   end
 end
