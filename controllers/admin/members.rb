@@ -62,6 +62,18 @@ class AdminMembersController < AdminBaseController
     redirect back
   end
 
+  post '/:id/send-password-reset' do |id|
+    member = Member[id]
+    halt 404, 'Medlemmen finns inte' unless member
+    if member.email.to_s.strip.empty?
+      flash[:error] = 'Medlemmen har ingen emailadress.'
+    else
+      reset_password!(member)
+      flash[:info] = "En länk för att byta lösenord har skickats till #{member.email}."
+    end
+    redirect url("/#{id}")
+  end
+
   helpers do
     def admin_name
       'members'

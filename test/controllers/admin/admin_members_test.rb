@@ -79,6 +79,49 @@ class AdminMembersTest < ControllerTest
     assert_equal 404, last_response.status
   end
 
+  def test_send_password_reset_emails_member_and_keeps_password
+    login_as(create_admin)
+    m = create_member(email: "glomsk@academian.se")
+    m.password = "oldpass"
+    m.save
+    post "/cheferiet/members/#{m.id}/send-password-reset"
+    assert_equal 302, last_response.status
+    msg = TH.published.find { |x| x[:routing_key] == 'member.reset-password' }
+    assert_equal "glomsk@academian.se", msg[:data][:email]
+    assert Member[m.id].password == "oldpass"
+  end
+
+  def test_send_password_reset_requires_admin
+    login_as(create_member(admin: false))
+    m = create_member
+    post "/cheferiet/members/#{m.id}/send-password-reset"
+    assert_equal 403, last_response.status
+    refute TH.published.any? { |x| x[:routing_key] == 'member.reset-password' }
+  end
+
+  def test_send_password_reset_missing_member_returns_404
+    login_as(create_admin)
+    post "/cheferiet/members/999999/send-password-reset"
+    assert_equal 404, last_response.status
+  end
+
+  def test_send_password_reset_skips_member_without_email
+    login_as(create_admin)
+    m = create_member(email: "")
+    post "/cheferiet/members/#{m.id}/send-password-reset"
+    assert_equal 302, last_response.status
+    refute TH.published.any? { |x| x[:routing_key] == 'member.reset-password' }
+  end
+
+  def test_member_page_has_password_button_but_new_page_does_not
+    login_as(create_admin)
+    m = create_member
+    get "/cheferiet/members/#{m.id}"
+    assert_includes last_response.body, "/cheferiet/members/#{m.id}/send-password-reset"
+    get "/cheferiet/members/new"
+    refute_includes last_response.body, "send-password-reset"
+  end
+
   def test_update_member
     admin = create_admin
     login_as(admin)

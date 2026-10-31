@@ -1,3 +1,6 @@
+- flash.keys.each do |key|
+  %div{class: "alert alert-#{key}", role: :alert}
+    = flash[key]
 %a.back-link{href: url('/')} ← Tillbaka till alla medlemmar
 - name = [@m[:first_name], @m[:last_name]].compact.join(' ').strip
 %h1= name.empty? ? 'Ny medlem' : name
@@ -38,3 +41,9 @@
     %input{type: 'checkbox', name: :admin, value: :true, checked: @m[:admin]}
   .form-group
     %input.btn{type: 'submit', value: :Spara}
+- if @m[:id]
+  %form.form-horizontal{method: :post, action: url("/#{@m[:id]}/send-password-reset")}
+    != csrf_token_tag
+    .form-group
+      %label Lösenord
+      %input.btn{type: 'submit', value: 'Skicka länk för att byta lösenord'}

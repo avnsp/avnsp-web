@@ -87,6 +87,12 @@ class MemberController < BaseController
     redirect back
   end
 
+  post '/send-password-reset' do
+    reset_password!(@user)
+    flash[:info] = "En länk för att byta lösenord har skickats till #{@user.email}."
+    redirect url('/profile-edit')
+  end
+
   get '/:id' do |id|
     @member = Member[id]
     halt 404, 'Medlemmen finns inte' unless @member

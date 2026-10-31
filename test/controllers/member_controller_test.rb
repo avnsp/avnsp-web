@@ -22,6 +22,28 @@ class MemberControllerTest < ControllerTest
     assert_equal 200, last_response.status
   end
 
+  def test_send_password_reset_emails_own_address
+    m = create_member(email: "jag@academian.se")
+    other = create_member
+    login_as(m)
+    post '/member/send-password-reset', { id: other.id }
+    assert_equal 302, last_response.status
+    msgs = TH.published.select { |p| p[:routing_key] == 'member.reset-password' }
+    assert_equal ["jag@academian.se"], msgs.map { |p| p[:data][:email] }
+  end
+
+  def test_send_password_reset_requires_login
+    post '/member/send-password-reset'
+    assert_includes last_response.location, '/login'
+    refute TH.published.any? { |p| p[:routing_key] == 'member.reset-password' }
+  end
+
+  def test_profile_edit_has_password_button
+    login_as(create_member)
+    get '/member/profile-edit'
+    assert_includes last_response.body, '/member/send-password-reset'
+  end
+
   def test_post_profile_edit
     m = create_member(first_name: "Erik")
     login_as(m)
