@@ -36,3 +36,5 @@
     %input{type: 'checkbox', name: :admin, value: :true, checked: @m[:admin]}
   .form-group
     %input.btn{type: 'submit', value: :Spara}
+- if @m[:id]
+  != haml :_member_merits, layout: false

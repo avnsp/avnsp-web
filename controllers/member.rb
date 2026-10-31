@@ -15,7 +15,7 @@ class MemberController < BaseController
     end
     sort_col = %w[last_name first_name nick studied started email].include?(params[:sort]) ? params[:sort].to_sym : :last_name
     sort_dir = params[:order] == 'desc' ? Sequel.desc(sort_col) : Sequel.asc(sort_col)
-    @members = ds.order(sort_dir).all
+    @members = ds.eager(:merits).order(sort_dir).all
     @sort = params[:sort] || 'last_name'
     @order = params[:order] || 'asc'
     if htmx?

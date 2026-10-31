@@ -6,5 +6,5 @@
     %td{data: {label: 'Smeknamn'}}= m.nick
     %td{data: {label: 'Program'}}= m.studied
     %td{data: {label: 'Inskrivningsår'}}= m.started
-    %td
+    %td{data: {label: 'Merit'}}= m.merits.map(&:appointment).uniq.join(', ')
     %td.col-email{data: {label: 'Email'}}!= email_breakable(m.email)
