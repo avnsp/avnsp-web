@@ -51,6 +51,21 @@ class AdminMembersController < AdminBaseController
     redirect url(id)
   end
 
+  post '/:id/merits' do |id|
+    @new_merit = { appointment: params[:appointment], start: params[:start], end: params[:end] }
+    save_merit(id) { |data| DB[:merits].insert(data.merge(member_id: id.to_i)) }
+  end
+
+  post '/:id/merits/:merit_id' do |id, merit_id|
+    merit = merit_dataset(id, merit_id)
+    save_merit(id) { |data| merit.update(data) }
+  end
+
+  post '/:id/merits/:merit_id/delete' do |id, merit_id|
+    merit_dataset(id, merit_id).delete
+    redirect url("/#{id}#meriter")
+  end
+
   get '/:id' do |id|
     @m = DB[:members].where(id: id).first
     halt 404, 'Medlemmen finns inte' unless @m
@@ -77,6 +92,45 @@ class AdminMembersController < AdminBaseController
   helpers do
     def admin_name
       'members'
+    end
+
+    def member_merits(member_id)
+      DB[:merits].where(member_id: member_id).order(Sequel.desc(:start, nulls: :last)).all
+    end
+
+    def merit_dataset(id, merit_id)
+      merit = DB[:merits].where(id: merit_id.to_i, member_id: id.to_i)
+      halt 404, 'Meriten finns inte' if merit.empty?
+      merit
+    end
+
+    # Saves through the block, or shows the member page again with an error
+    def save_merit(id)
+      @m = DB[:members].where(id: id.to_i).first
+      halt 404, 'Medlemmen finns inte' unless @m
+      @merit_error = merit_error
+      if @merit_error
+        status 422
+        return haml :member
+      end
+      yield appointment: params[:appointment].strip, start: merit_date(:start), end: merit_date(:end)
+      redirect url("/#{id}#meriter")
+    end
+
+    def merit_error
+      return 'Ange en titel.' if params[:appointment].to_s.strip.empty?
+      start_date = merit_date(:start)
+      end_date = merit_date(:end)
+      return 'Ange giltiga datum.' if start_date == :invalid || end_date == :invalid
+      'Slutdatum kan inte vara före startdatum.' if start_date && end_date && end_date < start_date
+    end
+
+    # Both dates are optional: older merits may lack them, and a current one has no end
+    def merit_date(key)
+      value = params[key].to_s.strip
+      value.empty? ? nil : Date.iso8601(value)
+    rescue Date::Error
+      :invalid
     end
 
     def members_with_negative_balance

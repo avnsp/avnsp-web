@@ -820,3 +820,9 @@ cropper-canvas { display: block; height: 400px; }
   color: #ccc;
 }
 .footer h4, .footer p { color: #ccc; }
+
+.merits { margin-top: 2rem; border-top: 1px solid #ddd; padding-top: 1rem; }
+.merit-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem; margin-bottom: 1rem; }
+.merit-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem; }
+.merit-form label { display: block; }
+.merit-form input { display: block; }

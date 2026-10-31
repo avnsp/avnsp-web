@@ -1,0 +1,22 @@
+%script{src: asset_path("/js/confirm.js"), defer: true}
+%section#meriter.merits
+  %h3 Meriter
+  - if @merit_error
+    .alert.alert-error{role: :alert}= @merit_error
+  - merits = member_merits(@m[:id])
+  - if merits.empty?
+    %p.text-muted Inga meriter ännu.
+  - merits.each do |merit|
+    .merit-row
+      %form.merit-form{method: :post, action: url("/#{@m[:id]}/merits/#{merit[:id]}")}
+        != csrf_token_tag
+        != haml :_merit_fields, layout: false, locals: { merit: merit }
+        %button.btn Spara
+      %form{method: :post, action: url("/#{@m[:id]}/merits/#{merit[:id]}/delete"), data: {confirm: "Ta bort meriten #{merit[:appointment]}? Det går inte att ångra."}}
+        != csrf_token_tag
+        %button.btn.btn-danger Ta bort
+  %h4 Lägg till merit
+  %form.merit-form{method: :post, action: url("/#{@m[:id]}/merits")}
+    != csrf_token_tag
+    != haml :_merit_fields, layout: false, locals: { merit: @new_merit || {} }
+    %button.btn.btn-primary Lägg till

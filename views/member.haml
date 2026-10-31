@@ -25,8 +25,6 @@
           = @member.street
           = @member.zip
           = @member.city
-      %dt Meriter
-      %dd
       %dt Saldo
       %dd= @member.balance
   %div
@@ -44,8 +42,13 @@
       %h4 Meriter
     %dl
       - @merits.each do |m|
-        %dt= [m.start, m.end].join(' - ')
-        %dd= m.appointment
+        %dt= m.appointment
+        - if m.start && m.end
+          %dd= "#{m.start} – #{m.end}"
+        - elsif m.start
+          %dd= "Från #{m.start}"
+        - elsif m.end
+          %dd= "Till #{m.end}"
 %h2.text-center Besökta Fester
 %table
   %thead
